@@ -7,7 +7,7 @@
 | Severity | Info
 | Enabled  | True
 | Category | IDisposableAnalyzers.Correctness
-| Code     | [CreationAnalyzer](https://github.com/DotNetAnalyzers/IDisposableAnalyzers/blob/master/IDisposableAnalyzers/Analyzers/CreationAnalyzer.cs)
+| Code     | [CreationAnalyzer](https://github.com/GioAbq/IDisposableAnalyzers.Reloaded/blob/master/IDisposableAnalyzers/Analyzers/CreationAnalyzer.cs)
 
 ## Description
 

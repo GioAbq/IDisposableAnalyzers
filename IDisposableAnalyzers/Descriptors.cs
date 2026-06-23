@@ -268,7 +268,7 @@ internal static class Descriptors
             defaultSeverity: defaultSeverity,
             isEnabledByDefault: isEnabledByDefault,
             description: description,
-            helpLinkUri: $"https://github.com/DotNetAnalyzers/IDisposableAnalyzers/blob/master/documentation/{id}.md",
+            helpLinkUri: $"https://github.com/GioAbq/IDisposableAnalyzers.Reloaded/blob/master/documentation/{id}.md",
             customTags: customTags);
     }
 }

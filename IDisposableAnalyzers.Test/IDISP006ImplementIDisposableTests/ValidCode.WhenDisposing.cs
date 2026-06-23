@@ -447,7 +447,7 @@ namespace N
 {
     public class C
     {
-        private readonly object f = string.Copy(string.Empty);
+        private readonly object f = string.Concat(string.Empty, string.Empty);
     }
 }";
             RoslynAssert.Valid(Analyzer, code);

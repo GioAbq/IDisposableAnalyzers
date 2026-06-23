@@ -7,8 +7,8 @@
 | Severity | Warning
 | Enabled  | True
 | Category | IDisposableAnalyzers.Correctness
-| Code     | [ArgumentAnalyzer](https://github.com/DotNetAnalyzers/IDisposableAnalyzers/blob/master/IDisposableAnalyzers/Analyzers/ArgumentAnalyzer.cs)
-|          | [AssignmentAnalyzer](https://github.com/DotNetAnalyzers/IDisposableAnalyzers/blob/master/IDisposableAnalyzers/Analyzers/AssignmentAnalyzer.cs)
+| Code     | [ArgumentAnalyzer](https://github.com/GioAbq/IDisposableAnalyzers.Reloaded/blob/master/IDisposableAnalyzers/Analyzers/ArgumentAnalyzer.cs)
+|          | [AssignmentAnalyzer](https://github.com/GioAbq/IDisposableAnalyzers.Reloaded/blob/master/IDisposableAnalyzers/Analyzers/AssignmentAnalyzer.cs)
 
 ## Description
 

@@ -7,7 +7,7 @@
 | Severity | Warning
 | Enabled  | True
 | Category | IDisposableAnalyzers.Correctness
-| Code     | [SuppressFinalizeAnalyzer](https://github.com/DotNetAnalyzers/IDisposableAnalyzers/blob/master/IDisposableAnalyzers/Analyzers/SuppressFinalizeAnalyzer.cs)
+| Code     | [SuppressFinalizeAnalyzer](https://github.com/GioAbq/IDisposableAnalyzers.Reloaded/blob/master/IDisposableAnalyzers/Analyzers/SuppressFinalizeAnalyzer.cs)
 
 
 ## Description

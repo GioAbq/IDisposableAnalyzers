@@ -7,7 +7,7 @@
 | Severity | Warning
 | Enabled  | True
 | Category | IDisposableAnalyzers.Correctness
-| Code     | [DisposeCallAnalyzer](https://github.com/DotNetAnalyzers/IDisposableAnalyzers/blob/master/IDisposableAnalyzers/Analyzers/DisposeCallAnalyzer.cs)
+| Code     | [DisposeCallAnalyzer](https://github.com/GioAbq/IDisposableAnalyzers.Reloaded/blob/master/IDisposableAnalyzers/Analyzers/DisposeCallAnalyzer.cs)
 
 ## Description
 

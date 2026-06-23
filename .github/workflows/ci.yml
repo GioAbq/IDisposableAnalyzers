@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore IDisposableAnalyzers.sln
+
+      - name: Build
+        run: dotnet build IDisposableAnalyzers.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test IDisposableAnalyzers.sln -c Release --no-build

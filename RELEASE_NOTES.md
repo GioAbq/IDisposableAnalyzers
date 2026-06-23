@@ -1,3 +1,9 @@
+#### 5.0.0
+* Maintained fork "Reloaded" of IDisposableAnalyzers, based on 4.0.8.
+* CHANGE: Rebranded as IDisposableAnalyzers.Reloaded (drop-in: same IDISP ids, same analyzer assembly name).
+* CHANGE: Dropped the Visual Studio VSIX; NuGet-only delivery.
+* CHANGE: Test/sample projects target net10.0.
+
 #### 4.0.7
 BUGFIX: Handle target typed new
 
@@ -153,7 +159,7 @@ BUGFIX: awaited in expression
 * Bugfixes
 
 #### 0.1.4.4
-* FEATÙRE: IDISP014 check that HttpClient is assigned to static field or property.
+* FEATï¿½RE: IDISP014 check that HttpClient is assigned to static field or property.
 * BUGFIX: IDISP001 handle dispose in lambda closure.
 * BUGFIX: IDISP004 handle properties.
 
