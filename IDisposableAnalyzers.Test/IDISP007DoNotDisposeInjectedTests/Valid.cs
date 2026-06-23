@@ -813,6 +813,20 @@ namespace N
     }
 
     [Test]
+    public static void FunctionPointerInvocation()
+    {
+        var code = @"
+namespace N
+{
+    unsafe class C
+    {
+        public void M() => ((delegate* unmanaged<void>)null)();
+    }
+}";
+        RoslynAssert.Valid(Analyzer, code, Settings.Default.WithCompilationOptions(x => x.WithAllowUnsafe(true)));
+    }
+
+    [Test]
     public static void FactoryChainedReturned()
     {
         var disposable = @"

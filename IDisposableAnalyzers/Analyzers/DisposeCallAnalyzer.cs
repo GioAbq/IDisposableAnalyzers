@@ -33,6 +33,7 @@ internal class DisposeCallAnalyzer : DiagnosticAnalyzer
     {
         if (!context.IsExcludedFromAnalysis() &&
             context.Node is InvocationExpressionSyntax invocation &&
+            context.SemanticModel.GetTypeInfo(invocation.Expression, context.CancellationToken).Type is not IFunctionPointerTypeSymbol &&
             DisposeCall.MatchAny(invocation, context.SemanticModel, context.CancellationToken) is { } call &&
             !invocation.TryFirstAncestorOrSelf<AnonymousFunctionExpressionSyntax>(out _) &&
             call.FindDisposed(context.SemanticModel, context.CancellationToken) is { } disposed)
