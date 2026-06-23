@@ -65,6 +65,78 @@ namespace N
         }
 
         [Test]
+        public static void LazyDisposedWhenDisposingAndValueCreated()
+        {
+            var code = @"
+namespace N
+{
+    using System;
+
+    public sealed class C : IDisposable
+    {
+        private readonly Lazy<IDisposable> bar = new Lazy<IDisposable>(() => new Disposable());
+
+        ~C()
+        {
+            this.Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing && this.bar.IsValueCreated)
+            {
+                this.bar.Value?.Dispose();
+            }
+        }
+    }
+}";
+            RoslynAssert.Valid(Analyzer, DisposableCode, code);
+        }
+
+        [Test]
+        public static void EarlyReturnWhenNotDisposing()
+        {
+            var code = @"
+namespace N
+{
+    using System;
+
+    public sealed class C : IDisposable
+    {
+        private readonly Disposable disposable = new Disposable();
+
+        ~C()
+        {
+            this.Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            this.disposable.Dispose();
+        }
+    }
+}";
+            RoslynAssert.Valid(Analyzer, DisposableCode, code);
+        }
+
+        [Test]
         public static void TouchingInstanceReferenceTypeInIfNotDiposedAndDispsing()
         {
             var code = @"

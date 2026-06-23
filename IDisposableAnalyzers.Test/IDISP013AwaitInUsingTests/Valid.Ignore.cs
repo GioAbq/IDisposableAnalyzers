@@ -8,6 +8,30 @@ public static partial class Valid
     public static class Ignore
     {
         [Test]
+        public static void TaskInLambdaAssignedInUsing()
+        {
+            var code = """
+                namespace N
+                {
+                    using System;
+                    using System.Net.Http;
+                    using System.Threading.Tasks;
+
+                    public class C
+                    {
+                        public async Task M()
+                        {
+                            using var client = new HttpClient();
+                            Func<Task<HttpResponseMessage>> f = () => client.GetAsync(string.Empty);
+                            await f();
+                        }
+                    }
+                }
+                """;
+            RoslynAssert.Valid(Analyzer, code);
+        }
+
+        [Test]
         public static void NUnitAssertThrowsAsync()
         {
             var code = """

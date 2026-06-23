@@ -125,6 +125,7 @@ internal class ReturnValueAnalyzer : DiagnosticAnalyzer
         if (ReturnType(context)?.IsAwaitable() == true &&
             IsInUsing(returnValue) &&
             !returnValue.TryFirstAncestorOrSelf<AwaitExpressionSyntax>(out _) &&
+            !returnValue.TryFirstAncestorOrSelf<AnonymousFunctionExpressionSyntax>(out _) &&
             ShouldAwait(context, returnValue))
         {
             context.ReportDiagnostic(Diagnostic.Create(Descriptors.IDISP013AwaitInUsing, returnValue.GetLocation()));
