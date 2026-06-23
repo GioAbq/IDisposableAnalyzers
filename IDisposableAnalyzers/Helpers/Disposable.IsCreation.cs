@@ -158,9 +158,12 @@ internal static partial class Disposable
             return true;
         }
 
-        if (candidate.Parent is ArgumentSyntax arg)
+        if (candidate.Parent is ArgumentSyntax arg &&
+            semanticModel.Compilation.ContainsSyntaxTree(arg.SyntaxTree))
         {
-            // candidate may originate from another syntax tree during recursion, so use the semantic model for the argument's tree.
+            // arg may originate from another syntax tree during recursion; use the model for its tree.
+            // Guard with ContainsSyntaxTree: in multi-targeted compilations the tree can belong to a
+            // different compilation, and GetSemanticModel/GetSymbolInfo would otherwise throw (AD0001).
             var argModel = semanticModel.SyntaxTree == arg.SyntaxTree
                 ? semanticModel
                 : semanticModel.Compilation.GetSemanticModel(arg.SyntaxTree);
