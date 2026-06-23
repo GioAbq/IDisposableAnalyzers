@@ -12,7 +12,8 @@ internal static partial class Disposable
     internal static bool DisposesAfter(ILocalSymbol local, ExpressionSyntax location, SemanticModel semanticModel, CancellationToken cancellationToken)
     {
         if (local.TrySingleDeclaration(cancellationToken, out var declaration) &&
-            declaration is { Parent: VariableDeclarationSyntax { Parent: UsingStatementSyntax _ } })
+            declaration is { Parent: VariableDeclarationSyntax { Parent: UsingStatementSyntax _ } }
+                        or { Parent: VariableDeclarationSyntax { Parent: LocalDeclarationStatementSyntax { UsingKeyword.ValueText: "using" } } })
         {
             return true;
         }
