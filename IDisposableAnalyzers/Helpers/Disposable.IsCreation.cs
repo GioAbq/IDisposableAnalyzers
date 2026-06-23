@@ -248,6 +248,7 @@ internal static partial class Disposable
                 IMethodSymbol { ContainingType.MetadataName: "ConstructorInfo", MetadataName: "Invoke" } => InferFromUse(),
                 IMethodSymbol { ContainingType.MetadataName: "Enumerable" } => false,
                 IMethodSymbol { ContainingType.MetadataName: "HttpResponseMessage", MetadataName: "EnsureSuccessStatusCode" } => false,
+                IMethodSymbol { ContainingType.MetadataName: "TcpClient", MetadataName: "GetStream" } => false,
                 IMethodSymbol { ContainingType.MetadataName: "ResourceManager" } => false,
                 IMethodSymbol { ContainingType.MetadataName: "Task" } => false,
                 IMethodSymbol { ContainingType.MetadataName: "Task`1" } => false,
