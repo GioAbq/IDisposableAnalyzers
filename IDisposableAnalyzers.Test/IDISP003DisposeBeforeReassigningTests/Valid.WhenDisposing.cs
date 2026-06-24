@@ -1,13 +1,12 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
+namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
-// ReSharper disable once UnusedTypeParameter
-public static partial class Valid<T>
+public abstract partial class Valid
 {
-    [Test]
-    public static void DisposingVariable()
+    [Fact]
+    public void DisposingVariable()
     {
         var code = @"
 namespace N
@@ -29,9 +28,10 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("stream.Dispose();")]
-    [TestCase("stream?.Dispose();")]
-    public static void DisposeBeforeAssigningInIfElse(string dispose)
+    [Theory]
+    [InlineData("stream.Dispose();")]
+    [InlineData("stream?.Dispose();")]
+    public void DisposeBeforeAssigningInIfElse(string dispose)
     {
         var code = @"
 namespace N
@@ -61,9 +61,10 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("stream.Dispose();")]
-    [TestCase("stream?.Dispose();")]
-    public static void DisposeBeforeAssigningBeforeIfElse(string dispose)
+    [Theory]
+    [InlineData("stream.Dispose();")]
+    [InlineData("stream?.Dispose();")]
+    public void DisposeBeforeAssigningBeforeIfElse(string dispose)
     {
         var code = @"
 namespace N
@@ -92,9 +93,10 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("stream.Dispose();")]
-    [TestCase("stream?.Dispose();")]
-    public static void DisposeFieldBeforeIfElseReassigning(string dispose)
+    [Theory]
+    [InlineData("stream.Dispose();")]
+    [InlineData("stream?.Dispose();")]
+    public void DisposeFieldBeforeIfElseReassigning(string dispose)
     {
         var code = @"
 #pragma warning disable CS8602
@@ -123,8 +125,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DisposingParameter()
+    [Fact]
+    public void DisposingParameter()
     {
         var code = @"
 namespace N
@@ -145,8 +147,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DisposingFieldInCtor()
+    [Fact]
+    public void DisposingFieldInCtor()
     {
         var code = @"
 namespace N
@@ -167,8 +169,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DisposingFieldInMethod()
+    [Fact]
+    public void DisposingFieldInMethod()
     {
         var code = @"
 namespace N
@@ -189,8 +191,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ConditionallyDisposingFieldInMethod()
+    [Fact]
+    public void ConditionallyDisposingFieldInMethod()
     {
         var code = @"
 namespace N
@@ -211,8 +213,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ConditionallyDisposingUnderscoreFieldInMethod()
+    [Fact]
+    public void ConditionallyDisposingUnderscoreFieldInMethod()
     {
         var code = @"
 namespace N
@@ -233,8 +235,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DisposingUnderscoreFieldInMethod()
+    [Fact]
+    public void DisposingUnderscoreFieldInMethod()
     {
         var code = @"
 namespace N
@@ -255,8 +257,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void AssigningFieldInLambda()
+    [Fact]
+    public void AssigningFieldInLambda()
     {
         var code = @"
 namespace N
@@ -287,8 +289,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
-    public static void AssigningBackingFieldInLambda()
+    [Fact]
+    public void AssigningBackingFieldInLambda()
     {
         var code = @"
 namespace N
@@ -325,8 +327,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
-    public static void AssigningSerialDisposableBackingFieldInLambda()
+    [Fact]
+    public void AssigningSerialDisposableBackingFieldInLambda()
     {
         var code = @"
 namespace N
@@ -363,8 +365,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
-    public static void AssigningSerialDisposableFieldInLambda()
+    [Fact]
+    public void AssigningSerialDisposableFieldInLambda()
     {
         var code = @"
 namespace N
@@ -395,8 +397,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
-    public static void DisposingPreviousAssignedToLocal()
+    [Fact]
+    public void DisposingPreviousAssignedToLocal()
     {
         var code = @"
 namespace N
@@ -423,9 +425,10 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [TestCase("stream.Dispose();")]
-    [TestCase("stream?.Dispose();")]
-    public static void WhileLoop(string call)
+    [Theory]
+    [InlineData("stream.Dispose();")]
+    [InlineData("stream?.Dispose();")]
+    public void WhileLoop(string call)
     {
         var code = @"
 namespace N

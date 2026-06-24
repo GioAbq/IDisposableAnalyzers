@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP020SuppressFinalizeThisTests;
+namespace IDisposableAnalyzers.Test.IDISP020SuppressFinalizeThisTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class CodeFix
 {
@@ -9,7 +9,8 @@ public static class CodeFix
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP020SuppressFinalizeThis);
     private static readonly ArgumentFix Fix = new();
 
-    [TestCase("null")]
+    [Theory]
+    [InlineData("null")]
     public static void WhenStatementBody(string expression)
     {
         var before = @"

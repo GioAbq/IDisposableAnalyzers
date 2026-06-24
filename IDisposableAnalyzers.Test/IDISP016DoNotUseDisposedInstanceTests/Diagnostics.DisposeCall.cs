@@ -1,7 +1,7 @@
 namespace IDisposableAnalyzers.Test.IDISP016DoNotUseDisposedInstanceTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Diagnostics
 {
@@ -10,7 +10,7 @@ public static class Diagnostics
         private static readonly DisposeCallAnalyzer Analyzer = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP016DoNotUseDisposedInstance);
 
-        [Test]
+        [Fact]
         public static void CreateTouchDispose()
         {
             var code = @"
@@ -31,7 +31,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingTwice()
         {
             var code = @"
@@ -52,7 +52,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingTwiceInUsing()
         {
             var code = @"
@@ -75,7 +75,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void AssignedViaOut()
         {
             var code = @"
@@ -103,7 +103,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void AssignedViaOutVar()
         {
             var code = @"
@@ -130,7 +130,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void ReassignAfterDispose()
         {
             var code = @"
@@ -155,7 +155,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void ReassignViaOutVarAfterDispose()
         {
             var code = @"
@@ -185,7 +185,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void ReassignViaOutAfterDispose()
         {
             var code = @"

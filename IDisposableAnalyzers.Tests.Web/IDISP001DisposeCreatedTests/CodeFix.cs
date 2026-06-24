@@ -1,9 +1,9 @@
-﻿namespace IDisposableAnalyzers.Tests.Web.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Tests.Web.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
-using NUnit.Framework;
+using Xunit;
 
 public static class CodeFix
 {
@@ -11,10 +11,11 @@ public static class CodeFix
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP001DisposeCreated);
     private static readonly CodeFixProvider Fix = new AddUsingFix();
 
-    [TestCase("await task")]
-    [TestCase("await task.ConfigureAwait(true)")]
-    [TestCase("task.Result")]
-    [TestCase("task.GetAwaiter().GetResult()")]
+    [Theory]
+    [InlineData("await task")]
+    [InlineData("await task.ConfigureAwait(true)")]
+    [InlineData("task.Result")]
+    [InlineData("task.GetAwaiter().GetResult()")]
     public static void HttpClientIssue242(string expression)
     {
         var before = @"

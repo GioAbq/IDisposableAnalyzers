@@ -1,14 +1,14 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP013AwaitInUsingTests;
+namespace IDisposableAnalyzers.Test.IDISP013AwaitInUsingTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Diagnostics
 {
     private static readonly ReturnValueAnalyzer Analyzer = new();
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP013AwaitInUsing);
 
-    [Test]
+    [Fact]
     public static void WebClientDownloadStringTaskAsync()
     {
         var code = """
@@ -33,7 +33,7 @@ public static class Diagnostics
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void ValueTask()
     {
         var code = """
@@ -62,7 +62,7 @@ public static class Diagnostics
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void UsingDeclaration()
     {
         var code = """
@@ -89,7 +89,7 @@ public static class Diagnostics
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void UsingDeclarationInner()
     {
         var code = """
@@ -119,7 +119,7 @@ public static class Diagnostics
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void LocalTask()
     {
         var code = """
@@ -145,7 +145,7 @@ public static class Diagnostics
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void TaskCompletionSourceTask()
     {
         var code = """

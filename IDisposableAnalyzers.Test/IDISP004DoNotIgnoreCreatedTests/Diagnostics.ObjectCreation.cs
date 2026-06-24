@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Diagnostics
 {
@@ -23,7 +23,7 @@ namespace N
     }
 }";
 
-        [Test]
+        [Fact]
         public static void NewDisposable()
         {
             var code = @"
@@ -40,7 +40,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, DisposableCode, code);
         }
 
-        [Test]
+        [Fact]
         public static void NewDisposablePassedIntoCtor()
         {
             var c1 = @"
@@ -73,7 +73,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, DisposableCode, c1, code);
         }
 
-        [Test]
+        [Fact]
         public static void ReturningNewAssigningNotDisposing()
         {
             var c1 = @"
@@ -109,7 +109,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, DisposableCode, c1, code);
         }
 
-        [Test]
+        [Fact]
         public static void ReturningNewNotAssigning()
         {
             var c1 = @"
@@ -142,7 +142,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, DisposableCode, c1, code);
         }
 
-        [Test]
+        [Fact]
         public static void StringFormatArgument()
         {
             var code = @"
@@ -156,7 +156,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, DisposableCode, code);
         }
 
-        [Test]
+        [Fact]
         public static void NewDisposableToString()
         {
             var code = @"
@@ -173,7 +173,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, DisposableCode, code);
         }
 
-        [Test]
+        [Fact]
         public static void ReturnNewDisposableToString()
         {
             var code = @"
@@ -190,7 +190,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, DisposableCode, code);
         }
 
-        [Test]
+        [Fact]
         public static void NewStandardKernelNewModuleArgument()
         {
             var module = @"

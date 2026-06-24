@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP019CallSuppressFinalizeWhenVirtualDisposeTests;
+namespace IDisposableAnalyzers.Test.IDISP019CallSuppressFinalizeWhenVirtualDisposeTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
     private static readonly DisposeCallAnalyzer Analyzer = new();
 
-    [Test]
+    [Fact]
     public static void SealedWithFinalizer()
     {
         var code = @"

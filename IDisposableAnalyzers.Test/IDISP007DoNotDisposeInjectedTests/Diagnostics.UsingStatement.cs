@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP007DoNotDisposeInjectedTests;
+namespace IDisposableAnalyzers.Test.IDISP007DoNotDisposeInjectedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Diagnostics
 {
@@ -10,7 +10,7 @@ public static partial class Diagnostics
         private static readonly UsingStatementAnalyzer Analyzer = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP007DoNotDisposeInjected);
 
-        [Test]
+        [Fact]
         public static void UsingField1()
         {
             var code = @"
@@ -34,7 +34,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void UsingField2()
         {
             var code = @"

@@ -1,7 +1,7 @@
 namespace IDisposableAnalyzers.Test.IDISP023ReferenceTypeInFinalizerContextTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Diagnostics
 {
@@ -10,8 +10,9 @@ public static partial class Diagnostics
         private static readonly DisposeMethodAnalyzer Analyzer = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP023ReferenceTypeInFinalizerContext);
 
-        [TestCase("↓Builder.Append(1)")]
-        [TestCase("_ = ↓Builder.Length")]
+        [Theory]
+        [InlineData("↓Builder.Append(1)")]
+        [InlineData("_ = ↓Builder.Length")]
         public static void Static(string expression)
         {
             var code = @"
@@ -55,17 +56,18 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("this.↓builder.Append(1)")]
-        [TestCase("↓builder.Append(1)")]
-        [TestCase("_ = ↓builder.Length")]
-        [TestCase("↓disposable.Dispose()")]
-        [TestCase("↓disposable?.Dispose()")]
-        [TestCase("this.↓disposable.Dispose()")]
-        [TestCase("this.↓disposable?.Dispose()")]
-        [TestCase("↓Disposable.Dispose()")]
-        [TestCase("↓Disposable?.Dispose()")]
-        [TestCase("this.↓Disposable.Dispose()")]
-        [TestCase("this.↓Disposable?.Dispose()")]
+        [Theory]
+        [InlineData("this.↓builder.Append(1)")]
+        [InlineData("↓builder.Append(1)")]
+        [InlineData("_ = ↓builder.Length")]
+        [InlineData("↓disposable.Dispose()")]
+        [InlineData("↓disposable?.Dispose()")]
+        [InlineData("this.↓disposable.Dispose()")]
+        [InlineData("this.↓disposable?.Dispose()")]
+        [InlineData("↓Disposable.Dispose()")]
+        [InlineData("↓Disposable?.Dispose()")]
+        [InlineData("this.↓Disposable.Dispose()")]
+        [InlineData("this.↓Disposable?.Dispose()")]
         public static void InstanceOutsideIfDispose(string expression)
         {
             var code = @"
@@ -113,17 +115,18 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("this.↓builder.Append(1)")]
-        [TestCase("↓builder.Append(1)")]
-        [TestCase("_ = ↓builder.Length")]
-        [TestCase("↓disposable.Dispose()")]
-        [TestCase("↓disposable?.Dispose()")]
-        [TestCase("this.↓disposable.Dispose()")]
-        [TestCase("this.↓disposable?.Dispose()")]
-        [TestCase("↓Disposable.Dispose()")]
-        [TestCase("↓Disposable?.Dispose()")]
-        [TestCase("this.↓Disposable.Dispose()")]
-        [TestCase("this.↓Disposable?.Dispose()")]
+        [Theory]
+        [InlineData("this.↓builder.Append(1)")]
+        [InlineData("↓builder.Append(1)")]
+        [InlineData("_ = ↓builder.Length")]
+        [InlineData("↓disposable.Dispose()")]
+        [InlineData("↓disposable?.Dispose()")]
+        [InlineData("this.↓disposable.Dispose()")]
+        [InlineData("this.↓disposable?.Dispose()")]
+        [InlineData("↓Disposable.Dispose()")]
+        [InlineData("↓Disposable?.Dispose()")]
+        [InlineData("this.↓Disposable.Dispose()")]
+        [InlineData("this.↓Disposable?.Dispose()")]
         public static void InstanceNoIfDispose(string expression)
         {
             var code = @"
@@ -161,7 +164,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void CallingStatic()
         {
             var code = @"

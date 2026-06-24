@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
     public static class Repro
     {
-        [Test]
+        [Fact]
         public static void Issue63()
         {
             var viewModelBaseCode = @"

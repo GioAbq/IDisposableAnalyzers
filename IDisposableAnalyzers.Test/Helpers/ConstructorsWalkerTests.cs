@@ -1,4 +1,4 @@
-﻿namespace IDisposableAnalyzers.Test.Helpers;
+namespace IDisposableAnalyzers.Test.Helpers;
 
 using System;
 using System.Linq;
@@ -6,11 +6,11 @@ using System.Threading;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CSharp;
 
-using NUnit.Framework;
+using Xunit;
 
 public static class ConstructorsWalkerTests
 {
-    [Test]
+    [Fact]
     public static void TwoInternalChained()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -33,11 +33,11 @@ namespace N
         var type = syntaxTree.FindTypeDeclaration("C");
         using var walker = ConstructorsWalker.Borrow(type, semanticModel, CancellationToken.None);
         var actual = string.Join(", ", walker.NonPrivateCtors.Select(c => c.ToString().Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[0]));
-        Assert.AreEqual("internal C(), internal C(string text)", actual);
-        Assert.AreEqual(0, walker.ObjectCreations.Count);
+        Assert.Equal("internal C(), internal C(string text)", actual);
+        Assert.Equal(0, walker.ObjectCreations.Count);
     }
 
-    [Test]
+    [Fact]
     public static void InternalPrivateChained()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -60,11 +60,11 @@ namespace N
         var type = syntaxTree.FindTypeDeclaration("C");
         using var pooled = ConstructorsWalker.Borrow(type, semanticModel, CancellationToken.None);
         var actual = string.Join(", ", pooled.NonPrivateCtors.Select(c => c.ToString().Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries)[0]));
-        Assert.AreEqual("internal C(string text)", actual);
-        Assert.AreEqual(0, pooled.ObjectCreations.Count);
+        Assert.Equal("internal C(string text)", actual);
+        Assert.Equal(0, pooled.ObjectCreations.Count);
     }
 
-    [Test]
+    [Fact]
     public static void PrivatePrivateFactory()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -87,7 +87,7 @@ namespace N
         var type = syntaxTree.FindTypeDeclaration("C");
         using var walker = ConstructorsWalker.Borrow(type, semanticModel, CancellationToken.None);
         var actual = string.Join(", ", walker.NonPrivateCtors.Select(c => c.ToString().Split('\r')[0]));
-        Assert.AreEqual(string.Empty, actual);
-        Assert.AreEqual("new C()", string.Join(", ", walker.ObjectCreations));
+        Assert.Equal(string.Empty, actual);
+        Assert.Equal("new C()", string.Join(", ", walker.ObjectCreations));
     }
 }

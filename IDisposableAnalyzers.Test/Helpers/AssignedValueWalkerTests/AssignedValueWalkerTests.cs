@@ -1,15 +1,16 @@
-﻿namespace IDisposableAnalyzers.Test.Helpers.AssignedValueWalkerTests;
+namespace IDisposableAnalyzers.Test.Helpers.AssignedValueWalkerTests;
 
 using System.Threading;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CSharp;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class AssignedValueWalkerTests
 {
-    [TestCase("var temp1 = this.value;", "")]
-    [TestCase("var temp2 = this.value;", "1")]
-    [TestCase("var temp3 = this.value;", "1")]
+    [Theory]
+    [InlineData("var temp1 = this.value;", "")]
+    [InlineData("var temp2 = this.value;", "1")]
+    [InlineData("var temp3 = this.value;", "1")]
     public static void LambdaInCtor(string code, string expected)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -41,10 +42,10 @@ namespace N
         var value = syntaxTree.FindEqualsValueClause(code).Value;
         using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
         var actual = string.Join(", ", walker.Values);
-        Assert.AreEqual(expected, actual);
+        Assert.Equal(expected, actual);
     }
 
-    [Test]
+    [Fact]
     public static void GenericOut()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -69,6 +70,6 @@ namespace N
         var argument = syntaxTree.FindArgument("t1");
         using var walker = AssignedValueWalker.Borrow(argument.Expression, semanticModel, CancellationToken.None);
         var actual = string.Join(", ", walker.Values);
-        Assert.AreEqual("default", actual);
+        Assert.Equal("default", actual);
     }
 }

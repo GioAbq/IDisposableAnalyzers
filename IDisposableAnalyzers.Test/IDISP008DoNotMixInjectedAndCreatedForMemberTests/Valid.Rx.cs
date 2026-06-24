@@ -1,17 +1,14 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP008DoNotMixInjectedAndCreatedForMemberTests;
+namespace IDisposableAnalyzers.Test.IDISP008DoNotMixInjectedAndCreatedForMemberTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
-// ReSharper disable once UnusedTypeParameter
-public partial class Valid<T>
+public partial class Valid
 {
-    public static class Rx
+    [Fact]
+    public void SingleAssignmentDisposable()
     {
-        [Test]
-        public static void SingleAssignmentDisposable()
-        {
-            var code = @"
+        var code = @"
 namespace Gu.Reactive
 {
     using System;
@@ -33,17 +30,16 @@ namespace Gu.Reactive
         }
      }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void SingleAssignmentDisposableAssignedWithObservableSubscribe()
-        {
-            var code = @"
+    [Fact]
+    public void SingleAssignmentDisposableAssignedWithObservableSubscribe()
+    {
+        var code = @"
 namespace Gu.Reactive
 {
     using System;
-    using System.IO;
     using System.Reactive.Disposables;
 
     public abstract class C : IDisposable
@@ -61,13 +57,13 @@ namespace Gu.Reactive
         }
      }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void SingleAssignmentDisposableAssignedInAction()
-        {
-            var code = @"
+    [Fact]
+    public void SingleAssignmentDisposableAssignedInAction()
+    {
+        var code = @"
 namespace Gu.Reactive
 {
     using System;
@@ -78,8 +74,6 @@ namespace Gu.Reactive
     {
         private readonly Lazy<int> lazy;
         private readonly SingleAssignmentDisposable subscription = new SingleAssignmentDisposable();
-
-        private bool disposed;
 
         protected C()
         {
@@ -97,7 +91,6 @@ namespace Gu.Reactive
         }
      }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
     }
 }

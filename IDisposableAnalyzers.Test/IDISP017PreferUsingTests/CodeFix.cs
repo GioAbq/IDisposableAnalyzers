@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP017PreferUsingTests;
+namespace IDisposableAnalyzers.Test.IDISP017PreferUsingTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class CodeFix
 {
@@ -9,7 +9,7 @@ public static class CodeFix
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP017PreferUsing);
     private static readonly AddUsingFix Fix = new();
 
-    [Test]
+    [Fact]
     public static void Local()
     {
         var before = @"
@@ -47,7 +47,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void InitializedLocalDisposeInFinally()
     {
         var before = @"
@@ -91,7 +91,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void AssignedInTryDisposeInFinally()
     {
         var before = @"

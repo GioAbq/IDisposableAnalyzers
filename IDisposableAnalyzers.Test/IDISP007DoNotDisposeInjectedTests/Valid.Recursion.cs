@@ -1,21 +1,17 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP007DoNotDisposeInjectedTests;
+namespace IDisposableAnalyzers.Test.IDISP007DoNotDisposeInjectedTests;
 
 using Gu.Roslyn.Asserts;
 
 using Microsoft.CodeAnalysis.Diagnostics;
 
-using NUnit.Framework;
+using Xunit;
 
-[TestFixture(typeof(DisposeCallAnalyzer))]
-[TestFixture(typeof(LocalDeclarationAnalyzer))]
-[TestFixture(typeof(UsingStatementAnalyzer))]
-public static class ValidRecursion<T>
-    where T : DiagnosticAnalyzer, new()
+public abstract class ValidRecursion
 {
-    private static readonly T Analyzer = new();
+    protected abstract DiagnosticAnalyzer Analyzer { get; }
 
-    [Test]
-    public static void IgnoresWhenDisposingRecursiveProperty()
+    [Fact]
+    public void IgnoresWhenDisposingRecursiveProperty()
     {
         var code = @"
 namespace N
@@ -35,8 +31,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void IgnoresWhenNotDisposingRecursiveProperty()
+    [Fact]
+    public void IgnoresWhenNotDisposingRecursiveProperty()
     {
         var code = @"
 namespace N
@@ -55,8 +51,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void IgnoresWhenDisposingFieldAssignedWithRecursiveProperty()
+    [Fact]
+    public void IgnoresWhenDisposingFieldAssignedWithRecursiveProperty()
     {
         var code = @"
 namespace N
@@ -83,8 +79,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void IgnoresWhenNotDisposingFieldAssignedWithRecursiveProperty()
+    [Fact]
+    public void IgnoresWhenNotDisposingFieldAssignedWithRecursiveProperty()
     {
         var code = @"
 namespace N
@@ -110,8 +106,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void IgnoresWhenDisposingRecursiveMethod()
+    [Fact]
+    public void IgnoresWhenDisposingRecursiveMethod()
     {
         var code = @"
 namespace N

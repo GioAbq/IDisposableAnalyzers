@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP002DisposeMemberTests;
+namespace IDisposableAnalyzers.Test.IDISP002DisposeMemberTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
     public static class Injected
     {
-        [Test]
+        [Fact]
         public static void IgnoreAssignedWithCtorArgument()
         {
             var code = @"
@@ -28,7 +28,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoreAssignedWithCtorArgumentIndexer()
         {
             var code = @"
@@ -49,7 +49,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoreInjectedAndCreatedPropertyWhenFactoryTouchesIndexer()
         {
             var code = @"
@@ -76,7 +76,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, DisposableCode, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoreDictionaryPassedInViaCtor()
         {
             var code = @"
@@ -98,7 +98,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnorePassedInViaCtorUnderscore()
         {
             var code = @"
@@ -119,7 +119,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnorePassedInViaCtorUnderscoreWhenClassIsDisposable()
         {
             var code = @"
@@ -144,7 +144,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void AssignedWithCreatedAndInjected()
         {
             var code = @"

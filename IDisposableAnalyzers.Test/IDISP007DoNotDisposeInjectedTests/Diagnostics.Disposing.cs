@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP007DoNotDisposeInjectedTests;
+namespace IDisposableAnalyzers.Test.IDISP007DoNotDisposeInjectedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Diagnostics
 {
@@ -10,10 +10,11 @@ public static partial class Diagnostics
         private static readonly DisposeCallAnalyzer Analyzer = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP007DoNotDisposeInjected);
 
-        [TestCase("(object) stream")]
-        [TestCase("(object) Stream")]
-        [TestCase("stream as object")]
-        [TestCase("Stream as object")]
+        [Theory]
+        [InlineData("(object) stream")]
+        [InlineData("(object) Stream")]
+        [InlineData("stream as object")]
+        [InlineData("Stream as object")]
         public static void InjectedAndCreatedField(string expression)
         {
             var code = @"
@@ -42,10 +43,11 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("this.disposable.Dispose();")]
-        [TestCase("this.disposable?.Dispose();")]
-        [TestCase("disposable.Dispose();")]
-        [TestCase("disposable?.Dispose();")]
+        [Theory]
+        [InlineData("this.disposable.Dispose();")]
+        [InlineData("this.disposable?.Dispose();")]
+        [InlineData("disposable.Dispose();")]
+        [InlineData("disposable?.Dispose();")]
         public static void DisposingFieldAssignedWithInjected(string disposeCall)
         {
             var code = @"
@@ -71,10 +73,11 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("this.disposable.Dispose();")]
-        [TestCase("this.disposable?.Dispose();")]
-        [TestCase("disposable.Dispose();")]
-        [TestCase("disposable?.Dispose();")]
+        [Theory]
+        [InlineData("this.disposable.Dispose();")]
+        [InlineData("this.disposable?.Dispose();")]
+        [InlineData("disposable.Dispose();")]
+        [InlineData("disposable?.Dispose();")]
         public static void DisposingPublicField(string disposeCall)
         {
             var code = @"
@@ -100,8 +103,9 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("Disposable.Dispose();")]
-        [TestCase("Disposable?.Dispose();")]
+        [Theory]
+        [InlineData("Disposable.Dispose();")]
+        [InlineData("Disposable?.Dispose();")]
         public static void DisposingStaticField(string disposeCall)
         {
             var code = @"
@@ -123,7 +127,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingPublicFieldOutsideOfLock()
         {
             var code = @"
@@ -167,10 +171,11 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("this.Disposable.Dispose();")]
-        [TestCase("this.Disposable?.Dispose();")]
-        [TestCase("Disposable.Dispose();")]
-        [TestCase("Disposable?.Dispose();")]
+        [Theory]
+        [InlineData("this.Disposable.Dispose();")]
+        [InlineData("this.Disposable?.Dispose();")]
+        [InlineData("Disposable.Dispose();")]
+        [InlineData("Disposable?.Dispose();")]
         public static void DisposingPropertyAssignedWithInjected(string disposeCall)
         {
             var code = @"
@@ -196,10 +201,11 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("public abstract Stream Stream { get; }")]
-        [TestCase("public abstract Stream Stream { get; set; }")]
-        [TestCase("public virtual Stream Stream { get; }")]
-        [TestCase("public virtual Stream Stream { get; set; }")]
+        [Theory]
+        [InlineData("public abstract Stream Stream { get; }")]
+        [InlineData("public abstract Stream Stream { get; set; }")]
+        [InlineData("public virtual Stream Stream { get; }")]
+        [InlineData("public virtual Stream Stream { get; set; }")]
         public static void DisposingAbstractOrVirtualProperty(string property)
         {
             var code = @"
@@ -239,10 +245,11 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("this.Disposable.Dispose();")]
-        [TestCase("this.Disposable?.Dispose();")]
-        [TestCase("Disposable.Dispose();")]
-        [TestCase("Disposable?.Dispose();")]
+        [Theory]
+        [InlineData("this.Disposable.Dispose();")]
+        [InlineData("this.Disposable?.Dispose();")]
+        [InlineData("Disposable.Dispose();")]
+        [InlineData("Disposable?.Dispose();")]
         public static void DisposingCalculatedPropertyNestedStatementBody(string disposeCall)
         {
             var c1 = @"
@@ -293,10 +300,11 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, c1, code);
         }
 
-        [TestCase("this.Disposable.Dispose();")]
-        [TestCase("this.Disposable?.Dispose();")]
-        [TestCase("Disposable.Dispose();")]
-        [TestCase("Disposable?.Dispose();")]
+        [Theory]
+        [InlineData("this.Disposable.Dispose();")]
+        [InlineData("this.Disposable?.Dispose();")]
+        [InlineData("Disposable.Dispose();")]
+        [InlineData("Disposable?.Dispose();")]
         public static void DisposingCalculatedPropertyNestedExpressionBody(string disposeCall)
         {
             var c1 = @"
@@ -341,14 +349,15 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, c1, code);
         }
 
-        [TestCase("this.foo.Disposable.Dispose()")]
-        [TestCase("this.foo?.Disposable.Dispose()")]
-        [TestCase("this.foo?.Disposable?.Dispose()")]
-        [TestCase("this.foo.Disposable?.Dispose()")]
-        [TestCase("foo.Disposable.Dispose()")]
-        [TestCase("foo?.Disposable.Dispose()")]
-        [TestCase("foo?.Disposable?.Dispose()")]
-        [TestCase("foo.Disposable?.Dispose()")]
+        [Theory]
+        [InlineData("this.foo.Disposable.Dispose()")]
+        [InlineData("this.foo?.Disposable.Dispose()")]
+        [InlineData("this.foo?.Disposable?.Dispose()")]
+        [InlineData("this.foo.Disposable?.Dispose()")]
+        [InlineData("foo.Disposable.Dispose()")]
+        [InlineData("foo?.Disposable.Dispose()")]
+        [InlineData("foo?.Disposable?.Dispose()")]
+        [InlineData("foo.Disposable?.Dispose()")]
         public static void DisposingNestedField(string disposeCall)
         {
             var fooCode = @"
@@ -391,10 +400,11 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, fooCode, code);
         }
 
-        [TestCase("this.Disposable.Dispose();")]
-        [TestCase("this.Disposable?.Dispose();")]
-        [TestCase("Disposable.Dispose();")]
-        [TestCase("Disposable?.Dispose();")]
+        [Theory]
+        [InlineData("this.Disposable.Dispose();")]
+        [InlineData("this.Disposable?.Dispose();")]
+        [InlineData("Disposable.Dispose();")]
+        [InlineData("Disposable?.Dispose();")]
         public static void DisposingMutableProperty(string disposeCall)
         {
             var code = @"
@@ -417,7 +427,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingCtorParameter()
         {
             var code = @"
@@ -437,7 +447,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingParameter()
         {
             var code = @"
@@ -457,7 +467,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingInjectedPropertyInBaseClass()
         {
             var baseClass = @"
@@ -525,10 +535,11 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, baseClass, code);
         }
 
-        [TestCase("this.disposable.Dispose()")]
-        [TestCase("this.disposable?.Dispose()")]
-        [TestCase("disposable.Dispose()")]
-        [TestCase("disposable?.Dispose()")]
+        [Theory]
+        [InlineData("this.disposable.Dispose()")]
+        [InlineData("this.disposable?.Dispose()")]
+        [InlineData("disposable.Dispose()")]
+        [InlineData("disposable?.Dispose()")]
         public static void InjectedViaMethod(string expression)
         {
             var code = @"
@@ -555,7 +566,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingFieldInVirtualDispose()
         {
             var code = @"
@@ -605,16 +616,17 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("this.disposable.Dispose();")]
-        [TestCase("this.disposable?.Dispose();")]
-        [TestCase("disposable.Dispose();")]
-        [TestCase("disposable?.Dispose();")]
-        [TestCase("this.disposable.Disposable.Dispose();")]
-        [TestCase("this.disposable?.Disposable.Dispose();")]
-        [TestCase("this.disposable?.Disposable?.Dispose();")]
-        [TestCase("disposable.Disposable.Dispose();")]
-        [TestCase("disposable?.Disposable.Dispose();")]
-        [TestCase("disposable?.Disposable?.Dispose();")]
+        [Theory]
+        [InlineData("this.disposable.Dispose();")]
+        [InlineData("this.disposable?.Dispose();")]
+        [InlineData("disposable.Dispose();")]
+        [InlineData("disposable?.Dispose();")]
+        [InlineData("this.disposable.Disposable.Dispose();")]
+        [InlineData("this.disposable?.Disposable.Dispose();")]
+        [InlineData("this.disposable?.Disposable?.Dispose();")]
+        [InlineData("disposable.Disposable.Dispose();")]
+        [InlineData("disposable?.Disposable.Dispose();")]
+        [InlineData("disposable?.Disposable?.Dispose();")]
         public static void InjectedSingleAssignmentDisposable(string dispose)
         {
             var code = @"
@@ -643,7 +655,7 @@ namespace Gu.Reactive
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingArrayItemAssignedWithInjected()
         {
             var code = @"
@@ -670,7 +682,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingStaticArrayItem()
         {
             var code = @"
@@ -692,7 +704,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingDictionaryItem()
         {
             var code = @"
@@ -721,7 +733,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingStaticDictionaryItem()
         {
             var code = @"
@@ -745,10 +757,11 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("((IDisposable)o).Dispose()")]
-        [TestCase("((IDisposable)o)?.Dispose()")]
-        [TestCase("(o as IDisposable).Dispose()")]
-        [TestCase("(o as IDisposable)?.Dispose()")]
+        [Theory]
+        [InlineData("((IDisposable)o).Dispose()")]
+        [InlineData("((IDisposable)o)?.Dispose()")]
+        [InlineData("(o as IDisposable).Dispose()")]
+        [InlineData("(o as IDisposable)?.Dispose()")]
         public static void Cast(string cast)
         {
             var code = @"
@@ -769,7 +782,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void IfPatternMatchedInjected()
         {
             var code = @"
@@ -791,7 +804,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void SwitchPatternMatchedInjected()
         {
             var code = @"

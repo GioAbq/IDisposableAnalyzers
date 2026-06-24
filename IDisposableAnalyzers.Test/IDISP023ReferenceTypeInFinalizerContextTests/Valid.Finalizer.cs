@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP023ReferenceTypeInFinalizerContextTests;
+namespace IDisposableAnalyzers.Test.IDISP023ReferenceTypeInFinalizerContextTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
@@ -9,7 +9,7 @@ public static partial class Valid
     {
         private static readonly FinalizerAnalyzer Analyzer = new();
 
-        [Test]
+        [Fact]
         public static void SealedWithFinalizerStatementBody()
         {
             var code = @"
@@ -44,7 +44,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void SealedWithFinalizerExpressionBody()
         {
             var code = @"
@@ -76,8 +76,9 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [TestCase("isDisposed.Equals(false)")]
-        [TestCase("isDisposed.Equals(this)")]
+        [Theory]
+        [InlineData("isDisposed.Equals(false)")]
+        [InlineData("isDisposed.Equals(this)")]
         public static void TouchingStruct(string expression)
         {
             var code = @"
@@ -113,7 +114,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void SettingStaticToNull()
         {
             var code = @"
@@ -135,7 +136,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void SettingInstanceToNull()
         {
             var code = @"
@@ -157,7 +158,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void AttributedFinalizer()
         {
             var code = @"

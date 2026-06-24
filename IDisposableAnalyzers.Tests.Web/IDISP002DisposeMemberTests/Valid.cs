@@ -1,14 +1,14 @@
-﻿namespace IDisposableAnalyzers.Tests.Web.IDISP002DisposeMemberTests;
+namespace IDisposableAnalyzers.Tests.Web.IDISP002DisposeMemberTests;
 
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.Diagnostics;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
     private static readonly DiagnosticAnalyzer Analyzer = new FieldAndPropertyDeclarationAnalyzer();
 
-    [Test]
+    [Fact]
     public static void FieldDisposeAsyncInDisposeAsync()
     {
         var code = @"
@@ -31,7 +31,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IHostedService()
     {
         var code = @"

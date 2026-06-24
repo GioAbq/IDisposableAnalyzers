@@ -1,18 +1,19 @@
-﻿namespace IDisposableAnalyzers.Test.Helpers.AssignedValueWalkerTests;
+namespace IDisposableAnalyzers.Test.Helpers.AssignedValueWalkerTests;
 
 using System.Linq;
 using System.Threading;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CSharp;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class AssignedValueWalkerTests
 {
     public static class Constructors
     {
-        [TestCase("var temp1 = this.value;", "")]
-        [TestCase("var temp2 = this.value;", "arg")]
-        [TestCase("var temp3 = this.value;", "arg")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "")]
+        [InlineData("var temp2 = this.value;", "arg")]
+        [InlineData("var temp3 = this.value;", "arg")]
         public static void FieldCtorArgSimple(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -40,12 +41,13 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "")]
-        [TestCase("var temp2 = this.value;", "Id(arg)")]
-        [TestCase("var temp3 = this.value;", "Id(arg)")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "")]
+        [InlineData("var temp2 = this.value;", "Id(arg)")]
+        [InlineData("var temp3 = this.value;", "Id(arg)")]
         public static void FieldCtorArgThenIdMethod(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -75,17 +77,18 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1")]
-        [TestCase("var temp2 = this.value;", "1, 2")]
-        [TestCase("var temp3 = this.value;", "1, 2")]
-        [TestCase("var temp4 = this.value;", "1, 2, 3")]
-        [TestCase("var temp5 = this.value;", "1, 2, 3, 4")]
-        [TestCase("var temp6 = this.value;", "1, 2, 3, 4, 5, arg")]
-        [TestCase("var temp7 = this.value;", "1, 2, 3, 4, 5, arg")]
-        [TestCase("var temp8 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1")]
+        [InlineData("var temp2 = this.value;", "1, 2")]
+        [InlineData("var temp3 = this.value;", "1, 2")]
+        [InlineData("var temp4 = this.value;", "1, 2, 3")]
+        [InlineData("var temp5 = this.value;", "1, 2, 3, 4")]
+        [InlineData("var temp6 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [InlineData("var temp7 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [InlineData("var temp8 = this.value;", "1, 2, 3, 4, 5, arg")]
         public static void FieldChainedCtor(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -127,17 +130,18 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1, 2")]
-        [TestCase("var temp2 = this.value;", "1, 2, 3")]
-        [TestCase("var temp3 = this.value;", "1, 2, 3, 4")]
-        [TestCase("var temp4 = this.value;", "1")]
-        [TestCase("var temp5 = this.value;", "1, 2")]
-        [TestCase("var temp6 = this.value;", "1, 2, 3, 4, 5, arg")]
-        [TestCase("var temp7 = this.value;", "1, 2, 3, 4, 5, arg")]
-        [TestCase("var temp8 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1, 2")]
+        [InlineData("var temp2 = this.value;", "1, 2, 3")]
+        [InlineData("var temp3 = this.value;", "1, 2, 3, 4")]
+        [InlineData("var temp4 = this.value;", "1")]
+        [InlineData("var temp5 = this.value;", "1, 2")]
+        [InlineData("var temp6 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [InlineData("var temp7 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [InlineData("var temp8 = this.value;", "1, 2, 3, 4, 5, arg")]
         public static void FieldChainedPrivateCtor(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -179,17 +183,18 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1, 2")]
-        [TestCase("var temp2 = this.value;", "1, 2, 3")]
-        [TestCase("var temp3 = this.value;", "1, 2, 3, 4")]
-        [TestCase("var temp4 = this.value;", "1")]
-        [TestCase("var temp5 = this.value;", "1, ctorArg, 2")]
-        [TestCase("var temp6 = this.value;", "1, 2, 3, 4, ctorArg, 5, arg")]
-        [TestCase("var temp7 = this.value;", "1, 2, 3, 4, ctorArg, 5, arg")]
-        [TestCase("var temp8 = this.value;", "1, 2, 3, 4, ctorArg, 5, arg")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1, 2")]
+        [InlineData("var temp2 = this.value;", "1, 2, 3")]
+        [InlineData("var temp3 = this.value;", "1, 2, 3, 4")]
+        [InlineData("var temp4 = this.value;", "1")]
+        [InlineData("var temp5 = this.value;", "1, ctorArg, 2")]
+        [InlineData("var temp6 = this.value;", "1, 2, 3, 4, ctorArg, 5, arg")]
+        [InlineData("var temp7 = this.value;", "1, 2, 3, 4, ctorArg, 5, arg")]
+        [InlineData("var temp8 = this.value;", "1, 2, 3, 4, ctorArg, 5, arg")]
         public static void FieldChainedInternalCtor(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -231,11 +236,12 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1")]
-        [TestCase("var temp2 = this.value;", "1, 2")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1")]
+        [InlineData("var temp2 = this.value;", "1, 2")]
         public static void FieldPrivateCtorFactory(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -263,11 +269,12 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1")]
-        [TestCase("var temp2 = this.value;", "1, ctorArg, 2")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1")]
+        [InlineData("var temp2 = this.value;", "1, ctorArg, 2")]
         public static void FieldPublicCtorFactory(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -295,17 +302,18 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1")]
-        [TestCase("var temp2 = this.value;", "1, 2")]
-        [TestCase("var temp3 = this.value;", "1, 2")]
-        [TestCase("var temp4 = this.value;", "1, 2, 3")]
-        [TestCase("var temp5 = this.value;", "1, 2, 3, 4")]
-        [TestCase("var temp6 = this.value;", "1, 2, 3, 4, 5, arg")]
-        [TestCase("var temp7 = this.value;", "1, 2, 3, 4, 5, arg")]
-        [TestCase("var temp8 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1")]
+        [InlineData("var temp2 = this.value;", "1, 2")]
+        [InlineData("var temp3 = this.value;", "1, 2")]
+        [InlineData("var temp4 = this.value;", "1, 2, 3")]
+        [InlineData("var temp5 = this.value;", "1, 2, 3, 4")]
+        [InlineData("var temp6 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [InlineData("var temp7 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [InlineData("var temp8 = this.value;", "1, 2, 3, 4, 5, arg")]
         public static void FieldChainedCtorGenericClass(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -347,18 +355,19 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1")]
-        [TestCase("var temp2 = this.value;", "1, 2, 3, 4, 5, arg")]
-        [TestCase("var temp3 = this.value;", "1, 2, 3, 4, 5, arg")]
-        [TestCase("var temp4 = this.value;", "1, 2")]
-        [TestCase("var temp5 = this.value;", "1, 2, 3")]
-        [TestCase("var temp6 = this.value;", "1, 2, 3, 4")]
-        [TestCase("var temp7 = this.value;", "1, 2, 3, 4, 5, arg")]
-        [TestCase("var temp8 = this.value;", "1, 2, 3, 4, 5, arg")]
-        [TestCase("var temp9 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1")]
+        [InlineData("var temp2 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [InlineData("var temp3 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [InlineData("var temp4 = this.value;", "1, 2")]
+        [InlineData("var temp5 = this.value;", "1, 2, 3")]
+        [InlineData("var temp6 = this.value;", "1, 2, 3, 4")]
+        [InlineData("var temp7 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [InlineData("var temp8 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [InlineData("var temp9 = this.value;", "1, 2, 3, 4, 5, arg")]
         public static void FieldCtorCallingPrivateInitializeMethod(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -401,18 +410,19 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1")]
-        [TestCase("var temp2 = this.value;", "1, 2, 3, 4, 5, arg, initArg")]
-        [TestCase("var temp3 = this.value;", "1, 2, 3, 4, 5, arg, initArg")]
-        [TestCase("var temp4 = this.value;", "1, 2")]
-        [TestCase("var temp5 = this.value;", "1, 2, 3")]
-        [TestCase("var temp6 = this.value;", "1, 2, 3, 4")]
-        [TestCase("var temp7 = this.value;", "1, 2, 3, 4, 5, arg, initArg")]
-        [TestCase("var temp8 = this.value;", "1, 2, 3, 4, 5, arg, initArg")]
-        [TestCase("var temp9 = this.value;", "1, 2, 3, 4, 5, arg, initArg")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1")]
+        [InlineData("var temp2 = this.value;", "1, 2, 3, 4, 5, arg, initArg")]
+        [InlineData("var temp3 = this.value;", "1, 2, 3, 4, 5, arg, initArg")]
+        [InlineData("var temp4 = this.value;", "1, 2")]
+        [InlineData("var temp5 = this.value;", "1, 2, 3")]
+        [InlineData("var temp6 = this.value;", "1, 2, 3, 4")]
+        [InlineData("var temp7 = this.value;", "1, 2, 3, 4, 5, arg, initArg")]
+        [InlineData("var temp8 = this.value;", "1, 2, 3, 4, 5, arg, initArg")]
+        [InlineData("var temp9 = this.value;", "1, 2, 3, 4, 5, arg, initArg")]
         public static void FieldCtorCallingProtectedInitializeMethod(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -455,20 +465,21 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.Value;", "1")]
-        [TestCase("var temp2 = this.Value;", "1, 2")]
-        [TestCase("var temp3 = this.Value;", "1, 2, 8, 3")]
-        [TestCase("var temp4 = this.Value;", "1, 2, 8, 3")]
-        [TestCase("var temp5 = this.Value;", "1, 2, 8, 3, 4")]
-        [TestCase("var temp6 = this.Value;", "1, 2, 8, 3, 4, 5")]
-        [TestCase("var temp7 = this.Value;", "1, 2, 8, 3, 4, 5, 6")]
-        [TestCase("var temp8 = this.Value;", "1, 2, 8, 3, 4, 5, 6, 7")]
-        [TestCase("var temp9 = this.Value;", "1, 2, 8, 3, 4, 5, 6, 7, arg")]
-        [TestCase("var temp10 = this.Value;", "1, 2, 8, 3, 4, 5, 6, 7, arg")]
-        [TestCase("var temp11 = this.Value;", "1, 2, 8, 3, 4, 5, 6, 7, arg")]
+        [Theory]
+        [InlineData("var temp1 = this.Value;", "1")]
+        [InlineData("var temp2 = this.Value;", "1, 2")]
+        [InlineData("var temp3 = this.Value;", "1, 2, 8, 3")]
+        [InlineData("var temp4 = this.Value;", "1, 2, 8, 3")]
+        [InlineData("var temp5 = this.Value;", "1, 2, 8, 3, 4")]
+        [InlineData("var temp6 = this.Value;", "1, 2, 8, 3, 4, 5")]
+        [InlineData("var temp7 = this.Value;", "1, 2, 8, 3, 4, 5, 6")]
+        [InlineData("var temp8 = this.Value;", "1, 2, 8, 3, 4, 5, 6, 7")]
+        [InlineData("var temp9 = this.Value;", "1, 2, 8, 3, 4, 5, 6, 7, arg")]
+        [InlineData("var temp10 = this.Value;", "1, 2, 8, 3, 4, 5, 6, 7, arg")]
+        [InlineData("var temp11 = this.Value;", "1, 2, 8, 3, 4, 5, 6, 7, arg")]
         public static void AutoPropertyChainedCtor(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -516,15 +527,16 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1")]
-        [TestCase("var temp2 = this.temp1;", "this.value")]
-        [TestCase("var temp3 = this.value;", "1, 2")]
-        [TestCase("var temp4 = this.temp1;", "this.value")]
-        [TestCase("var temp5 = this.value;", "1, 2")]
-        [TestCase("var temp6 = this.temp1;", "this.value")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1")]
+        [InlineData("var temp2 = this.temp1;", "this.value")]
+        [InlineData("var temp3 = this.value;", "1, 2")]
+        [InlineData("var temp4 = this.temp1;", "this.value")]
+        [InlineData("var temp5 = this.value;", "1, 2")]
+        [InlineData("var temp6 = this.temp1;", "this.value")]
         public static void FieldInitializedWithLiteralAndAssignedInCtor(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -557,11 +569,12 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.Value;", "1, 2, 3")]
-        [TestCase("var temp2 = this.Value;", "1, 2, 3, 4")]
+        [Theory]
+        [InlineData("var temp1 = this.Value;", "1, 2, 3")]
+        [InlineData("var temp2 = this.Value;", "1, 2, 3, 4")]
         public static void InitializedInChainedWithLiteralGeneric(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -595,13 +608,14 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1")]
-        [TestCase("var temp2 = this.value;", "1, 2")]
-        [TestCase("var temp3 = this.value;", "1, 2, 3, arg")]
-        [TestCase("var temp4 = this.value;", "1, 2, 3, arg")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1")]
+        [InlineData("var temp2 = this.value;", "1, 2")]
+        [InlineData("var temp3 = this.value;", "1, 2, 3, arg")]
+        [InlineData("var temp4 = this.value;", "1, 2, 3, arg")]
         public static void FieldImplicitBase(string code, object expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -636,16 +650,17 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1")]
-        [TestCase("var temp2 = this.value;", "1, 2")]
-        [TestCase("var temp3 = this.value;", "1, 2")]
-        [TestCase("var temp4 = this.value;", "1, 2, 3")]
-        [TestCase("var temp5 = this.value;", "1, 2, 3, 4")]
-        [TestCase("var temp6 = this.value;", "1, 2, 3, 4, 5, arg")]
-        [TestCase("var temp7 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1")]
+        [InlineData("var temp2 = this.value;", "1, 2")]
+        [InlineData("var temp3 = this.value;", "1, 2")]
+        [InlineData("var temp4 = this.value;", "1, 2, 3")]
+        [InlineData("var temp5 = this.value;", "1, 2, 3, 4")]
+        [InlineData("var temp6 = this.value;", "1, 2, 3, 4, 5, arg")]
+        [InlineData("var temp7 = this.value;", "1, 2, 3, 4, 5, arg")]
         public static void FieldImplicitBaseWhenSubclassHasCtor(string code, object expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -689,11 +704,12 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1, 2, 3")]
-        [TestCase("var temp2 = this.value;", "1, 2, 3, 4")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1, 2, 3")]
+        [InlineData("var temp2 = this.value;", "1, 2, 3, 4")]
         public static void InitializedInBaseCtorWithLiteral(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -734,11 +750,12 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "1, 2, 3")]
-        [TestCase("var temp2 = this.value;", "1, 2, 3, 4")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "1, 2, 3")]
+        [InlineData("var temp2 = this.value;", "1, 2, 3, 4")]
         public static void InitializedInExplicitBaseCtorWithLiteral(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -780,10 +797,10 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [Test]
+        [Fact]
         public static void InitializedInBaseCtorWithDefaultGenericSimple()
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -812,10 +829,10 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause("var temp = this.value;").Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual("default(T)", actual);
+            Assert.Equal("default(T)", actual);
         }
 
-        [Test]
+        [Fact]
         public static void AbstractGenericInitializedInBaseCtorSimple()
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -846,11 +863,12 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause("var temp = this.Value;").Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual("default(T)", actual);
+            Assert.Equal("default(T)", actual);
         }
 
-        [TestCase("var temp1 = this.value;", "default(T)")]
-        [TestCase("var temp2 = this.value;", "default(T)")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "default(T)")]
+        [InlineData("var temp2 = this.value;", "default(T)")]
         public static void InitializedInBaseCtorWithDefaultGeneric(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -889,11 +907,12 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "default(T)")]
-        [TestCase("var temp2 = this.value;", "default(T)")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "default(T)")]
+        [InlineData("var temp2 = this.value;", "default(T)")]
         public static void InitializedInBaseCtorWithDefaultGenericGeneric(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -932,10 +951,10 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [Test]
+        [Fact]
         public static void FieldAssignedInLambdaCtor()
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -960,7 +979,7 @@ namespace N
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var value = syntaxTree.FindAssignmentExpression("this.value = 1").Left;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
-            Assert.AreEqual("1", walker.Values.Single().ToString());
+            Assert.Equal("1", walker.Values.Single().ToString());
         }
     }
 }

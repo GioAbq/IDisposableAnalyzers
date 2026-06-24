@@ -1,7 +1,7 @@
 namespace IDisposableAnalyzers.Test.IDISP002DisposeMemberTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -11,7 +11,7 @@ public static partial class CodeFix
         private static readonly DisposeMemberFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP002DisposeMember);
 
-        [Test]
+        [Fact]
         public static void CtorPassingCreatedIntoPrivateCtor()
         {
             var before = @"
@@ -68,7 +68,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void FieldAssignedWithFactoryPassingCreatedIntoPrivateCtor()
         {
             var before = @"
@@ -125,7 +125,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void FieldAssignedWithExtensionMethodFactoryAssigningInCtor()
         {
             var factoryCode = @"
@@ -186,7 +186,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, factoryCode, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void FieldAssignedWithGenericExtensionMethodFactoryAssigningInCtor()
         {
             var factoryCode = @"
@@ -247,7 +247,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, factoryCode, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void FieldAssignedWithInjectedListOfIntGetEnumeratorInCtor()
         {
             var before = @"

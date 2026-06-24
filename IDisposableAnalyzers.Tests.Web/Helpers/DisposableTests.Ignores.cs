@@ -1,15 +1,15 @@
-﻿namespace IDisposableAnalyzers.Tests.Web.Helpers;
+namespace IDisposableAnalyzers.Tests.Web.Helpers;
 
 using System.Threading;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CSharp;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class DisposableTests
 {
     public static class Ignores
     {
-        [Test]
+        [Fact]
         public static void HostBuildRun()
         {
             var code = @"
@@ -29,10 +29,10 @@ namespace N
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var value = syntaxTree.FindExpression("Host.CreateDefaultBuilder(args).Build()");
-            Assert.AreEqual(false, Disposable.Ignores(value, semanticModel, CancellationToken.None));
+            Assert.Equal(false, Disposable.Ignores(value, semanticModel, CancellationToken.None));
         }
 
-        [Test]
+        [Fact]
         public static void HostBuildRunAsync()
         {
             var code = @"
@@ -53,7 +53,7 @@ namespace N
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var value = syntaxTree.FindExpression("Host.CreateDefaultBuilder(args).Build()");
-            Assert.AreEqual(false, Disposable.Ignores(value, semanticModel, CancellationToken.None));
+            Assert.Equal(false, Disposable.Ignores(value, semanticModel, CancellationToken.None));
         }
     }
 }

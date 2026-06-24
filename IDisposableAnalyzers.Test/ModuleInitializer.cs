@@ -20,6 +20,7 @@ internal static class ModuleInitializer
                     typeof(System.Windows.Forms.Control),
                     typeof(Microsoft.Extensions.DependencyInjection.ServiceCollection),
                     typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestContext),
+                    typeof(NUnit.Framework.Assert),
                     typeof(Gu.Wpf.Reactive.ConditionRelayCommand),
                     typeof(Gu.Inject.RebindExtensions),
                     typeof(Moq.Mock<>),

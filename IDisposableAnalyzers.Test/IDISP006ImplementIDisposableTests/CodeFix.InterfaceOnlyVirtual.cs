@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -10,7 +10,7 @@ public static partial class CodeFix
         // ReSharper disable once InconsistentNaming
         private static readonly ExpectedDiagnostic CS0535 = ExpectedDiagnostic.Create("CS0535");
 
-        [Test]
+        [Fact]
         public static void AbstractClass()
         {
             var before = @"
@@ -55,7 +55,7 @@ namespace N
             RoslynAssert.FixAll(Fix, CS0535, before, after, fixTitle: "Implement IDisposable");
         }
 
-        [Test]
+        [Fact]
         public static void AbstractClassLegacyPattern()
         {
             var before = @"
@@ -109,7 +109,7 @@ namespace N
             RoslynAssert.FixAll(Fix, CS0535, before, after, fixTitle: "LEGACY Implement IDisposable with protected virtual dispose method.");
         }
 
-        [Test]
+        [Fact]
         public static void AbstractClassWithFields()
         {
             var before = @"
@@ -195,7 +195,7 @@ namespace N
             RoslynAssert.FixAll(Fix, CS0535, before, after, fixTitle: "LEGACY Implement IDisposable with protected virtual dispose method.");
         }
 
-        [Test]
+        [Fact]
         public static void AbstractClassWithMethods()
         {
             var before = @"
@@ -280,7 +280,7 @@ namespace N
             RoslynAssert.FixAll(Fix, CS0535, before, after, fixTitle: "LEGACY Implement IDisposable with protected virtual dispose method.");
         }
 
-        [Test]
+        [Fact]
         public static void VirtualDispose()
         {
             var before = @"
@@ -324,7 +324,7 @@ namespace N
             RoslynAssert.CodeFix(Fix, CS0535, before, after, fixTitle: "Implement IDisposable");
         }
 
-        [Test]
+        [Fact]
         public static void VirtualDisposeLegacy()
         {
             var before = @"

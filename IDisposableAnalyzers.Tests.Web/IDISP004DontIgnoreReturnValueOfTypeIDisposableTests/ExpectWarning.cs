@@ -1,8 +1,8 @@
-﻿namespace IDisposableAnalyzers.Tests.Web.IDISP004DontIgnoreReturnValueOfTypeIDisposableTests;
+namespace IDisposableAnalyzers.Tests.Web.IDISP004DontIgnoreReturnValueOfTypeIDisposableTests;
 
 using System;
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public class ExpectWarning
 {
@@ -30,7 +30,7 @@ InterfaceOrImplementationHere
     }
 }";
 
-    [Test]
+    [Fact]
     public void IDisposableReturnedFromImplementedFactory()
     {
         const string classDefinition = @"
@@ -46,7 +46,7 @@ InterfaceOrImplementationHere
         RoslynAssert.Diagnostics(new CreationAnalyzer(), ExpectedDiagnostic.Create(Descriptors.IDISP004DoNotIgnoreCreated), code);
     }
 
-    [Test]
+    [Fact]
     public void IDisposableFromFactoryInterface()
     {
         const string interfaceDefinition = @"

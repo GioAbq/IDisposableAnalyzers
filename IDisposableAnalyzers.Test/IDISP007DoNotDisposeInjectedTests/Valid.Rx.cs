@@ -1,21 +1,17 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP007DoNotDisposeInjectedTests;
+namespace IDisposableAnalyzers.Test.IDISP007DoNotDisposeInjectedTests;
 
 using Gu.Roslyn.Asserts;
 
 using Microsoft.CodeAnalysis.Diagnostics;
 
-using NUnit.Framework;
+using Xunit;
 
-[TestFixture(typeof(DisposeCallAnalyzer))]
-[TestFixture(typeof(LocalDeclarationAnalyzer))]
-[TestFixture(typeof(UsingStatementAnalyzer))]
-public static class ValidReactive<T>
-    where T : DiagnosticAnalyzer, new()
+public abstract class ValidReactive
 {
-    private static readonly T Analyzer = new();
+    protected abstract DiagnosticAnalyzer Analyzer { get; }
 
-    [Test]
-    public static void InjectedSubscribe()
+    [Fact]
+    public void InjectedSubscribe()
     {
         var code = @"
 namespace Gu.Reactive
@@ -40,8 +36,8 @@ namespace Gu.Reactive
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
-    public static void ChainedCtorInjectedSubscribe()
+    [Fact]
+    public void ChainedCtorInjectedSubscribe()
     {
         var code = @"
 namespace Gu.Reactive
@@ -77,8 +73,8 @@ namespace Gu.Reactive
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
-    public static void InjectedConditionalSubscribe()
+    [Fact]
+    public void InjectedConditionalSubscribe()
     {
         var code = @"
 namespace Gu.Reactive
@@ -103,8 +99,8 @@ namespace Gu.Reactive
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
-    public static void SingleAssignmentDisposable()
+    [Fact]
+    public void SingleAssignmentDisposable()
     {
         var code = @"
 namespace Gu.Reactive
@@ -131,8 +127,8 @@ namespace Gu.Reactive
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
-    public static void SingleAssignmentDisposableAssignedWithObservableSubscribe()
+    [Fact]
+    public void SingleAssignmentDisposableAssignedWithObservableSubscribe()
     {
         var code = @"
 namespace Gu.Reactive
@@ -158,8 +154,8 @@ namespace Gu.Reactive
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
-    public static void SingleAssignmentDisposableAssignedInAction()
+    [Fact]
+    public void SingleAssignmentDisposableAssignedInAction()
     {
         var code = @"
 namespace Gu.Reactive
@@ -200,8 +196,8 @@ namespace Gu.Reactive
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
-    public static void Issue385()
+    [Fact]
+    public void Issue385()
     {
         var code = @"
 namespace N

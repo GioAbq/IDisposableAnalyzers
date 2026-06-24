@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -9,7 +9,7 @@ public static partial class CodeFix
     {
         private static readonly FieldAndPropertyDeclarationAnalyzer Analyzer = new();
 
-        [Test]
+        [Fact]
         public static void SubclassStreamReader()
         {
             var before = @"
@@ -71,7 +71,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void WhenBaseHasThrowIfDisposed()
         {
             var baseClass = @"
@@ -151,7 +151,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { baseClass, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void WhenBaseHasPublicVirtualDisposeAndThrowIfDisposed()
         {
             var baseClass = @"
@@ -219,7 +219,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { baseClass, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void UnderscoreWhenThrowIsNotVirtual()
         {
             var baseClass = @"
@@ -299,7 +299,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { baseClass, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void UnderscoreWhenThrowIsVirtual()
         {
             var baseClass = @"
@@ -379,7 +379,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { baseClass, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void SubclassingNinjectModule()
         {
             var before = @"

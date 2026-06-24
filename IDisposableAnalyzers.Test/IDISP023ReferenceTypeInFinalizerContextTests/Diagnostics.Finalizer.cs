@@ -1,7 +1,7 @@
 namespace IDisposableAnalyzers.Test.IDISP023ReferenceTypeInFinalizerContextTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Diagnostics
 {
@@ -10,8 +10,9 @@ public static partial class Diagnostics
         private static readonly FinalizerAnalyzer Analyzer = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP023ReferenceTypeInFinalizerContext);
 
-        [TestCase("↓Builder.Append(1)")]
-        [TestCase("_ = ↓Builder.Length")]
+        [Theory]
+        [InlineData("↓Builder.Append(1)")]
+        [InlineData("_ = ↓Builder.Length")]
         public static void Static(string expression)
         {
             var code = @"
@@ -33,9 +34,10 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("this.↓Builder.Append(1)")]
-        [TestCase("↓Builder.Append(1)")]
-        [TestCase("_ = ↓Builder.Length")]
+        [Theory]
+        [InlineData("this.↓Builder.Append(1)")]
+        [InlineData("↓Builder.Append(1)")]
+        [InlineData("_ = ↓Builder.Length")]
         public static void Instance(string expression)
         {
             var code = @"
@@ -57,7 +59,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void CallingStatic()
         {
             var code = @"

@@ -1,14 +1,14 @@
-﻿namespace IDisposableAnalyzers.Tests.Web.Helpers;
+namespace IDisposableAnalyzers.Tests.Web.Helpers;
 
 using System.Threading;
 using Gu.Roslyn.AnalyzerExtensions;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CSharp;
-using NUnit.Framework;
+using Xunit;
 
 public static class DisposableMemberTests
 {
-    [Test]
+    [Fact]
     public static void SimpleFieldIAsyncDisposable()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -32,6 +32,6 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var declaration = syntaxTree.FindFieldDeclaration("disposable");
         var symbol = semanticModel.GetDeclaredSymbolSafe(declaration, CancellationToken.None);
-        Assert.AreEqual(true, DisposableMember.IsDisposed(new FieldOrPropertyAndDeclaration(symbol!, declaration), semanticModel, CancellationToken.None));
+        Assert.Equal(true, DisposableMember.IsDisposed(new FieldOrPropertyAndDeclaration(symbol!, declaration), semanticModel, CancellationToken.None));
     }
 }

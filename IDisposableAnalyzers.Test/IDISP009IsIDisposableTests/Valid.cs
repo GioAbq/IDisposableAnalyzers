@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP009IsIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP009IsIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
     private static readonly DisposeMethodAnalyzer Analyzer = new();
 
-    [Test]
+    [Fact]
     public static void DisposingCreatedFieldInVirtualDispose()
     {
         var code = @"
@@ -53,7 +53,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void HandlesRecursion()
     {
         var code = @"
@@ -75,8 +75,9 @@ namespace N
                   ;
     }
 
-    [TestCase("public Stream Stream { get; }")]
-    [TestCase("public Stream Stream { get; private set; }")]
+    [Theory]
+    [InlineData("public Stream Stream { get; }")]
+    [InlineData("public Stream Stream { get; private set; }")]
     public static void PropertyWithCreatedValue(string property)
     {
         var code = @"
@@ -97,7 +98,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyWithBackingFieldCreatedValue()
     {
         var code = @"
@@ -124,10 +125,11 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("public Stream Stream { get; }")]
-    [TestCase("public Stream Stream { get; private set; }")]
-    [TestCase("public Stream Stream { get; protected set; }")]
-    [TestCase("public Stream Stream { get; set; }")]
+    [Theory]
+    [InlineData("public Stream Stream { get; }")]
+    [InlineData("public Stream Stream { get; private set; }")]
+    [InlineData("public Stream Stream { get; protected set; }")]
+    [InlineData("public Stream Stream { get; set; }")]
     public static void PropertyWithInjectedValue(string property)
     {
         var code = @"
@@ -148,7 +150,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void InjectedListOfInt()
     {
         var code = @"
@@ -169,7 +171,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void InjectedListOfT()
     {
         var code = @"
@@ -190,7 +192,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void InjectedInClassThatIsNotIDisposable()
     {
         var code = @"
@@ -211,7 +213,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void InjectedInClassThatIsIDisposable()
     {
         var code = @"
@@ -236,7 +238,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void InjectingIntoPrivateCtor()
     {
         var disposableCode = @"
@@ -280,9 +282,10 @@ namespace N
         RoslynAssert.Valid(Analyzer, disposableCode, code);
     }
 
-    [TestCase("private set")]
-    [TestCase("protected set")]
-    [TestCase("set")]
+    [Theory]
+    [InlineData("private set")]
+    [InlineData("protected set")]
+    [InlineData("set")]
     public static void PropertyWithBackingFieldInjectedValue(string setter)
     {
         var code = @"
@@ -313,7 +316,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void GenericTypeWithPropertyAndIndexer()
     {
         var code = @"
@@ -351,7 +354,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void LocalSwapCachedDisposableDictionary()
     {
         var disposableDictionaryOfTKeyTvalue = @"
@@ -391,7 +394,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, disposableDictionaryOfTKeyTvalue, code);
     }
 
-    [Test]
+    [Fact]
     public static void IgnoreTestMethod()
     {
         var code = @"
@@ -411,7 +414,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void WhenImplementingInterface()
     {
         var code = @"
@@ -459,7 +462,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void WhenSubclassingAndImplementingTwoInterfaces()
     {
         var code = @"
@@ -483,7 +486,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void RefStruct()
     {
         var code = """

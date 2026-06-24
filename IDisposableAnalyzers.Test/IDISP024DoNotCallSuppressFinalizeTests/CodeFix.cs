@@ -1,14 +1,14 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP024DoNotCallSuppressFinalizeTests;
+namespace IDisposableAnalyzers.Test.IDISP024DoNotCallSuppressFinalizeTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class CodeFix
 {
     private static readonly SuppressFinalizeAnalyzer Analyzer = new();
     private static readonly RemoveCallFix Fix = new();
 
-    [Test]
+    [Fact]
     public static void SealedSimple()
     {
         var before = @"

@@ -1,14 +1,14 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP014UseSingleInstanceOfHttpClientTests;
+namespace IDisposableAnalyzers.Test.IDISP014UseSingleInstanceOfHttpClientTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Diagnostics
 {
     private static readonly CreationAnalyzer Analyzer = new();
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP014UseSingleInstanceOfHttpClient);
 
-    [Test]
+    [Fact]
     public static void Using()
     {
         var code = @"
@@ -31,7 +31,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void UsingFullyQualified()
     {
         var code = @"
@@ -54,7 +54,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void Field()
     {
         var code = @"
@@ -70,7 +70,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void Property()
     {
         var code = @"

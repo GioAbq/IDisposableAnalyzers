@@ -1,8 +1,8 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP015DoNotReturnCachedAndCreatedTest;
+namespace IDisposableAnalyzers.Test.IDISP015DoNotReturnCachedAndCreatedTest;
 
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
@@ -31,7 +31,7 @@ namespace N
     }
 }";
 
-    [Test]
+    [Fact]
     public static void WhenRetuningCreated()
     {
         var code = @"
@@ -51,7 +51,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 
-    [Test]
+    [Fact]
     public static void WhenRetuningInjected()
     {
         var code = @"
@@ -77,7 +77,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningCachedInDictionary()
     {
         var code = @"
@@ -104,7 +104,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 
-    [Test]
+    [Fact]
     public static void CreatedAndDisposableEmpty()
     {
         var code = @"
@@ -120,7 +120,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void CreatedAndNopDisposable()
     {
         var code = @"

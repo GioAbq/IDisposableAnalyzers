@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP002DisposeMemberTests;
+namespace IDisposableAnalyzers.Test.IDISP002DisposeMemberTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
     public static class Rx
     {
-        [Test]
+        [Fact]
         public static void SerialDisposable()
         {
             var code = @"
@@ -36,7 +36,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
         }
 
-        [Test]
+        [Fact]
         public static void FieldAssignedWithFileOpenReadDisposeWith()
         {
             var code = @"

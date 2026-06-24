@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP013AwaitInUsingTests;
+namespace IDisposableAnalyzers.Test.IDISP013AwaitInUsingTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
     public static class Ignore
     {
-        [Test]
+        [Fact]
         public static void TaskInLambdaAssignedInUsing()
         {
             var code = """
@@ -31,7 +31,7 @@ public static partial class Valid
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void NUnitAssertThrowsAsync()
         {
             var code = """
@@ -57,7 +57,7 @@ public static partial class Valid
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void MoqSetupVerifyAsync()
         {
             var code = @"

@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -9,7 +9,7 @@ public static partial class CodeFix
     {
         private static readonly FieldAndPropertyDeclarationAnalyzer Analyzer = new();
 
-        [Test]
+        [Fact]
         public static void ObservableElvisSubscribe()
         {
             var before = @"

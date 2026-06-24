@@ -1,16 +1,12 @@
-﻿namespace IDisposableAnalyzers.Tests.Web.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Tests.Web.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.Diagnostics;
-using NUnit.Framework;
+using Xunit;
 
-[TestFixture(typeof(LocalDeclarationAnalyzer))]
-[TestFixture(typeof(ArgumentAnalyzer))]
-[TestFixture(typeof(AssignmentAnalyzer))]
-public static class Valid<T>
-    where T : DiagnosticAnalyzer, new()
+public abstract class Valid
 {
-    private static readonly DiagnosticAnalyzer Analyzer = new T();
+    protected abstract DiagnosticAnalyzer Analyzer { get; }
 
     private const string Disposable = @"
 namespace N
@@ -31,8 +27,8 @@ namespace N
     }
 }";
 
-    [Test]
-    public static void LocalDisposeAsync()
+    [Fact]
+    public void LocalDisposeAsync()
     {
         var code = @"
 namespace N
@@ -53,8 +49,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalDisposeAsyncInFinally()
+    [Fact]
+    public void LocalDisposeAsyncInFinally()
     {
         var code = @"
 namespace N
@@ -82,8 +78,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void IServiceProviderGetRequiredService()
+    [Fact]
+    public void IServiceProviderGetRequiredService()
     {
         var code = @"
 namespace N
@@ -122,9 +118,10 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("response.RegisterForDispose(new Disposable())")]
-    [TestCase("response.RegisterForDisposeAsync(new Disposable())")]
-    public static void RegisterForDispose(string expression)
+    [Theory]
+    [InlineData("response.RegisterForDispose(new Disposable())")]
+    [InlineData("response.RegisterForDisposeAsync(new Disposable())")]
+    public void RegisterForDispose(string expression)
     {
         var code = @"
 namespace N
@@ -143,9 +140,10 @@ namespace N
         RoslynAssert.Valid(Analyzer, Disposable, code);
     }
 
-    [TestCase("serviceProvider.GetService<Disposable>()")]
-    [TestCase("serviceProvider.GetRequiredService<Disposable>()")]
-    public static void Issue293(string expression)
+    [Theory]
+    [InlineData("serviceProvider.GetService<Disposable>()")]
+    [InlineData("serviceProvider.GetRequiredService<Disposable>()")]
+    public void Issue293(string expression)
     {
         var code = @"
 namespace N
@@ -165,10 +163,11 @@ namespace N
         RoslynAssert.Valid(Analyzer, Disposable, code);
     }
 
-    [TestCase("app.Run()")]
-    [TestCase("await app.RunAsync()")]
-    [TestCase("await app.RunAsync().ConfigureAwait(false)")]
-    public static void AppRun(string expression)
+    [Theory]
+    [InlineData("app.Run()")]
+    [InlineData("await app.RunAsync()")]
+    [InlineData("await app.RunAsync().ConfigureAwait(false)")]
+    public void AppRun(string expression)
     {
         var code = @"
 using Microsoft.AspNetCore.Builder;
@@ -181,8 +180,8 @@ app.Run();
         RoslynAssert.Valid(Analyzer, code, settings: WebSettings.Exe);
     }
 
-    [Test]
-    public static void Issue330()
+    [Fact]
+    public void Issue330()
     {
         var code = @"
 using Microsoft.AspNetCore.Builder;

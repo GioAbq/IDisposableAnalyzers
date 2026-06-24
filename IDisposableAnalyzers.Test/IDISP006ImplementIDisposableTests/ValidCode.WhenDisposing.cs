@@ -1,16 +1,17 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
     public static class WhenDisposing
     {
-        [TestCase("this.stream.Dispose();")]
-        [TestCase("this.stream?.Dispose();")]
-        [TestCase("stream.Dispose();")]
-        [TestCase("stream?.Dispose();")]
+        [Theory]
+        [InlineData("this.stream.Dispose();")]
+        [InlineData("this.stream?.Dispose();")]
+        [InlineData("stream.Dispose();")]
+        [InlineData("stream?.Dispose();")]
         public static void DisposingField(string disposeCall)
         {
             var code = @"
@@ -32,7 +33,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingFieldInVirtualDispose()
         {
             var code = @"
@@ -78,7 +79,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingFieldInVirtualDispose2()
         {
             var code = @"
@@ -122,7 +123,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, Disposable, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingFieldInExpressionBodyDispose()
         {
             var code = @"
@@ -139,7 +140,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, Disposable, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingFieldAsCast()
         {
             var code = @"
@@ -162,7 +163,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingFieldInlineAsCast()
         {
             var code = @"
@@ -184,7 +185,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingFieldExplicitCast()
         {
             var code = @"
@@ -207,7 +208,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingFieldInlineExplicitCast()
         {
             var code = @"
@@ -229,7 +230,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingPropertyWhenInitializedInProperty()
         {
             var code = @"
@@ -257,7 +258,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingPropertyWhenInitializedInline()
         {
             var code = @"
@@ -280,7 +281,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnorePassedInViaCtor1()
         {
             var code = @"
@@ -301,7 +302,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnorePassedInViaCtor2()
         {
             var code = @"
@@ -322,7 +323,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnorePassedInViaCtor3()
         {
             var code = @"
@@ -347,8 +348,9 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [TestCase("disposables.First();")]
-        [TestCase("disposables.Single();")]
+        [Theory]
+        [InlineData("disposables.First();")]
+        [InlineData("disposables.Single();")]
         public static void IgnoreLinq(string linq)
         {
             var code = @"
@@ -370,7 +372,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoredWhenNotAssigned()
         {
             var code = @"
@@ -387,7 +389,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoredWhenBackingField()
         {
             var code = @"
@@ -409,7 +411,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoreFieldThatIsNotDisposable()
         {
             var code = @"
@@ -423,7 +425,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoreFieldThatIsNotDisposableAssignedWithMethod1()
         {
             var code = @"
@@ -439,7 +441,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoreFieldThatIsNotDisposableAssignedWIthMethod2()
         {
             var code = @"
@@ -453,7 +455,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoredStaticField()
         {
             var code = @"
@@ -469,7 +471,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoreTask()
         {
             var code = @"
@@ -485,7 +487,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoreTaskOfInt()
         {
             var code = @"
@@ -501,7 +503,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void FieldOfTypeArrayOfInt()
         {
             var code = @"
@@ -515,7 +517,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void PropertyWithBackingFieldOfTypeArrayOfInt()
         {
             var code = @"
@@ -544,7 +546,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void ExplicitImplementation()
         {
             var code = @"

@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class NoFix
 {
@@ -9,7 +9,7 @@ public static class NoFix
     private static readonly ImplementIDisposableFix Fix = new();
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP006ImplementIDisposable);
 
-    [Test]
+    [Fact]
     public static void FieldWhenInterfaceIsMissing()
     {
         var code = @"
@@ -30,7 +30,7 @@ namespace N
         RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyWhenInterfaceIsMissing()
     {
         var code = @"

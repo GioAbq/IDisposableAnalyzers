@@ -1,7 +1,7 @@
 namespace IDisposableAnalyzers.Test.IDISP019CallSuppressFinalizeWhenVirtualDisposeTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class CodeFix
 {
@@ -9,7 +9,7 @@ public static class CodeFix
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP019CallSuppressFinalizeVirtual);
     private static readonly SuppressFinalizeFix Fix = new();
 
-    [Test]
+    [Fact]
     public static void WhenStatementBody()
     {
         var before = @"
@@ -63,7 +63,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void WhenStatementBodyAndTrivia()
     {
         var before = @"
@@ -121,7 +121,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void SealedWithFinalizerWhenExpressionBody()
     {
         var before = @"

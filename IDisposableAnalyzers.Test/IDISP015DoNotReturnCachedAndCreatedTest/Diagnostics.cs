@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP015DoNotReturnCachedAndCreatedTest;
+namespace IDisposableAnalyzers.Test.IDISP015DoNotReturnCachedAndCreatedTest;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Diagnostics
 {
@@ -30,7 +30,7 @@ namespace N
     }
 }";
 
-    [Test]
+    [Fact]
     public static void Ternary()
     {
         var code = @"
@@ -53,7 +53,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void NullCoalesce()
     {
         var code = @"
@@ -76,7 +76,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnFileOpenReadFromUsing()
     {
         var code = @"

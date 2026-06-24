@@ -1,9 +1,8 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
-[TestFixture]
 public static partial class CodeFix
 {
     private static readonly ImplementIDisposableFix Fix = new();

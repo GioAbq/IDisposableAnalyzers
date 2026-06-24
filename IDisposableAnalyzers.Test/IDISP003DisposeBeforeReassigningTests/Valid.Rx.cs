@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
+namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
 
 using Gu.Roslyn.Asserts;
 
-using NUnit.Framework;
+using Xunit;
 
-public static partial class Valid<T>
+public abstract partial class Valid
 {
-    [Test]
-    public static void UsingSerialDisposable()
+    [Fact]
+    public void UsingSerialDisposable()
     {
         var notifyPropertyChanged = @"
 namespace N
@@ -71,8 +71,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, new[] { notifyPropertyChanged, code }, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
-    public static void UsingGenericSerialDisposable()
+    [Fact]
+    public void UsingGenericSerialDisposable()
     {
         var notifyPropertyChanged = @"
 namespace N
@@ -135,8 +135,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, new[] { notifyPropertyChanged, code }, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
-    public static void AssigningGenericSerialDisposable()
+    [Fact]
+    public void AssigningGenericSerialDisposable()
     {
         var code = @"
 namespace N

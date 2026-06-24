@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP018CallSuppressFinalizeTests;
+namespace IDisposableAnalyzers.Test.IDISP018CallSuppressFinalizeTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class CodeFix
 {
@@ -9,7 +9,7 @@ public static class CodeFix
     private static readonly SuppressFinalizeFix Fix = new();
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP018CallSuppressFinalizeSealed);
 
-    [Test]
+    [Fact]
     public static void SealedWithFinalizerWhenStatementBody()
     {
         var before = @"
@@ -73,7 +73,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void SealedWithFinalizerWhenStatementBodyWithTrivia()
     {
         var before = @"
@@ -141,7 +141,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void SealedWithFinalizerWhenExpressionBody()
     {
         var before = @"

@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -24,7 +24,7 @@ namespace N
     }
 }";
 
-        [Test]
+        [Fact]
         public static void NewDisposableSplitDeclarationAndAssignment()
         {
             var before = @"
@@ -62,7 +62,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void WhenAssigningParameter()
         {
             var before = @"
@@ -98,7 +98,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void WhenAssigningLocalInLambda()
         {
             var before = @"

@@ -1,11 +1,11 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
-    [Test]
+    [Fact]
     public static void ChainedCtor()
     {
         var code = @"
@@ -36,7 +36,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void ChainedCtorCoalesce()
     {
         var code = @"
@@ -67,7 +67,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void ChainedCtors()
     {
         var code = @"
@@ -106,7 +106,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void ChainedCtorCallsBaseCtorDisposedInThis()
     {
         var baseClass = @"
@@ -182,7 +182,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, baseClass, code);
     }
 
-    [Test]
+    [Fact]
     public static void ChainedBaseCtorDisposedInThis()
     {
         var baseClass = @"
@@ -259,9 +259,10 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, baseClass, code);
     }
 
-    [TestCase("new StreamReader(File.OpenRead(fileName))")]
-    [TestCase("new StreamReader(File.OpenRead(fileName), new System.Text.UTF8Encoding(), true, 1024, leaveOpen: false)")]
-    [TestCase("new System.Net.Mail.Attachment(File.OpenRead(fileName), string.Empty)")]
+    [Theory]
+    [InlineData("new StreamReader(File.OpenRead(fileName))")]
+    [InlineData("new StreamReader(File.OpenRead(fileName), new System.Text.UTF8Encoding(), true, 1024, leaveOpen: false)")]
+    [InlineData("new System.Net.Mail.Attachment(File.OpenRead(fileName), string.Empty)")]
     public static void LeaveOpenFalse(string expression)
     {
         var code = @"
@@ -280,7 +281,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void UsingStreamInStreamReader()
     {
         var code = @"
@@ -302,7 +303,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void DisposableCreate()
     {
         var code = @"
@@ -323,7 +324,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningStreamReader()
     {
         var code = @"
@@ -351,7 +352,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningStreamReaderExpressionBody()
     {
         var code = @"
@@ -376,7 +377,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodWithFuncTaskAsParameter()
     {
         var code = @"
@@ -399,7 +400,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodWithFuncStreamAsParameter()
     {
         var code = @"
@@ -424,7 +425,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void SubclassedNinjectKernel()
     {
         var code = @"
@@ -459,7 +460,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ValueTupleOfLocals()
     {
         var code = @"
@@ -490,7 +491,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ValueTuple()
     {
         var code = @"
@@ -519,7 +520,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void TupleOfLocals()
     {
         var code = @"
@@ -550,7 +551,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void LocalObjectThatIsDisposed()
     {
         var code = @"
@@ -572,7 +573,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void FieldObjectThatIsDisposed()
     {
         var code = @"
@@ -600,10 +601,11 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("Tuple.Create(File.OpenRead(file), new object())")]
-    [TestCase("Tuple.Create(File.OpenRead(file), File.OpenRead(file))")]
-    [TestCase("new Tuple<FileStream, object>(File.OpenRead(file), new object())")]
-    [TestCase("new Tuple<FileStream, FileStream>(File.OpenRead(file), File.OpenRead(file))")]
+    [Theory]
+    [InlineData("Tuple.Create(File.OpenRead(file), new object())")]
+    [InlineData("Tuple.Create(File.OpenRead(file), File.OpenRead(file))")]
+    [InlineData("new Tuple<FileStream, object>(File.OpenRead(file), new object())")]
+    [InlineData("new Tuple<FileStream, FileStream>(File.OpenRead(file), File.OpenRead(file))")]
     public static void LocalTupleThatIsDisposed(string expression)
     {
         var code = @"
@@ -626,8 +628,9 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("(File.OpenRead(file), new object())")]
-    [TestCase("(File.OpenRead(file), File.OpenRead(file))")]
+    [Theory]
+    [InlineData("(File.OpenRead(file), new object())")]
+    [InlineData("(File.OpenRead(file), File.OpenRead(file))")]
     public static void LocalValueTupleThatIsDisposed(string expression)
     {
         var code = @"
@@ -650,8 +653,9 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("Pair.Create(File.OpenRead(file1), File.OpenRead(file2))")]
-    [TestCase("new Pair<FileStream>(File.OpenRead(file1), File.OpenRead(file2))")]
+    [Theory]
+    [InlineData("Pair.Create(File.OpenRead(file1), File.OpenRead(file2))")]
+    [InlineData("new Pair<FileStream>(File.OpenRead(file1), File.OpenRead(file2))")]
     public static void LocalPairThatIsDisposed(string expression)
     {
         var staticPairCode = @"
@@ -699,8 +703,9 @@ namespace N
         RoslynAssert.Valid(Analyzer, pairOfT, staticPairCode, code);
     }
 
-    [TestCase("Tuple.Create(File.OpenRead(file1), File.OpenRead(file2))")]
-    [TestCase("new Tuple<FileStream, FileStream>(File.OpenRead(file1), File.OpenRead(file2))")]
+    [Theory]
+    [InlineData("Tuple.Create(File.OpenRead(file1), File.OpenRead(file2))")]
+    [InlineData("new Tuple<FileStream, FileStream>(File.OpenRead(file1), File.OpenRead(file2))")]
     public static void FieldTupleThatIsDisposed(string expression)
     {
         var code = @"
@@ -729,7 +734,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("(File.OpenRead(file1), File.OpenRead(file2))")]
+    [Theory]
+    [InlineData("(File.OpenRead(file1), File.OpenRead(file2))")]
     public static void FieldValueTupleThatIsDisposed(string expression)
     {
         var code = @"
@@ -758,8 +764,9 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("Pair.Create(File.OpenRead(file1), File.OpenRead(file2))")]
-    [TestCase("new Pair<FileStream>(File.OpenRead(file1), File.OpenRead(file2))")]
+    [Theory]
+    [InlineData("Pair.Create(File.OpenRead(file1), File.OpenRead(file2))")]
+    [InlineData("new Pair<FileStream>(File.OpenRead(file1), File.OpenRead(file2))")]
     public static void FieldPairThatIsDisposed(string expression)
     {
         var staticPairCode = @"
@@ -814,7 +821,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, pairOfT, staticPairCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void PooledMemoryStream()
     {
         var code = @"

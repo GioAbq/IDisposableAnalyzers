@@ -1,7 +1,7 @@
 namespace IDisposableAnalyzers.Test.IDISP002DisposeMemberTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -11,7 +11,7 @@ public static partial class CodeFix
         private static readonly DisposeMemberFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP002DisposeMember);
 
-        [Test]
+        [Fact]
         public static void PropertyWhenInitializedInline()
         {
             var before = @"
@@ -50,7 +50,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void GetOnlyPropertyWhenInitializedInline()
         {
             var before = @"
@@ -89,7 +89,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void GetSetPropertyInSealedOfTypeObjectWhenInitializedInline()
         {
             var before = @"
@@ -128,7 +128,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void GetOnlyPropertyOfTypeObjectWhenInitializedInline()
         {
             var before = @"
@@ -167,7 +167,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void GetSetPropertyWhenInitializedInCtor()
         {
             var before = @"
@@ -216,7 +216,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void GetOnlyPropertyWhenInitializedInCtorVirtualDisposeUnderscoreNames()
         {
             var before = @"
@@ -313,7 +313,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void GetOnlyPropertyWhenInitializedInCtor()
         {
             var before = @"

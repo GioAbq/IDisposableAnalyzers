@@ -1,4 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
+// ReSharper disable InconsistentNaming
 namespace IDisposableAnalyzers.Tests.Web;
 
 using System;
@@ -11,15 +11,14 @@ using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-using NUnit.Framework;
+using Xunit;
 
-public static class AllAnalyzersValid
+public sealed class AllAnalyzersValid : IClassFixture<AllAnalyzersValid.Cache>
 {
-    private static readonly ImmutableArray<DiagnosticAnalyzer> AllAnalyzers = typeof(KnownSymbols)
+    private static readonly ImmutableArray<Type> AllAnalyzerTypes = typeof(KnownSymbols)
         .Assembly
         .GetTypes()
         .Where(t => !t.IsAbstract && typeof(DiagnosticAnalyzer).IsAssignableFrom(t))
-        .Select(t => (DiagnosticAnalyzer)Activator.CreateInstance(t)!)
         .ToImmutableArray();
 
     // ReSharper disable once InconsistentNaming
@@ -27,31 +26,47 @@ public static class AllAnalyzersValid
         ProjectFile.Find("ValidCode.Web.csproj"),
         settings: WebSettings.Exe);
 
-    private static IDisposable? cacheTransaction;
-
-    [OneTimeSetUp]
-    public static void OneTimeSetUp()
+    public static TheoryData<Type> AnalyzerCases
     {
-        // The cache will be enabled when running in VS.
-        // It speeds up the tests and makes them more realistic
-        cacheTransaction = SyntaxTreeCache<SemanticModel>.Begin(null);
+        get
+        {
+            var data = new TheoryData<Type>();
+            foreach (var type in AllAnalyzerTypes)
+            {
+                data.Add(type);
+            }
+
+            return data;
+        }
     }
 
-    [OneTimeTearDown]
-    public static void OneTimeTearDown()
+    [Fact]
+    public void NotEmpty()
     {
-        cacheTransaction?.Dispose();
+        Assert.NotEmpty(AllAnalyzerTypes);
     }
 
-    [Test]
-    public static void NotEmpty()
+    [Theory]
+    [MemberData(nameof(AnalyzerCases))]
+    public void ValidCodeProject(Type analyzerType)
     {
-        CollectionAssert.IsNotEmpty(AllAnalyzers);
+        RoslynAssert.Valid((DiagnosticAnalyzer)Activator.CreateInstance(analyzerType)!, ValidCode);
     }
 
-    [TestCaseSource(nameof(AllAnalyzers))]
-    public static void ValidCodeProject(DiagnosticAnalyzer analyzer)
+    public sealed class Cache : IDisposable
     {
-        RoslynAssert.Valid(analyzer, ValidCode);
+        private readonly IDisposable transaction;
+
+        public Cache()
+        {
+            // The cache will be enabled when running in VS.
+            // It speeds up the tests and makes them more realistic.
+            this.transaction = SyntaxTreeCache<SemanticModel>.Begin(null);
+        }
+
+        public void Dispose()
+        {
+            this.transaction.Dispose();
+        }
     }
 }

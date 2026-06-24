@@ -1,25 +1,28 @@
-﻿#pragma warning disable GU0073 // Member of non-public type should be internal.
+#pragma warning disable GU0073 // Member of non-public type should be internal.
 namespace IDisposableAnalyzers.Test.Helpers;
 
 using System.Linq;
 using System.Threading;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CSharp;
-using NUnit.Framework;
+using Xunit;
 
-internal static class ReturnValueWalkerTests
+public static class ReturnValueWalkerTests
 {
-    [TestCase("this.CalculatedExpressionBody", ReturnValueSearch.Recursive, "1")]
-    [TestCase("this.CalculatedExpressionBody", ReturnValueSearch.Member, "1")]
-    [TestCase("this.CalculatedStatementBody", ReturnValueSearch.Recursive, "1")]
-    [TestCase("this.CalculatedStatementBody", ReturnValueSearch.Member, "1")]
-    [TestCase("this.ThisExpressionBody", ReturnValueSearch.Recursive, "this")]
-    [TestCase("this.ThisExpressionBody", ReturnValueSearch.Member, "this")]
-    [TestCase("this.CalculatedReturningFieldExpressionBody", ReturnValueSearch.Recursive, "this.value")]
-    [TestCase("this.CalculatedReturningFieldExpressionBody", ReturnValueSearch.Member, "this.value")]
-    [TestCase("this.CalculatedReturningFieldStatementBody", ReturnValueSearch.Recursive, "this.value")]
-    [TestCase("this.CalculatedReturningFieldStatementBody", ReturnValueSearch.Member, "this.value")]
-    public static void Property(string expression, ReturnValueSearch search, string expected)
+    private static ReturnValueSearch Map(RvSearch search) => (ReturnValueSearch)(int)search;
+
+    [Theory]
+    [InlineData("this.CalculatedExpressionBody", RvSearch.Recursive, "1")]
+    [InlineData("this.CalculatedExpressionBody", RvSearch.Member, "1")]
+    [InlineData("this.CalculatedStatementBody", RvSearch.Recursive, "1")]
+    [InlineData("this.CalculatedStatementBody", RvSearch.Member, "1")]
+    [InlineData("this.ThisExpressionBody", RvSearch.Recursive, "this")]
+    [InlineData("this.ThisExpressionBody", RvSearch.Member, "this")]
+    [InlineData("this.CalculatedReturningFieldExpressionBody", RvSearch.Recursive, "this.value")]
+    [InlineData("this.CalculatedReturningFieldExpressionBody", RvSearch.Member, "this.value")]
+    [InlineData("this.CalculatedReturningFieldStatementBody", RvSearch.Recursive, "this.value")]
+    [InlineData("this.CalculatedReturningFieldStatementBody", RvSearch.Member, "this.value")]
+    public static void Property(string expression, RvSearch search, string expected)
     {
         var code = @"
 namespace N
@@ -60,23 +63,24 @@ namespace N
         var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var value = syntaxTree.FindEqualsValueClause(expression).Value;
-        using var walker = ReturnValueWalker.Borrow(value, search, semanticModel, CancellationToken.None);
-        Assert.AreEqual(expected, string.Join(", ", walker.Values));
+        using var walker = ReturnValueWalker.Borrow(value, Map(search), semanticModel, CancellationToken.None);
+        Assert.Equal(expected, string.Join(", ", walker.Values));
     }
 
-    [TestCase("StaticRecursiveExpressionBody", ReturnValueSearch.Recursive, "")]
-    [TestCase("StaticRecursiveExpressionBody", ReturnValueSearch.Member, "StaticRecursiveExpressionBody")]
-    [TestCase("StaticRecursiveStatementBody", ReturnValueSearch.Recursive, "")]
-    [TestCase("StaticRecursiveStatementBody", ReturnValueSearch.Member, "StaticRecursiveStatementBody")]
-    [TestCase("RecursiveExpressionBody", ReturnValueSearch.Recursive, "")]
-    [TestCase("RecursiveExpressionBody", ReturnValueSearch.Member, "this.RecursiveExpressionBody")]
-    [TestCase("this.RecursiveExpressionBody", ReturnValueSearch.Recursive, "")]
-    [TestCase("this.RecursiveExpressionBody", ReturnValueSearch.Member, "this.RecursiveExpressionBody")]
-    [TestCase("this.RecursiveStatementBody", ReturnValueSearch.Recursive, "")]
-    [TestCase("this.RecursiveStatementBody", ReturnValueSearch.Member, "this.RecursiveStatementBody")]
-    [TestCase("RecursiveStatementBody", ReturnValueSearch.Recursive, "")]
-    [TestCase("RecursiveStatementBody", ReturnValueSearch.Member, "this.RecursiveStatementBody")]
-    public static void PropertyRecursive(string expression, ReturnValueSearch search, string expected)
+    [Theory]
+    [InlineData("StaticRecursiveExpressionBody", RvSearch.Recursive, "")]
+    [InlineData("StaticRecursiveExpressionBody", RvSearch.Member, "StaticRecursiveExpressionBody")]
+    [InlineData("StaticRecursiveStatementBody", RvSearch.Recursive, "")]
+    [InlineData("StaticRecursiveStatementBody", RvSearch.Member, "StaticRecursiveStatementBody")]
+    [InlineData("RecursiveExpressionBody", RvSearch.Recursive, "")]
+    [InlineData("RecursiveExpressionBody", RvSearch.Member, "this.RecursiveExpressionBody")]
+    [InlineData("this.RecursiveExpressionBody", RvSearch.Recursive, "")]
+    [InlineData("this.RecursiveExpressionBody", RvSearch.Member, "this.RecursiveExpressionBody")]
+    [InlineData("this.RecursiveStatementBody", RvSearch.Recursive, "")]
+    [InlineData("this.RecursiveStatementBody", RvSearch.Member, "this.RecursiveStatementBody")]
+    [InlineData("RecursiveStatementBody", RvSearch.Recursive, "")]
+    [InlineData("RecursiveStatementBody", RvSearch.Member, "this.RecursiveStatementBody")]
+    public static void PropertyRecursive(string expression, RvSearch search, string expected)
     {
         var code = @"
 namespace N
@@ -113,42 +117,43 @@ namespace N
         var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var value = syntaxTree.FindEqualsValueClause(expression).Value;
-        using var walker = ReturnValueWalker.Borrow(value, search, semanticModel, CancellationToken.None);
-        Assert.AreEqual(expected, string.Join(", ", walker.Values));
+        using var walker = ReturnValueWalker.Borrow(value, Map(search), semanticModel, CancellationToken.None);
+        Assert.Equal(expected, string.Join(", ", walker.Values));
     }
 
-    [TestCase("StaticCreateIntStatementBody()", ReturnValueSearch.Recursive, "1")]
-    [TestCase("StaticCreateIntStatementBody()", ReturnValueSearch.Member, "1")]
-    [TestCase("StaticCreateIntExpressionBody()", ReturnValueSearch.Recursive, "2")]
-    [TestCase("StaticCreateIntExpressionBody()", ReturnValueSearch.Member, "2")]
-    [TestCase("IdStatementBody(1)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("IdStatementBody(1)", ReturnValueSearch.Member, "1")]
-    [TestCase("IdExpressionBody(1)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("IdExpressionBody(1)", ReturnValueSearch.Member, "1")]
-    [TestCase("OptionalIdExpressionBody()", ReturnValueSearch.Recursive, "1")]
-    [TestCase("OptionalIdExpressionBody()", ReturnValueSearch.Member, "1")]
-    [TestCase("OptionalIdExpressionBody(1)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("OptionalIdExpressionBody(1)", ReturnValueSearch.Member, "1")]
-    [TestCase("AssigningToParameter(1)", ReturnValueSearch.Recursive, "1, 2, 3, 4")]
-    [TestCase("AssigningToParameter(1)", ReturnValueSearch.Member, "1, 4")]
-    [TestCase("CallingIdExpressionBody(1)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("CallingIdExpressionBody(1)", ReturnValueSearch.RecursiveInside, "")]
-    [TestCase("CallingIdExpressionBody(1)", ReturnValueSearch.Member, "IdExpressionBody(arg1)")]
-    [TestCase("ReturnLocal()", ReturnValueSearch.Recursive, "1")]
-    [TestCase("ReturnLocal()", ReturnValueSearch.Member, "local")]
-    [TestCase("ReturnLocalAssignedTwice(true)", ReturnValueSearch.Recursive, "1, 2, 3")]
-    [TestCase("ReturnLocalAssignedTwice(true)", ReturnValueSearch.Member, "local, 3")]
-    [TestCase("System.Threading.Tasks.Task.Run(() => 1)", ReturnValueSearch.Recursive, "System.Threading.Tasks.Task.Run(() => 1)")]
-    [TestCase("System.Threading.Tasks.Task.Run(() => 1)", ReturnValueSearch.Member, "System.Threading.Tasks.Task.Run(() => 1)")]
-    [TestCase("Missing()", ReturnValueSearch.Recursive, "")]
-    [TestCase("Missing()", ReturnValueSearch.Member, "")]
-    [TestCase("this.ThisExpressionBody()", ReturnValueSearch.Recursive, "this")]
-    [TestCase("this.ThisExpressionBody()", ReturnValueSearch.Member, "this")]
-    [TestCase("ReturningFileOpenRead()", ReturnValueSearch.Recursive, "System.IO.File.OpenRead(string.Empty)")]
-    [TestCase("ReturningFileOpenRead()", ReturnValueSearch.Member, "System.IO.File.OpenRead(string.Empty)")]
-    [TestCase("ReturningLocalFileOpenRead()", ReturnValueSearch.Recursive, "System.IO.File.OpenRead(string.Empty)")]
-    [TestCase("ReturningLocalFileOpenRead()", ReturnValueSearch.Member, "stream")]
-    public static void Call(string expression, ReturnValueSearch search, string expected)
+    [Theory]
+    [InlineData("StaticCreateIntStatementBody()", RvSearch.Recursive, "1")]
+    [InlineData("StaticCreateIntStatementBody()", RvSearch.Member, "1")]
+    [InlineData("StaticCreateIntExpressionBody()", RvSearch.Recursive, "2")]
+    [InlineData("StaticCreateIntExpressionBody()", RvSearch.Member, "2")]
+    [InlineData("IdStatementBody(1)", RvSearch.Recursive, "1")]
+    [InlineData("IdStatementBody(1)", RvSearch.Member, "1")]
+    [InlineData("IdExpressionBody(1)", RvSearch.Recursive, "1")]
+    [InlineData("IdExpressionBody(1)", RvSearch.Member, "1")]
+    [InlineData("OptionalIdExpressionBody()", RvSearch.Recursive, "1")]
+    [InlineData("OptionalIdExpressionBody()", RvSearch.Member, "1")]
+    [InlineData("OptionalIdExpressionBody(1)", RvSearch.Recursive, "1")]
+    [InlineData("OptionalIdExpressionBody(1)", RvSearch.Member, "1")]
+    [InlineData("AssigningToParameter(1)", RvSearch.Recursive, "1, 2, 3, 4")]
+    [InlineData("AssigningToParameter(1)", RvSearch.Member, "1, 4")]
+    [InlineData("CallingIdExpressionBody(1)", RvSearch.Recursive, "1")]
+    [InlineData("CallingIdExpressionBody(1)", RvSearch.RecursiveInside, "")]
+    [InlineData("CallingIdExpressionBody(1)", RvSearch.Member, "IdExpressionBody(arg1)")]
+    [InlineData("ReturnLocal()", RvSearch.Recursive, "1")]
+    [InlineData("ReturnLocal()", RvSearch.Member, "local")]
+    [InlineData("ReturnLocalAssignedTwice(true)", RvSearch.Recursive, "1, 2, 3")]
+    [InlineData("ReturnLocalAssignedTwice(true)", RvSearch.Member, "local, 3")]
+    [InlineData("System.Threading.Tasks.Task.Run(() => 1)", RvSearch.Recursive, "System.Threading.Tasks.Task.Run(() => 1)")]
+    [InlineData("System.Threading.Tasks.Task.Run(() => 1)", RvSearch.Member, "System.Threading.Tasks.Task.Run(() => 1)")]
+    [InlineData("Missing()", RvSearch.Recursive, "")]
+    [InlineData("Missing()", RvSearch.Member, "")]
+    [InlineData("this.ThisExpressionBody()", RvSearch.Recursive, "this")]
+    [InlineData("this.ThisExpressionBody()", RvSearch.Member, "this")]
+    [InlineData("ReturningFileOpenRead()", RvSearch.Recursive, "System.IO.File.OpenRead(string.Empty)")]
+    [InlineData("ReturningFileOpenRead()", RvSearch.Member, "System.IO.File.OpenRead(string.Empty)")]
+    [InlineData("ReturningLocalFileOpenRead()", RvSearch.Recursive, "System.IO.File.OpenRead(string.Empty)")]
+    [InlineData("ReturningLocalFileOpenRead()", RvSearch.Member, "stream")]
+    public static void Call(string expression, RvSearch search, string expected)
     {
         var code = @"
 namespace N
@@ -252,29 +257,30 @@ namespace N
         var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var value = syntaxTree.FindEqualsValueClause(expression).Value;
-        using var walker = ReturnValueWalker.Borrow(value, search, semanticModel, CancellationToken.None);
-        Assert.AreEqual(expected, string.Join(", ", walker.Values));
+        using var walker = ReturnValueWalker.Borrow(value, Map(search), semanticModel, CancellationToken.None);
+        Assert.Equal(expected, string.Join(", ", walker.Values));
     }
 
-    [TestCase("Recursive()", ReturnValueSearch.Recursive, "")]
-    [TestCase("Recursive()", ReturnValueSearch.Member, "Recursive()")]
-    [TestCase("Recursive(1)", ReturnValueSearch.Recursive, "")]
-    [TestCase("Recursive(1)", ReturnValueSearch.Member, "Recursive(arg)")]
-    [TestCase("Recursive1(1)", ReturnValueSearch.Recursive, "")]
-    [TestCase("Recursive1(1)", ReturnValueSearch.Member, "Recursive2(value)")]
-    [TestCase("Recursive2(1)", ReturnValueSearch.Recursive, "")]
-    [TestCase("Recursive2(1)", ReturnValueSearch.Member, "Recursive1(value)")]
-    [TestCase("Recursive(true)", ReturnValueSearch.Recursive, "!flag, true")]
-    [TestCase("Recursive(true)", ReturnValueSearch.Member, "Recursive(!flag), true")]
-    [TestCase("RecursiveWithOptional(1)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("RecursiveWithOptional(1)", ReturnValueSearch.Member, "RecursiveWithOptional(arg, new[] { arg }), 1")]
-    [TestCase("RecursiveWithOptional(1, null)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("RecursiveWithOptional(1, null)", ReturnValueSearch.Member, "RecursiveWithOptional(arg, new[] { arg }), 1")]
-    [TestCase("RecursiveWithOptional(1, new[] { 1, 2 })", ReturnValueSearch.Recursive, "1")]
-    [TestCase("RecursiveWithOptional(1, new[] { 1, 2 })", ReturnValueSearch.Member, "RecursiveWithOptional(arg, new[] { arg }), 1")]
-    [TestCase("Flatten(null, null)", ReturnValueSearch.Member, "null")]
-    [TestCase("Flatten(null, null)", ReturnValueSearch.Recursive, "null, new List<IDisposable>()")]
-    public static void CallRecursive(string expression, ReturnValueSearch search, string expected)
+    [Theory]
+    [InlineData("Recursive()", RvSearch.Recursive, "")]
+    [InlineData("Recursive()", RvSearch.Member, "Recursive()")]
+    [InlineData("Recursive(1)", RvSearch.Recursive, "")]
+    [InlineData("Recursive(1)", RvSearch.Member, "Recursive(arg)")]
+    [InlineData("Recursive1(1)", RvSearch.Recursive, "")]
+    [InlineData("Recursive1(1)", RvSearch.Member, "Recursive2(value)")]
+    [InlineData("Recursive2(1)", RvSearch.Recursive, "")]
+    [InlineData("Recursive2(1)", RvSearch.Member, "Recursive1(value)")]
+    [InlineData("Recursive(true)", RvSearch.Recursive, "!flag, true")]
+    [InlineData("Recursive(true)", RvSearch.Member, "Recursive(!flag), true")]
+    [InlineData("RecursiveWithOptional(1)", RvSearch.Recursive, "1")]
+    [InlineData("RecursiveWithOptional(1)", RvSearch.Member, "RecursiveWithOptional(arg, new[] { arg }), 1")]
+    [InlineData("RecursiveWithOptional(1, null)", RvSearch.Recursive, "1")]
+    [InlineData("RecursiveWithOptional(1, null)", RvSearch.Member, "RecursiveWithOptional(arg, new[] { arg }), 1")]
+    [InlineData("RecursiveWithOptional(1, new[] { 1, 2 })", RvSearch.Recursive, "1")]
+    [InlineData("RecursiveWithOptional(1, new[] { 1, 2 })", RvSearch.Member, "RecursiveWithOptional(arg, new[] { arg }), 1")]
+    [InlineData("Flatten(null, null)", RvSearch.Member, "null")]
+    [InlineData("Flatten(null, null)", RvSearch.Recursive, "null, new List<IDisposable>()")]
+    public static void CallRecursive(string expression, RvSearch search, string expected)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
 namespace N
@@ -340,11 +346,11 @@ namespace N
         var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var value = syntaxTree.FindEqualsValueClause(expression).Value;
-        using var walker = ReturnValueWalker.Borrow(value, search, semanticModel, CancellationToken.None);
-        Assert.AreEqual(expected, string.Join(", ", walker.Values));
+        using var walker = ReturnValueWalker.Borrow(value, Map(search), semanticModel, CancellationToken.None);
+        Assert.Equal(expected, string.Join(", ", walker.Values));
     }
 
-    [Test]
+    [Fact]
     public static void RecursiveWithOptionalParameter()
     {
         var code = @"
@@ -377,10 +383,10 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var value = syntaxTree.FindInvocation("WithOptionalParameter(local)");
         using var walker = ReturnValueWalker.Borrow(value, ReturnValueSearch.Recursive, semanticModel, CancellationToken.None);
-        Assert.AreEqual("disposable", string.Join(", ", walker.Values));
+        Assert.Equal("disposable", string.Join(", ", walker.Values));
     }
 
-    [Test]
+    [Fact]
     public static void RecursiveSwitch()
     {
         var code = @"
@@ -405,26 +411,27 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var methodDeclaration = syntaxTree.FindMethodDeclaration("M");
         using var walker = ReturnValueWalker.Borrow(methodDeclaration, ReturnValueSearch.Recursive, semanticModel, CancellationToken.None);
-        Assert.AreEqual("3, 2, 1, value", string.Join(", ", walker.Values));
+        Assert.Equal("3, 2, 1, value", string.Join(", ", walker.Values));
     }
 
-    [TestCase("Func<int> temp = () => 1", ReturnValueSearch.Recursive, "1")]
-    [TestCase("Func<int> temp = () => 1", ReturnValueSearch.Member, "1")]
-    [TestCase("Func<int, int> temp = x => 1", ReturnValueSearch.Recursive, "1")]
-    [TestCase("Func<int, int> temp = x => 1", ReturnValueSearch.Member, "1")]
-    [TestCase("Func<int, int> temp = x => x", ReturnValueSearch.Recursive, "x")]
-    [TestCase("Func<int, int> temp = x => x", ReturnValueSearch.Member, "x")]
-    [TestCase("Func<int> temp = () => { return 1; }", ReturnValueSearch.Recursive, "1")]
-    [TestCase("Func<int> temp = () => { return 1; }", ReturnValueSearch.Member, "1")]
-    [TestCase("Func<int> temp = () => { if (true) return 1; return 2; }", ReturnValueSearch.Recursive, "1, 2")]
-    [TestCase("Func<int> temp = () => { if (true) return 1; return 2; }", ReturnValueSearch.Member, "1, 2")]
-    [TestCase("Func<int,int> temp = x => { if (true) return x; return 1; }", ReturnValueSearch.Recursive, "x, 1")]
-    [TestCase("Func<int,int> temp = x => { if (true) return x; return 1; }", ReturnValueSearch.Member, "x, 1")]
-    [TestCase("Func<int,int> temp = x => { if (true) return 1; return x; }", ReturnValueSearch.Recursive, "1, x")]
-    [TestCase("Func<int,int> temp = x => { if (true) return 1; return x; }", ReturnValueSearch.Member, "1, x")]
-    [TestCase("Func<int,int> temp = x => { if (true) return 1; return 2; }", ReturnValueSearch.Recursive, "1, 2")]
-    [TestCase("Func<int,int> temp = x => { if (true) return 1; return 2; }", ReturnValueSearch.Member, "1, 2")]
-    public static void Lambda(string expression, ReturnValueSearch search, string expected)
+    [Theory]
+    [InlineData("Func<int> temp = () => 1", RvSearch.Recursive, "1")]
+    [InlineData("Func<int> temp = () => 1", RvSearch.Member, "1")]
+    [InlineData("Func<int, int> temp = x => 1", RvSearch.Recursive, "1")]
+    [InlineData("Func<int, int> temp = x => 1", RvSearch.Member, "1")]
+    [InlineData("Func<int, int> temp = x => x", RvSearch.Recursive, "x")]
+    [InlineData("Func<int, int> temp = x => x", RvSearch.Member, "x")]
+    [InlineData("Func<int> temp = () => { return 1; }", RvSearch.Recursive, "1")]
+    [InlineData("Func<int> temp = () => { return 1; }", RvSearch.Member, "1")]
+    [InlineData("Func<int> temp = () => { if (true) return 1; return 2; }", RvSearch.Recursive, "1, 2")]
+    [InlineData("Func<int> temp = () => { if (true) return 1; return 2; }", RvSearch.Member, "1, 2")]
+    [InlineData("Func<int,int> temp = x => { if (true) return x; return 1; }", RvSearch.Recursive, "x, 1")]
+    [InlineData("Func<int,int> temp = x => { if (true) return x; return 1; }", RvSearch.Member, "x, 1")]
+    [InlineData("Func<int,int> temp = x => { if (true) return 1; return x; }", RvSearch.Recursive, "1, x")]
+    [InlineData("Func<int,int> temp = x => { if (true) return 1; return x; }", RvSearch.Member, "1, x")]
+    [InlineData("Func<int,int> temp = x => { if (true) return 1; return 2; }", RvSearch.Recursive, "1, 2")]
+    [InlineData("Func<int,int> temp = x => { if (true) return 1; return 2; }", RvSearch.Member, "1, 2")]
+    public static void Lambda(string expression, RvSearch search, string expected)
     {
         var code = @"
 namespace N
@@ -448,61 +455,62 @@ namespace N
         var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var value = syntaxTree.FindEqualsValueClause(expression).Value;
-        using var walker = ReturnValueWalker.Borrow(value, search, semanticModel, CancellationToken.None);
-        Assert.AreEqual(expected, string.Join(", ", walker.Values));
+        using var walker = ReturnValueWalker.Borrow(value, Map(search), semanticModel, CancellationToken.None);
+        Assert.Equal(expected, string.Join(", ", walker.Values));
     }
 
-    [TestCase("await CreateAsync(0)", ReturnValueSearch.Recursive, "1, 0, 2, 3")]
-    [TestCase("await CreateAsync(0)", ReturnValueSearch.Member, "1, 0, 2, 3")]
-    [TestCase("await CreateAsync(0).ConfigureAwait(false)", ReturnValueSearch.Recursive, "1, 0, 2, 3")]
-    [TestCase("await CreateAsync(0).ConfigureAwait(false)", ReturnValueSearch.Member, "1, 0, 2, 3")]
-    [TestCase("await CreateStringAsync()", ReturnValueSearch.Recursive, "new string(' ', 1)")]
-    [TestCase("await CreateStringAsync()", ReturnValueSearch.Member, "new string(' ', 1)")]
-    [TestCase("await CreateIntAsync()", ReturnValueSearch.Recursive, "1")]
-    [TestCase("await CreateIntAsync()", ReturnValueSearch.Member, "1")]
-    [TestCase("await CreateIntAsync().ConfigureAwait(false)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("await CreateIntAsync().ConfigureAwait(false)", ReturnValueSearch.Member, "1")]
-    [TestCase("await ReturnTaskFromResultAsync()", ReturnValueSearch.Recursive, "1")]
-    [TestCase("await ReturnTaskFromResultAsync()", ReturnValueSearch.Member, "1")]
-    [TestCase("await ReturnTaskFromResultAsync().ConfigureAwait(false)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("await ReturnTaskFromResultAsync().ConfigureAwait(false)", ReturnValueSearch.Member, "1")]
-    [TestCase("await ReturnTaskFromResultAsync(1)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("await ReturnTaskFromResultAsync(1)", ReturnValueSearch.Member, "1")]
-    [TestCase("await ReturnTaskFromResultAsync(1).ConfigureAwait(false)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("await ReturnTaskFromResultAsync(1).ConfigureAwait(false)", ReturnValueSearch.Member, "1")]
-    [TestCase("await ReturnAwaitTaskRunAsync()", ReturnValueSearch.Recursive, "new string(' ', 1)")]
-    [TestCase("await ReturnAwaitTaskRunAsync()", ReturnValueSearch.Member, "await Task.Run(() => new string(\' \', 1))")]
-    [TestCase("await ReturnAwaitTaskRunAsync().ConfigureAwait(false)", ReturnValueSearch.Recursive, "new string(' ', 1)")]
-    [TestCase("await ReturnAwaitTaskRunAsync().ConfigureAwait(false)", ReturnValueSearch.Member, "await Task.Run(() => new string(' ', 1))")]
-    [TestCase("await ReturnAwaitTaskRunConfigureAwaitAsync()", ReturnValueSearch.Recursive, "new string(' ', 1)")]
-    [TestCase("await ReturnAwaitTaskRunConfigureAwaitAsync()", ReturnValueSearch.Member, "await Task.Run(() => new string(' ', 1)).ConfigureAwait(false)")]
-    [TestCase("await ReturnAwaitTaskRunConfigureAwaitAsync().ConfigureAwait(false)", ReturnValueSearch.Recursive, "new string(' ', 1)")]
-    [TestCase("await ReturnAwaitTaskRunConfigureAwaitAsync().ConfigureAwait(false)", ReturnValueSearch.Member, "await Task.Run(() => new string(' ', 1)).ConfigureAwait(false)")]
-    [TestCase("await Task.Run(() => 1)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("await Task.Run(() => 1)", ReturnValueSearch.Member, "1")]
-    [TestCase("await Task.Run(() => 1).ConfigureAwait(false)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("await Task.Run(() => 1).ConfigureAwait(false)", ReturnValueSearch.Member, "1")]
-    [TestCase("await Task.Run(() => new Disposable())", ReturnValueSearch.Recursive, "new Disposable()")]
-    [TestCase("await Task.Run(() => new Disposable())", ReturnValueSearch.Member, "new Disposable()")]
-    [TestCase("await Task.Run(() => new Disposable()).ConfigureAwait(false)", ReturnValueSearch.Recursive, "new Disposable()")]
-    [TestCase("await Task.Run(() => new Disposable()).ConfigureAwait(false)", ReturnValueSearch.Member, "new Disposable()")]
-    [TestCase("await Task.Run(() => new string(' ', 1))", ReturnValueSearch.Recursive, "new string(' ', 1)")]
-    [TestCase("await Task.Run(() => new string(' ', 1))", ReturnValueSearch.Member, "new string(' ', 1)")]
-    [TestCase("await Task.Run(() => new string(' ', 1)).ConfigureAwait(false)", ReturnValueSearch.Recursive, "new string(' ', 1)")]
-    [TestCase("await Task.Run(() => new string(' ', 1)).ConfigureAwait(false)", ReturnValueSearch.Member, "new string(' ', 1)")]
-    [TestCase("await Task.Run(() => CreateInt())", ReturnValueSearch.Recursive, "1")]
-    [TestCase("await Task.Run(() => CreateInt())", ReturnValueSearch.Member, "CreateInt()")]
-    [TestCase("await Task.Run(() => CreateInt()).ConfigureAwait(false)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("await Task.Run(() => CreateInt()).ConfigureAwait(false)", ReturnValueSearch.Member, "CreateInt()")]
-    [TestCase("await Task.FromResult(new string(' ', 1))", ReturnValueSearch.Recursive, "new string(' ', 1)")]
-    [TestCase("await Task.FromResult(new string(' ', 1))", ReturnValueSearch.Member, "new string(' ', 1)")]
-    [TestCase("await Task.FromResult(new string(' ', 1)).ConfigureAwait(false)", ReturnValueSearch.Recursive, "new string(' ', 1)")]
-    [TestCase("await Task.FromResult(new string(' ', 1)).ConfigureAwait(false)", ReturnValueSearch.Member, "new string(' ', 1)")]
-    [TestCase("await Task.FromResult(CreateInt())", ReturnValueSearch.Recursive, "1")]
-    [TestCase("await Task.FromResult(CreateInt())", ReturnValueSearch.Member, "CreateInt()")]
-    [TestCase("await Task.FromResult(CreateInt()).ConfigureAwait(false)", ReturnValueSearch.Recursive, "1")]
-    [TestCase("await Task.FromResult(CreateInt()).ConfigureAwait(false)", ReturnValueSearch.Member, "CreateInt()")]
-    public static void AsyncAwait(string expression, ReturnValueSearch search, string expected)
+    [Theory]
+    [InlineData("await CreateAsync(0)", RvSearch.Recursive, "1, 0, 2, 3")]
+    [InlineData("await CreateAsync(0)", RvSearch.Member, "1, 0, 2, 3")]
+    [InlineData("await CreateAsync(0).ConfigureAwait(false)", RvSearch.Recursive, "1, 0, 2, 3")]
+    [InlineData("await CreateAsync(0).ConfigureAwait(false)", RvSearch.Member, "1, 0, 2, 3")]
+    [InlineData("await CreateStringAsync()", RvSearch.Recursive, "new string(' ', 1)")]
+    [InlineData("await CreateStringAsync()", RvSearch.Member, "new string(' ', 1)")]
+    [InlineData("await CreateIntAsync()", RvSearch.Recursive, "1")]
+    [InlineData("await CreateIntAsync()", RvSearch.Member, "1")]
+    [InlineData("await CreateIntAsync().ConfigureAwait(false)", RvSearch.Recursive, "1")]
+    [InlineData("await CreateIntAsync().ConfigureAwait(false)", RvSearch.Member, "1")]
+    [InlineData("await ReturnTaskFromResultAsync()", RvSearch.Recursive, "1")]
+    [InlineData("await ReturnTaskFromResultAsync()", RvSearch.Member, "1")]
+    [InlineData("await ReturnTaskFromResultAsync().ConfigureAwait(false)", RvSearch.Recursive, "1")]
+    [InlineData("await ReturnTaskFromResultAsync().ConfigureAwait(false)", RvSearch.Member, "1")]
+    [InlineData("await ReturnTaskFromResultAsync(1)", RvSearch.Recursive, "1")]
+    [InlineData("await ReturnTaskFromResultAsync(1)", RvSearch.Member, "1")]
+    [InlineData("await ReturnTaskFromResultAsync(1).ConfigureAwait(false)", RvSearch.Recursive, "1")]
+    [InlineData("await ReturnTaskFromResultAsync(1).ConfigureAwait(false)", RvSearch.Member, "1")]
+    [InlineData("await ReturnAwaitTaskRunAsync()", RvSearch.Recursive, "new string(' ', 1)")]
+    [InlineData("await ReturnAwaitTaskRunAsync()", RvSearch.Member, "await Task.Run(() => new string(\' \', 1))")]
+    [InlineData("await ReturnAwaitTaskRunAsync().ConfigureAwait(false)", RvSearch.Recursive, "new string(' ', 1)")]
+    [InlineData("await ReturnAwaitTaskRunAsync().ConfigureAwait(false)", RvSearch.Member, "await Task.Run(() => new string(' ', 1))")]
+    [InlineData("await ReturnAwaitTaskRunConfigureAwaitAsync()", RvSearch.Recursive, "new string(' ', 1)")]
+    [InlineData("await ReturnAwaitTaskRunConfigureAwaitAsync()", RvSearch.Member, "await Task.Run(() => new string(' ', 1)).ConfigureAwait(false)")]
+    [InlineData("await ReturnAwaitTaskRunConfigureAwaitAsync().ConfigureAwait(false)", RvSearch.Recursive, "new string(' ', 1)")]
+    [InlineData("await ReturnAwaitTaskRunConfigureAwaitAsync().ConfigureAwait(false)", RvSearch.Member, "await Task.Run(() => new string(' ', 1)).ConfigureAwait(false)")]
+    [InlineData("await Task.Run(() => 1)", RvSearch.Recursive, "1")]
+    [InlineData("await Task.Run(() => 1)", RvSearch.Member, "1")]
+    [InlineData("await Task.Run(() => 1).ConfigureAwait(false)", RvSearch.Recursive, "1")]
+    [InlineData("await Task.Run(() => 1).ConfigureAwait(false)", RvSearch.Member, "1")]
+    [InlineData("await Task.Run(() => new Disposable())", RvSearch.Recursive, "new Disposable()")]
+    [InlineData("await Task.Run(() => new Disposable())", RvSearch.Member, "new Disposable()")]
+    [InlineData("await Task.Run(() => new Disposable()).ConfigureAwait(false)", RvSearch.Recursive, "new Disposable()")]
+    [InlineData("await Task.Run(() => new Disposable()).ConfigureAwait(false)", RvSearch.Member, "new Disposable()")]
+    [InlineData("await Task.Run(() => new string(' ', 1))", RvSearch.Recursive, "new string(' ', 1)")]
+    [InlineData("await Task.Run(() => new string(' ', 1))", RvSearch.Member, "new string(' ', 1)")]
+    [InlineData("await Task.Run(() => new string(' ', 1)).ConfigureAwait(false)", RvSearch.Recursive, "new string(' ', 1)")]
+    [InlineData("await Task.Run(() => new string(' ', 1)).ConfigureAwait(false)", RvSearch.Member, "new string(' ', 1)")]
+    [InlineData("await Task.Run(() => CreateInt())", RvSearch.Recursive, "1")]
+    [InlineData("await Task.Run(() => CreateInt())", RvSearch.Member, "CreateInt()")]
+    [InlineData("await Task.Run(() => CreateInt()).ConfigureAwait(false)", RvSearch.Recursive, "1")]
+    [InlineData("await Task.Run(() => CreateInt()).ConfigureAwait(false)", RvSearch.Member, "CreateInt()")]
+    [InlineData("await Task.FromResult(new string(' ', 1))", RvSearch.Recursive, "new string(' ', 1)")]
+    [InlineData("await Task.FromResult(new string(' ', 1))", RvSearch.Member, "new string(' ', 1)")]
+    [InlineData("await Task.FromResult(new string(' ', 1)).ConfigureAwait(false)", RvSearch.Recursive, "new string(' ', 1)")]
+    [InlineData("await Task.FromResult(new string(' ', 1)).ConfigureAwait(false)", RvSearch.Member, "new string(' ', 1)")]
+    [InlineData("await Task.FromResult(CreateInt())", RvSearch.Recursive, "1")]
+    [InlineData("await Task.FromResult(CreateInt())", RvSearch.Member, "CreateInt()")]
+    [InlineData("await Task.FromResult(CreateInt()).ConfigureAwait(false)", RvSearch.Recursive, "1")]
+    [InlineData("await Task.FromResult(CreateInt()).ConfigureAwait(false)", RvSearch.Member, "CreateInt()")]
+    public static void AsyncAwait(string expression, RvSearch search, string expected)
     {
         var code = @"
 namespace N
@@ -571,13 +579,14 @@ namespace N
         var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var value = syntaxTree.FindEqualsValueClause(expression).Value;
-        using var walker = ReturnValueWalker.Borrow(value, search, semanticModel, CancellationToken.None);
-        Assert.AreEqual(expected, string.Join(", ", walker.Values));
+        using var walker = ReturnValueWalker.Borrow(value, Map(search), semanticModel, CancellationToken.None);
+        Assert.Equal(expected, string.Join(", ", walker.Values));
     }
 
-    [TestCase(ReturnValueSearch.Recursive, "")]
-    [TestCase(ReturnValueSearch.Member,    "await Task.SyntaxError(() => new string(' ', 1)).ConfigureAwait(false)")]
-    public static void AwaitSyntaxError(ReturnValueSearch search, string expected)
+    [Theory]
+    [InlineData(RvSearch.Recursive, "")]
+    [InlineData(RvSearch.Member,    "await Task.SyntaxError(() => new string(' ', 1)).ConfigureAwait(false)")]
+    public static void AwaitSyntaxError(RvSearch search, string expected)
     {
         var code = @"
 using System.Threading.Tasks;
@@ -599,19 +608,20 @@ internal class C
         var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var value = syntaxTree.FindExpression("await CreateAsync().ConfigureAwait(false)");
-        using var walker = ReturnValueWalker.Borrow(value, search, semanticModel, CancellationToken.None);
-        Assert.AreEqual(expected, string.Join(", ", walker.Values));
+        using var walker = ReturnValueWalker.Borrow(value, Map(search), semanticModel, CancellationToken.None);
+        Assert.Equal(expected, string.Join(", ", walker.Values));
     }
 
-    [TestCase("await RecursiveAsync()", ReturnValueSearch.Recursive, "")]
-    [TestCase("await RecursiveAsync()", ReturnValueSearch.Member, "")]
-    [TestCase("await RecursiveAsync(1)", ReturnValueSearch.Recursive, "")]
-    [TestCase("await RecursiveAsync(1)", ReturnValueSearch.Member, "")]
-    [TestCase("await RecursiveAsync1(1)", ReturnValueSearch.Recursive, "")]
-    [TestCase("await RecursiveAsync1(1)", ReturnValueSearch.Member, "await RecursiveAsync2(value)")]
-    [TestCase("await RecursiveAsync3(1)", ReturnValueSearch.Recursive, "")]
-    [TestCase("await RecursiveAsync3(1)", ReturnValueSearch.Member, "await RecursiveAsync3(value)")]
-    public static void AsyncAwaitRecursive(string expression, ReturnValueSearch search, string expected)
+    [Theory]
+    [InlineData("await RecursiveAsync()", RvSearch.Recursive, "")]
+    [InlineData("await RecursiveAsync()", RvSearch.Member, "")]
+    [InlineData("await RecursiveAsync(1)", RvSearch.Recursive, "")]
+    [InlineData("await RecursiveAsync(1)", RvSearch.Member, "")]
+    [InlineData("await RecursiveAsync1(1)", RvSearch.Recursive, "")]
+    [InlineData("await RecursiveAsync1(1)", RvSearch.Member, "await RecursiveAsync2(value)")]
+    [InlineData("await RecursiveAsync3(1)", RvSearch.Recursive, "")]
+    [InlineData("await RecursiveAsync3(1)", RvSearch.Member, "await RecursiveAsync3(value)")]
+    public static void AsyncAwaitRecursive(string expression, RvSearch search, string expected)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
 namespace N
@@ -661,11 +671,11 @@ namespace N
         var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var value = syntaxTree.FindEqualsValueClause(expression).Value;
-        using var walker = ReturnValueWalker.Borrow(value, search, semanticModel, CancellationToken.None);
-        Assert.AreEqual(expected, string.Join(", ", walker.Values));
+        using var walker = ReturnValueWalker.Borrow(value, Map(search), semanticModel, CancellationToken.None);
+        Assert.Equal(expected, string.Join(", ", walker.Values));
     }
 
-    [Test]
+    [Fact]
     public static void ChainedExtensionMethod()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -707,10 +717,10 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var methodDeclaration = syntaxTree.FindEqualsValueClause("var value = i.AsDisposable().AsDisposable()").Value;
         using var walker = ReturnValueWalker.Borrow(methodDeclaration, ReturnValueSearch.Recursive, semanticModel, CancellationToken.None);
-        Assert.AreEqual("new WrappingDisposable(d)", walker.Values.Single().ToString());
+        Assert.Equal("new WrappingDisposable(d)", walker.Values.Single().ToString());
     }
 
-    [Test]
+    [Fact]
     public static void LocalFunctionStatementBody()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -733,10 +743,10 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var invocation = syntaxTree.FindInvocation("Local()");
         using var walker = ReturnValueWalker.Borrow(invocation, ReturnValueSearch.Recursive, semanticModel, CancellationToken.None);
-        Assert.AreEqual("1", walker.Values.Single().ToString());
+        Assert.Equal("1", walker.Values.Single().ToString());
     }
 
-    [Test]
+    [Fact]
     public static void LocalFunctionExpressionBody()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -756,10 +766,10 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var invocation = syntaxTree.FindInvocation("Local()");
         using var walker = ReturnValueWalker.Borrow(invocation, ReturnValueSearch.Recursive, semanticModel, CancellationToken.None);
-        Assert.AreEqual("1", walker.Values.Single().ToString());
+        Assert.Equal("1", walker.Values.Single().ToString());
     }
 
-    [Test]
+    [Fact]
     public static void ConditionalExpression()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -782,10 +792,10 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var methodDeclaration = syntaxTree.FindInvocation("M(arg)");
         using var walker = ReturnValueWalker.Borrow(methodDeclaration, ReturnValueSearch.Recursive, semanticModel, CancellationToken.None);
-        Assert.AreEqual("1, 2", string.Join(", ", walker.Values));
+        Assert.Equal("1, 2", string.Join(", ", walker.Values));
     }
 
-    [Test]
+    [Fact]
     public static void NullCoalesce()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -808,11 +818,12 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var methodDeclaration = syntaxTree.FindInvocation("M(null)");
         using var walker = ReturnValueWalker.Borrow(methodDeclaration, ReturnValueSearch.Recursive, semanticModel, CancellationToken.None);
-        Assert.AreEqual("null, string.Empty", string.Join(", ", walker.Values));
+        Assert.Equal("null, string.Empty", string.Join(", ", walker.Values));
     }
 
-    [TestCase("(IDisposable)o")]
-    [TestCase("o as IDisposable")]
+    [Theory]
+    [InlineData("(IDisposable)o")]
+    [InlineData("o as IDisposable")]
     public static void Cast(string cast)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -835,10 +846,10 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var methodDeclaration = syntaxTree.FindInvocation("M(null)");
         using var walker = ReturnValueWalker.Borrow(methodDeclaration, ReturnValueSearch.Recursive, semanticModel, CancellationToken.None);
-        Assert.AreEqual("null", string.Join(", ", walker.Values));
+        Assert.Equal("null", string.Join(", ", walker.Values));
     }
 
-    [Test]
+    [Fact]
     public static void SwitchExpression()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -866,10 +877,10 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var methodDeclaration = syntaxTree.FindInvocation("M(o)");
         using var walker = ReturnValueWalker.Borrow(methodDeclaration, ReturnValueSearch.Recursive, semanticModel, CancellationToken.None);
-        Assert.AreEqual("1, 2, 3", string.Join(", ", walker.Values));
+        Assert.Equal("1, 2, 3", string.Join(", ", walker.Values));
     }
 
-    [Test]
+    [Fact]
     public static void ValidationErrorToStringConverter()
     {
         var code = @"
@@ -918,6 +929,6 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var methodDeclaration = syntaxTree.FindMethodDeclaration("Convert");
         using var walker = ReturnValueWalker.Borrow(methodDeclaration, ReturnValueSearch.Recursive, semanticModel, CancellationToken.None);
-        Assert.AreEqual("error.ErrorContent, result.ErrorContent, value", string.Join(", ", walker.Values));
+        Assert.Equal("error.ErrorContent, result.ErrorContent, value", string.Join(", ", walker.Values));
     }
 }

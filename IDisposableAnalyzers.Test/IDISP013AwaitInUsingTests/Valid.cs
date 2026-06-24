@@ -1,14 +1,14 @@
-﻿// ReSharper disable InconsistentNaming
+// ReSharper disable InconsistentNaming
 namespace IDisposableAnalyzers.Test.IDISP013AwaitInUsingTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
     private static readonly ReturnValueAnalyzer Analyzer = new();
 
-    [Test]
+    [Fact]
     public static void AwaitWebClientDownloadStringTaskAsyncInUsing()
     {
         var code = """
@@ -33,7 +33,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void AwaitWebClientDownloadStringTaskAsyncInUsingDeclaration()
     {
         var code = """
@@ -56,7 +56,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void UsingAwaited()
     {
         var code = """
@@ -96,7 +96,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void TaskFromResult()
     {
         var code = """
@@ -120,7 +120,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ValueTaskFromResult()
     {
         var code = """
@@ -144,7 +144,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void TaskCompletedTask()
     {
         var code = """
@@ -168,7 +168,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ValueTaskCompletedTask()
     {
         var code = """
@@ -192,7 +192,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void UsingNewMTaskRun()
     {
         var code = """
@@ -229,7 +229,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void UsingNewMLocalTaskRun()
     {
         var code = """
@@ -266,7 +266,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void UsingNewMLocalFuncTask()
     {
         var code = """
@@ -304,7 +304,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnNullAfterAwaitIssue89()
     {
         var code = """
@@ -330,7 +330,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnNullIssue89()
     {
         var code = """
@@ -355,7 +355,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void EarlyReturnNullIssue89()
     {
         var code = """
@@ -386,7 +386,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnInValueTask()
     {
         var disposable = """
@@ -421,11 +421,12 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, disposable, code);
     }
 
-    [TestCase("default")]
-    [TestCase("new ValueTask<int>(1)")]
-    [TestCase("new ValueTask<int>(disposable.Equals(disposable) ? 1 : 0)")]
-    [TestCase("new(1)")]
-    [TestCase("new(disposable.Equals(disposable) ? 1 : 0)")]
+    [Theory]
+    [InlineData("default")]
+    [InlineData("new ValueTask<int>(1)")]
+    [InlineData("new ValueTask<int>(disposable.Equals(disposable) ? 1 : 0)")]
+    [InlineData("new(1)")]
+    [InlineData("new(disposable.Equals(disposable) ? 1 : 0)")]
     public static void ReturnNewValueTask(string expression)
     {
         var disposable = """

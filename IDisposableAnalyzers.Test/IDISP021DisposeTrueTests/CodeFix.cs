@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP021DisposeTrueTests;
+namespace IDisposableAnalyzers.Test.IDISP021DisposeTrueTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class CodeFix
 {
@@ -9,7 +9,7 @@ public static class CodeFix
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP021DisposeTrue);
     private static readonly ArgumentFix Fix = new();
 
-    [Test]
+    [Fact]
     public static void WhenVirtual()
     {
         var before = @"
@@ -62,7 +62,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void WhenPrivate()
     {
         var before = @"

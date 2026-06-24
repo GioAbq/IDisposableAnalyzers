@@ -1,31 +1,46 @@
-﻿namespace IDisposableAnalyzers.Test;
+namespace IDisposableAnalyzers.Test;
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.Diagnostics;
-using NUnit.Framework;
+using Xunit;
 
 public static class Recursion
 {
-    private static readonly IReadOnlyList<DiagnosticAnalyzer> AllAnalyzers =
+    private static readonly ImmutableArray<Type> AllAnalyzerTypes =
         typeof(AnalyzerCategory)
             .Assembly
             .GetTypes()
             .Where(t => !t.IsAbstract && typeof(DiagnosticAnalyzer).IsAssignableFrom(t))
-            .Select(t => (DiagnosticAnalyzer)Activator.CreateInstance(t))
-            .ToArray();
+            .ToImmutableArray();
 
-    [Test]
-    public static void NotEmpty()
+    public static TheoryData<Type> AnalyzerCases
     {
-        CollectionAssert.IsNotEmpty(AllAnalyzers);
+        get
+        {
+            var data = new TheoryData<Type>();
+            foreach (var type in AllAnalyzerTypes)
+            {
+                data.Add(type);
+            }
+
+            return data;
+        }
     }
 
-    [TestCaseSource(nameof(AllAnalyzers))]
-    public static void ConstructorCallingSelf(DiagnosticAnalyzer analyzer)
+    [Fact]
+    public static void NotEmpty()
     {
+        Assert.NotEmpty(AllAnalyzerTypes);
+    }
+
+    [Theory]
+    [MemberData(nameof(AnalyzerCases))]
+    public static void ConstructorCallingSelf(Type analyzerType)
+    {
+        var analyzer = (DiagnosticAnalyzer)Activator.CreateInstance(analyzerType)!;
         var code = @"
 namespace N
 {
@@ -68,9 +83,11 @@ namespace N
         RoslynAssert.NoAnalyzerDiagnostics(analyzer, code);
     }
 
-    [TestCaseSource(nameof(AllAnalyzers))]
-    public static void ConstructorCycle(DiagnosticAnalyzer analyzer)
+    [Theory]
+    [MemberData(nameof(AnalyzerCases))]
+    public static void ConstructorCycle(Type analyzerType)
     {
+        var analyzer = (DiagnosticAnalyzer)Activator.CreateInstance(analyzerType)!;
         var code = @"
 namespace N
 {

@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -9,7 +9,7 @@ public static partial class CodeFix
     {
         private static readonly FieldAndPropertyDeclarationAnalyzer Analyzer = new();
 
-        [Test]
+        [Fact]
         public static void ImplementIDisposableAndMakeSealed()
         {
             var before = @"
@@ -86,7 +86,7 @@ namespace N
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, "Implement IDisposable and make class sealed.");
         }
 
-        [Test]
+        [Fact]
         public static void ImplementIDisposableWithVirtualDisposeMethod()
         {
             var before = @"
@@ -187,7 +187,7 @@ namespace N
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "LEGACY Implement IDisposable with protected virtual dispose method.");
         }
 
-        [Test]
+        [Fact]
         public static void ImplementIDisposableSealedClassUsingsInside()
         {
             var before = @"
@@ -236,7 +236,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void ImplementIDisposableSealedClassUsingsOutside()
         {
             var before = @"
@@ -284,7 +284,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void ImplementIDisposableSealedClassUnderscoreWithConst()
         {
             var before = @"
@@ -340,7 +340,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void ImplementIDisposableAbstractClass()
         {
             var before = @"
@@ -398,7 +398,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "LEGACY Implement IDisposable with protected virtual dispose method.");
         }
 
-        [Test]
+        [Fact]
         public static void FactoryMethodCallingPrivateCtorWithCreatedDisposable()
         {
             var before = @"
@@ -460,7 +460,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void Issue111PartialUserControl()
         {
             var before = @"

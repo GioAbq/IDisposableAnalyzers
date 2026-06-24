@@ -1,13 +1,14 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
-public static partial class Valid<T>
+public abstract partial class Valid
 {
-    [TestCase("this.components.Add(stream)")]
-    [TestCase("components.Add(stream)")]
-    public static void LocalAddedToFormComponents(string expression)
+    [Theory]
+    [InlineData("this.components.Add(stream)")]
+    [InlineData("components.Add(stream)")]
+    public void LocalAddedToFormComponents(string expression)
     {
         var code = @"
 namespace N
@@ -28,9 +29,10 @@ namespace N
         RoslynAssert.NoAnalyzerDiagnostics(Analyzer, code);
     }
 
-    [TestCase("this.components.Add(this.stream)")]
-    [TestCase("components.Add(stream)")]
-    public static void FieldAddedToFormComponents(string expression)
+    [Theory]
+    [InlineData("this.components.Add(this.stream)")]
+    [InlineData("components.Add(stream)")]
+    public void FieldAddedToFormComponents(string expression)
     {
         var code = @"
 namespace N
@@ -53,8 +55,8 @@ namespace N
         RoslynAssert.NoAnalyzerDiagnostics(Analyzer, code);
     }
 
-    [Test]
-    public static void IgnoreNewFormShow()
+    [Fact]
+    public void IgnoreNewFormShow()
     {
         var winForm = @"
 namespace N

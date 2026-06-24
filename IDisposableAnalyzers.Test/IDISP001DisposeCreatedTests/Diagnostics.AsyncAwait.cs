@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Diagnostics
 {
@@ -23,7 +23,7 @@ namespace N
     }
 }";
 
-        [Test]
+        [Fact]
         public static void AwaitTaskRun()
         {
             var code = @"
@@ -42,7 +42,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, Disposable, code);
         }
 
-        [Test]
+        [Fact]
         public static void AwaitTaskFromResult()
         {
             var code = @"
@@ -61,7 +61,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, Disposable, code);
         }
 
-        [Test]
+        [Fact]
         public static void AwaitCreate()
         {
             var code = @"
@@ -87,7 +87,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, Disposable, code);
         }
 
-        [Test]
+        [Fact]
         public static void AwaitCreateAsyncTaskFromResult()
         {
             var code = @"
@@ -111,7 +111,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, Disposable, code);
         }
 
-        [Test]
+        [Fact]
         public static void AwaitRead()
         {
             var code = @"

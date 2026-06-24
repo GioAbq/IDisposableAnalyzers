@@ -1,16 +1,17 @@
-﻿namespace IDisposableAnalyzers.Test.Helpers.AssignedValueWalkerTests;
+namespace IDisposableAnalyzers.Test.Helpers.AssignedValueWalkerTests;
 
 using System.Threading;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CSharp;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class AssignedValueWalkerTests
 {
     public static class Indexer
     {
-        [TestCase("var temp1 = ints[0];", "1, 2")]
-        [TestCase("var temp2 = ints[0];", "1, 2, 3")]
+        [Theory]
+        [InlineData("var temp1 = ints[0];", "1, 2")]
+        [InlineData("var temp2 = ints[0];", "1, 2, 3")]
         public static void InitializedArrayIndexer(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -29,11 +30,12 @@ internal class C
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = ints[0];", "1, 2")]
-        [TestCase("var temp2 = ints[0];", "1, 2, 3")]
+        [Theory]
+        [InlineData("var temp1 = ints[0];", "1, 2")]
+        [InlineData("var temp2 = ints[0];", "1, 2, 3")]
         public static void InitializedTypedArrayIndexer(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -53,11 +55,12 @@ internal class C
                                   .Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = ints[0];", "1, 2")]
-        [TestCase("var temp2 = ints[0];", "1, 2, 3")]
+        [Theory]
+        [InlineData("var temp1 = ints[0];", "1, 2")]
+        [InlineData("var temp2 = ints[0];", "1, 2, 3")]
         public static void InitializedListOfIntIndexerAfterSetItem(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -82,11 +85,12 @@ namespace N
                                   .Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = ints[0];", "1, 2")]
-        [TestCase("var temp2 = ints[0];", "1, 2, 3")]
+        [Theory]
+        [InlineData("var temp1 = ints[0];", "1, 2")]
+        [InlineData("var temp2 = ints[0];", "1, 2, 3")]
         public static void InitializedListOfIntIndexerAfterAddItem(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -111,11 +115,12 @@ namespace N
                                   .Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = ints[0];", "1, 2")]
-        [TestCase("var temp2 = ints[0];", "1, 2, 3")]
+        [Theory]
+        [InlineData("var temp1 = ints[0];", "1, 2")]
+        [InlineData("var temp2 = ints[0];", "1, 2, 3")]
         public static void InitializedElementStyleDictionaryIndexer(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -144,11 +149,12 @@ namespace N
                                   .Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = ints[0];", "1, 2")]
-        [TestCase("var temp2 = ints[0];", "1, 2, 3")]
+        [Theory]
+        [InlineData("var temp1 = ints[0];", "1, 2")]
+        [InlineData("var temp2 = ints[0];", "1, 2, 3")]
         public static void InitializedDictionaryIndexer(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -177,11 +183,12 @@ namespace N
                                   .Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = ints[0];", "1, 2")]
-        [TestCase("var temp2 = ints[0];", "1, 2, 3")]
+        [Theory]
+        [InlineData("var temp1 = ints[0];", "1, 2")]
+        [InlineData("var temp2 = ints[0];", "1, 2, 3")]
         public static void InitializedDictionaryAfterAdd(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -210,7 +217,7 @@ namespace N
                                   .Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
     }
 }

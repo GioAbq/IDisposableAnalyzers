@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP023ReferenceTypeInFinalizerContextTests;
+namespace IDisposableAnalyzers.Test.IDISP023ReferenceTypeInFinalizerContextTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
@@ -22,7 +22,7 @@ namespace N
     }
 }";
 
-        [Test]
+        [Fact]
         public static void TouchingInstanceReferenceTypeInIfBlock()
         {
             var code = @"
@@ -64,7 +64,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void LazyDisposedWhenDisposingAndValueCreated()
         {
             var code = @"
@@ -99,7 +99,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, DisposableCode, code);
         }
 
-        [Test]
+        [Fact]
         public static void EarlyReturnWhenNotDisposing()
         {
             var code = @"
@@ -136,7 +136,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, DisposableCode, code);
         }
 
-        [Test]
+        [Fact]
         public static void TouchingInstanceReferenceTypeInIfNotDiposedAndDispsing()
         {
             var code = @"
@@ -175,7 +175,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void TouchingInstanceReferenceTypeInIfDispsingAndNotDiposed()
         {
             var code = @"
@@ -214,7 +214,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void TouchingStaticReferenceTypeInIfBlock()
         {
             var code = @"
@@ -256,7 +256,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void TouchingReferenceTypeInIfExpression()
         {
             var code = @"
@@ -296,8 +296,9 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [TestCase("isDisposed.Equals(false)")]
-        [TestCase("isDisposed.Equals(this)")]
+        [Theory]
+        [InlineData("isDisposed.Equals(false)")]
+        [InlineData("isDisposed.Equals(this)")]
         public static void TouchingStruct(string expression)
         {
             var code = @"
@@ -337,7 +338,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void SettingStaticToNull()
         {
             var code = @"
@@ -380,7 +381,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void SettingInstanceToNull()
         {
             var code = @"
@@ -423,7 +424,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void WhenCallingBaseDispose()
         {
             var baseClass = @"
@@ -473,7 +474,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, DisposableCode, baseClass, code);
         }
 
-        [Test]
+        [Fact]
         public static void WhenCallingBaseDisposeAfterCheckDispose()
         {
             var baseClass = @"
@@ -531,7 +532,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, DisposableCode, baseClass, code);
         }
 
-        [Test]
+        [Fact]
         public static void WhenCallingBaseDisposeAfterCheckDisposeAndIfDisposing()
         {
             var baseClass = @"
@@ -597,7 +598,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, DisposableCode, baseClass, code);
         }
 
-        [Test]
+        [Fact]
         public static void IfNotDisposingReturn()
         {
             var code = @"
@@ -635,7 +636,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, DisposableCode, code);
         }
 
-        [Test]
+        [Fact]
         public static void UsingStaticMember()
         {
             var code = @"

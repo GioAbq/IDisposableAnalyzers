@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
+namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -11,7 +11,7 @@ public static partial class CodeFix
         // ReSharper disable once MemberHidesStaticFromOuterClass
         private static readonly DisposeInTearDownFix Fix = new();
 
-        [Test]
+        [Fact]
         public static void AssigningFieldInSetUpCreatesTearDownAndDisposes()
         {
             var before = @"
@@ -67,7 +67,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void AssigningFieldInSetUpCreatesTearDownAndDisposesExplicitDisposable()
         {
             var before = @"
@@ -125,7 +125,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { ExplicitDisposable, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void AssigningFieldInSetUpdDisposesInTearDown()
         {
             var before = @"
@@ -186,7 +186,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void AssigningFieldInSetUpdDisposesInTearDownExplicitDisposable()
         {
             var before = @"
@@ -249,7 +249,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { ExplicitDisposable, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void AssigningFieldInOneTimeSetUp()
         {
             var before = @"
@@ -305,7 +305,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void CreateStaticTeardown()
         {
             var before = @"
@@ -361,7 +361,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void AssigningFieldInOneTimeSetUpWhenOneTimeTearDownExists()
         {
             var before = @"

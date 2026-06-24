@@ -1,13 +1,12 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
-// ReSharper disable once UnusedTypeParameter
-public static partial class Valid<T>
+public abstract partial class Valid
 {
-    [Test]
-    public static void DontUseUsingWhenAssigningAField()
+    [Fact]
+    public void DontUseUsingWhenAssigningAField()
     {
         var code = @"
 namespace N
@@ -28,8 +27,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DontUseUsingWhenAssigningAFieldTernary()
+    [Fact]
+    public void DontUseUsingWhenAssigningAFieldTernary()
     {
         var code = @"
 namespace N
@@ -52,8 +51,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DontUseUsingWhenAssigningAFieldInAMethod()
+    [Fact]
+    public void DontUseUsingWhenAssigningAFieldInAMethod()
     {
         var code = @"
 namespace N
@@ -74,8 +73,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DontUseUsingWhenAssigningAFieldInAMethodLocalVariable()
+    [Fact]
+    public void DontUseUsingWhenAssigningAFieldInAMethodLocalVariable()
     {
         var code = @"
 namespace N
@@ -97,8 +96,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DontUseUsingWhenAddingLocalVariableToFieldList()
+    [Fact]
+    public void DontUseUsingWhenAddingLocalVariableToFieldList()
     {
         var code = @"
 namespace N
@@ -120,8 +119,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DontUseUsingWhenAssigningACallThatReturnsAStaticField()
+    [Fact]
+    public void DontUseUsingWhenAssigningACallThatReturnsAStaticField()
     {
         var code = @"
 namespace N
@@ -147,8 +146,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DontUseUsingWhenAssigningACallThatReturnsAField()
+    [Fact]
+    public void DontUseUsingWhenAssigningACallThatReturnsAField()
     {
         var code = @"
 namespace N
@@ -174,8 +173,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DontUseUsingWhenAssigningACallThatReturnsAFieldSwitch()
+    [Fact]
+    public void DontUseUsingWhenAssigningACallThatReturnsAFieldSwitch()
     {
         var code = @"
 namespace N
@@ -212,8 +211,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void BuildCollectionThenAssignFieldIndexer()
+    [Fact]
+    public void BuildCollectionThenAssignFieldIndexer()
     {
         var code = @"
 namespace N
@@ -236,8 +235,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, Disposable, code);
     }
 
-    [Test]
-    public static void BuildCollectionThenAssignField()
+    [Fact]
+    public void BuildCollectionThenAssignField()
     {
         var code = @"
 namespace N

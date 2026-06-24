@@ -1,8 +1,8 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CodeFixes;
-using NUnit.Framework;
+using Xunit;
 
 public static class NoFix
 {
@@ -12,7 +12,7 @@ public static class NoFix
     private static readonly CodeFixProvider AddToCompositeDisposableFix = new AddToCompositeDisposableFix();
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP004DoNotIgnoreCreated);
 
-    [Test]
+    [Fact]
     public static void WhenArgument()
     {
         var code = @"

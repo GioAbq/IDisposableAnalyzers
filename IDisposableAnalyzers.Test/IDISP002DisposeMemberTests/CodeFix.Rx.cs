@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP002DisposeMemberTests;
+namespace IDisposableAnalyzers.Test.IDISP002DisposeMemberTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -11,7 +11,7 @@ public static partial class CodeFix
         private static readonly DisposeMemberFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP002DisposeMember);
 
-        [Test]
+        [Fact]
         public static void SerialDisposable()
         {
             var before = @"
@@ -62,7 +62,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after, settings: LibrarySettings.Reactive);
         }
 
-        [Test]
+        [Fact]
         public static void ObservableSubscribe()
         {
             var before = @"
@@ -109,7 +109,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after, settings: LibrarySettings.Reactive);
         }
 
-        [Test]
+        [Fact]
         public static void ObservableElvisSubscribe()
         {
             var before = @"

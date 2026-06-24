@@ -1,12 +1,12 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using Gu.Roslyn.Asserts;
 
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
-    [Test]
+    [Fact]
     public static void SerialDisposable()
     {
         var code = @"
@@ -35,7 +35,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void SingleAssignmentDisposable()
     {
         var code = @"
@@ -64,7 +64,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void CompositeDisposableInitializer()
     {
         var code = @"
@@ -97,7 +97,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void CompositeDisposableCtor()
     {
         var code = @"
@@ -128,7 +128,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void CompositeDisposableAddIObservableSubscribe()
     {
         var code = @"
@@ -155,7 +155,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void CompositeDisposableAddNewSingleAssignmentDisposable()
     {
         var code = @"
@@ -182,7 +182,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void CompositeDisposableAddThrottleSubscribe()
     {
         var code = @"
@@ -211,7 +211,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void CompositeDisposableExtAddAndReturn()
     {
         var compositeDisposableExtCode = @"
@@ -258,7 +258,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, new[] { DisposableCode, compositeDisposableExtCode, code }, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void CompositeDisposableExtAddAndReturnToString()
     {
         var compositeDisposableExtCode = @"
@@ -305,7 +305,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, new[] { DisposableCode, compositeDisposableExtCode, code }, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void ISchedulerSchedule()
     {
         var code = @"
@@ -326,7 +326,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void ObservableElvisSubscribeIssue221()
     {
         var code = @"
@@ -370,7 +370,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void AsReadOnlyViewAsReadOnlyFilteredView()
     {
         var code = @"
@@ -405,7 +405,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void AsReadOnlyFilteredViewAsMappingView()
     {
         var code = @"
@@ -438,7 +438,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void AssigningGenericSerialDisposable()
     {
         var code = @"
@@ -469,7 +469,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: LibrarySettings.Reactive);
     }
 
-    [Test]
+    [Fact]
     public static void DisposeWith()
     {
         var code = @"

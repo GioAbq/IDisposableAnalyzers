@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
+namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class FixAll
 {
@@ -9,7 +9,7 @@ public static class FixAll
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP003DisposeBeforeReassigning);
     private static readonly DisposeBeforeAssignFix Fix = new();
 
-    [Test]
+    [Fact]
     public static void NotDisposingVariable()
     {
         var before = @"
@@ -46,7 +46,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void NotDisposingVariables()
     {
         var before = @"

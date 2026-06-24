@@ -1,13 +1,12 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
+namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
-// ReSharper disable once UnusedTypeParameter
-public static partial class Valid<T>
+public abstract partial class Valid
 {
-    [Test]
-    public static void DisposingFieldInTearDown()
+    [Fact]
+    public void DisposingFieldInTearDown()
     {
         var code = @"
 namespace N
@@ -34,8 +33,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
-    public static void DisposingFieldInOneTimeTearDown()
+    [Fact]
+    public void DisposingFieldInOneTimeTearDown()
     {
         var code = @"
 namespace N
@@ -62,8 +61,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
-    public static void DisposingFieldInTestCleanup()
+    [Fact]
+    public void DisposingFieldInTestCleanup()
     {
         var code = @"
 namespace N
@@ -90,8 +89,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
-    public static void DisposingFieldInClassCleanup()
+    [Fact]
+    public void DisposingFieldInClassCleanup()
     {
         var code = @"
 namespace N

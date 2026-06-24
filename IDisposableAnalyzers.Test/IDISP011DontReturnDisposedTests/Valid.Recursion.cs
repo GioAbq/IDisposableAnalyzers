@@ -1,13 +1,13 @@
 namespace IDisposableAnalyzers.Test.IDISP011DontReturnDisposedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
     public static class Recursion
     {
-        [Test]
+        [Fact]
         public static void IgnoresWhenDisposingRecursiveProperty()
         {
             var code = @"
@@ -28,7 +28,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoresWhenNotDisposingRecursiveProperty()
         {
             var code = @"
@@ -48,7 +48,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoresWhenDisposingFieldAssignedWithRecursiveProperty()
         {
             var code = @"
@@ -76,7 +76,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoresWhenNotDisposingFieldAssignedWithRecursiveProperty()
         {
             var code = @"
@@ -103,7 +103,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void IgnoresWhenDisposingRecursiveMethod()
         {
             var code = @"

@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP008DoNotMixInjectedAndCreatedForMemberTests;
+namespace IDisposableAnalyzers.Test.IDISP008DoNotMixInjectedAndCreatedForMemberTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Diagnostics
 {
@@ -9,10 +9,11 @@ public static partial class Diagnostics
     {
         private static readonly FieldAndPropertyDeclarationAnalyzer Analyzer = new();
 
-        [TestCase("arg ?? File.OpenRead(string.Empty)")]
-        [TestCase("File.OpenRead(string.Empty) ?? arg")]
-        [TestCase("true ? arg : File.OpenRead(string.Empty)")]
-        [TestCase("true ? File.OpenRead(string.Empty) : arg")]
+        [Theory]
+        [InlineData("arg ?? File.OpenRead(string.Empty)")]
+        [InlineData("File.OpenRead(string.Empty) ?? arg")]
+        [InlineData("true ? arg : File.OpenRead(string.Empty)")]
+        [InlineData("true ? File.OpenRead(string.Empty) : arg")]
         public static void InjectedAndCreated(string expression)
         {
             var code = @"
@@ -35,7 +36,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void InjectedAndCreatedCtorAndInitializer()
         {
             var code = @"
@@ -56,7 +57,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void InjectedAndCreatedTwoCtors()
         {
             var code = @"
@@ -82,9 +83,10 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("public Stream Stream { get; protected set; }")]
-        [TestCase("public Stream Stream { get; set; }")]
-        [TestCase("protected Stream Stream { get; set; }")]
+        [Theory]
+        [InlineData("public Stream Stream { get; protected set; }")]
+        [InlineData("public Stream Stream { get; set; }")]
+        [InlineData("protected Stream Stream { get; set; }")]
         public static void Mutable(string property)
         {
             var code = @"
@@ -100,9 +102,10 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("internal Stream Stream { get; set; }")]
-        [TestCase("public Stream Stream { get; set; }")]
-        [TestCase("public Stream Stream { get; internal set; }")]
+        [Theory]
+        [InlineData("internal Stream Stream { get; set; }")]
+        [InlineData("public Stream Stream { get; set; }")]
+        [InlineData("public Stream Stream { get; internal set; }")]
         public static void MutablePropertyInSealed(string property)
         {
             var code = @"
@@ -124,7 +127,7 @@ namespace N
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void InjectedAndCreatedInFactory()
         {
             var code = @"

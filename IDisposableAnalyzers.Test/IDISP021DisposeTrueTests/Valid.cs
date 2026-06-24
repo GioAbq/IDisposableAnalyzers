@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP021DisposeTrueTests;
+namespace IDisposableAnalyzers.Test.IDISP021DisposeTrueTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
     private static readonly DisposeMethodAnalyzer Analyzer = new();
 
-    [Test]
+    [Fact]
     public static void SealedWithFinalizer()
     {
         var code = @"
@@ -42,7 +42,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void Abstract()
     {
         var code = @"
@@ -58,7 +58,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ProtectedAbstract()
     {
         var code = @"

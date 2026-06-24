@@ -1,19 +1,20 @@
-﻿namespace IDisposableAnalyzers.Test.Helpers.AssignedValueWalkerTests;
+namespace IDisposableAnalyzers.Test.Helpers.AssignedValueWalkerTests;
 
 using System.Threading;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CSharp;
 
-using NUnit.Framework;
+using Xunit;
 
 public static partial class AssignedValueWalkerTests
 {
     public static class SideEffect
     {
-        [TestCase("var temp1 = this.value;", "")]
-        [TestCase("var temp2 = this.value;", "1")]
-        [TestCase("var temp3 = this.value;", "1, 2")]
-        [TestCase("var temp4 = this.value;", "1, 2, arg")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "")]
+        [InlineData("var temp2 = this.value;", "1")]
+        [InlineData("var temp3 = this.value;", "1, 2")]
+        [InlineData("var temp4 = this.value;", "1, 2, arg")]
         public static void MethodInjected(string statement, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -48,13 +49,14 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(statement).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.value;", "")]
-        [TestCase("var temp2 = this.value;", "1")]
-        [TestCase("var temp3 = this.value;", "1, 2")]
-        [TestCase("var temp4 = this.value;", "1, 2, arg")]
+        [Theory]
+        [InlineData("var temp1 = this.value;", "")]
+        [InlineData("var temp2 = this.value;", "1")]
+        [InlineData("var temp3 = this.value;", "1, 2")]
+        [InlineData("var temp4 = this.value;", "1, 2, arg")]
         public static void MethodInjectedWithOptional(string statement, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -89,13 +91,14 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(statement).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = this.text;", "")]
-        [TestCase("var temp2 = this.text;", "null")]
-        [TestCase("var temp3 = this.text;", "null, \"abc\"")]
-        [TestCase("var temp4 = this.text;", "null, \"abc\", textArg")]
+        [Theory]
+        [InlineData("var temp1 = this.text;", "")]
+        [InlineData("var temp2 = this.text;", "null")]
+        [InlineData("var temp3 = this.text;", "null, \"abc\"")]
+        [InlineData("var temp4 = this.text;", "null, \"abc\", textArg")]
         public static void MethodInjectedWithOptionalAssigningOptional(string statement, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -130,7 +133,7 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(statement).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
     }
 }

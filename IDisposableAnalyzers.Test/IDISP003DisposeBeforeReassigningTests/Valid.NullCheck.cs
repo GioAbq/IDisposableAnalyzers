@@ -1,20 +1,20 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
+namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
-// ReSharper disable once UnusedTypeParameter
-public static partial class Valid<T>
+public abstract partial class Valid
 {
-    [TestCase("this.stream == null")]
-    [TestCase("this.stream == null && file != null")]
-    [TestCase("file != null && this.stream == null")]
-    [TestCase("this.stream is null")]
-    [TestCase("ReferenceEquals(this.stream, null)")]
-    [TestCase("Equals(this.stream, null)")]
-    [TestCase("object.ReferenceEquals(this.stream, null)")]
-    [TestCase("object.Equals(this.stream, null)")]
-    public static void WhenNullCheckBefore(string nullCheck)
+    [Theory]
+    [InlineData("this.stream == null")]
+    [InlineData("this.stream == null && file != null")]
+    [InlineData("file != null && this.stream == null")]
+    [InlineData("this.stream is null")]
+    [InlineData("ReferenceEquals(this.stream, null)")]
+    [InlineData("Equals(this.stream, null)")]
+    [InlineData("object.ReferenceEquals(this.stream, null)")]
+    [InlineData("object.Equals(this.stream, null)")]
+    public void WhenNullCheckBefore(string nullCheck)
     {
         var code = @"
 namespace N

@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -25,7 +25,7 @@ public static partial class CodeFix
             }
             """;
 
-        [Test]
+        [Fact]
         public static void LocalToUsingDeclaration()
         {
             var before = """
@@ -63,7 +63,7 @@ public static partial class CodeFix
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "using");
         }
 
-        [Test]
+        [Fact]
         public static void Local()
         {
             var before = """
@@ -103,7 +103,7 @@ public static partial class CodeFix
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Add using to end of block.");
         }
 
-        [Test]
+        [Fact]
         public static void LocalWithTriviaToUsingDeclaration()
         {
             var before = """
@@ -143,7 +143,7 @@ public static partial class CodeFix
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "using");
         }
 
-        [Test]
+        [Fact]
         public static void LocalWithTrivia()
         {
             var before = """
@@ -185,7 +185,7 @@ public static partial class CodeFix
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Add using to end of block.");
         }
 
-        [Test]
+        [Fact]
         public static void LocalOneStatementAfterToUsingDeclaration()
         {
             var before = """
@@ -226,7 +226,7 @@ public static partial class CodeFix
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "using");
         }
 
-        [Test]
+        [Fact]
         public static void LocalOneStatementAfter()
         {
             var before = """
@@ -269,7 +269,7 @@ public static partial class CodeFix
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Add using to end of block.");
         }
 
-        [Test]
+        [Fact]
         public static void LocalManyStatements()
         {
             var before = """
@@ -324,7 +324,7 @@ public static partial class CodeFix
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "using");
         }
 
-        [Test]
+        [Fact]
         public static void LocalInLambdaToUsingDeclaration()
         {
             var before = """
@@ -368,7 +368,7 @@ public static partial class CodeFix
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "using");
         }
 
-        [Test]
+        [Fact]
         public static void LocalInLambda()
         {
             var before = """
@@ -414,7 +414,7 @@ public static partial class CodeFix
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Add using to end of block.");
         }
 
-        [Test]
+        [Fact]
         public static void LocalManyStatementsToUsingDeclaration()
         {
             var before = """
@@ -472,7 +472,7 @@ public static partial class CodeFix
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Add using to end of block.");
         }
 
-        [Test]
+        [Fact]
         public static void LocalInSwitchCase()
         {
             var before = """
@@ -547,7 +547,7 @@ public static partial class CodeFix
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Add using to end of block.");
         }
 
-        [Test]
+        [Fact]
         public static void LocalFactoryMethod()
         {
             var before = """
@@ -597,10 +597,11 @@ public static partial class CodeFix
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Add using to end of block.");
         }
 
-        [TestCase("System.Activator.CreateInstance<Disposable>()")]
-        [TestCase("(Disposable)System.Activator.CreateInstance(typeof(Disposable))!")]
-        [TestCase("(Disposable?)System.Activator.CreateInstance(typeof(Disposable))")]
-        [TestCase("(Disposable)constructorInfo.Invoke(null)")]
+        [Theory]
+        [InlineData("System.Activator.CreateInstance<Disposable>()")]
+        [InlineData("(Disposable)System.Activator.CreateInstance(typeof(Disposable))!")]
+        [InlineData("(Disposable?)System.Activator.CreateInstance(typeof(Disposable))")]
+        [InlineData("(Disposable)constructorInfo.Invoke(null)")]
         public static void Reflection(string expression)
         {
             var before = """
@@ -636,7 +637,7 @@ public static partial class CodeFix
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after, fixTitle: "using");
         }
 
-        [Test]
+        [Fact]
         public static void CreateRebind()
         {
             var disposable = """
@@ -701,8 +702,9 @@ public static partial class CodeFix
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { disposable, before }, after, fixTitle: "using");
         }
 
-        [TestCase("new S()")]
-        [TestCase("new()")]
+        [Theory]
+        [InlineData("new S()")]
+        [InlineData("new()")]
         public static void LocalRefStructToUsingDeclaration(string expression)
         {
             var refStruct = """

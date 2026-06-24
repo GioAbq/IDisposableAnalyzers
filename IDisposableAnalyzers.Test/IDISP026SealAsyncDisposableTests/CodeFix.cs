@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP026SealAsyncDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP026SealAsyncDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class CodeFix
 {
@@ -9,7 +9,7 @@ public static class CodeFix
     private static readonly SealFix Fix = new();
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP026SealAsyncDisposable);
 
-    [Test]
+    [Fact]
     public static void IAsyncDisposable()
     {
         var before = """

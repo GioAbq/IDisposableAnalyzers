@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP016DoNotUseDisposedInstanceTests;
+namespace IDisposableAnalyzers.Test.IDISP016DoNotUseDisposedInstanceTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
     public static class DisposeCall
     {
-        [Test]
+        [Fact]
         public static void CreateTouchDispose()
         {
             var code = @"
@@ -28,7 +28,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [Test]
+        [Fact]
         public static void UsingFileOpenRead()
         {
             var code = @"
@@ -50,7 +50,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposeInUsing()
         {
             // this is weird but should not warn I think
@@ -73,7 +73,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [Test]
+        [Fact]
         public static void IfDisposeReturn()
         {
             var code = @"
@@ -100,7 +100,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [Test]
+        [Fact]
         public static void IfDisposeThrow()
         {
             var code = @"
@@ -128,7 +128,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [Test]
+        [Fact]
         public static void ReassignAfterDispose()
         {
             var code = @"
@@ -152,7 +152,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [Test]
+        [Fact]
         public static void ReassignViaOutAfterDispose()
         {
             var code = @"
@@ -182,8 +182,9 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [TestCase("Tuple.Create(File.OpenRead(file1), File.OpenRead(file2))")]
-        [TestCase("new Tuple<FileStream, FileStream>(File.OpenRead(file1), File.OpenRead(file2))")]
+        [Theory]
+        [InlineData("Tuple.Create(File.OpenRead(file1), File.OpenRead(file2))")]
+        [InlineData("new Tuple<FileStream, FileStream>(File.OpenRead(file1), File.OpenRead(file2))")]
         public static void Tuple(string expression)
         {
             var code = @"
@@ -212,8 +213,9 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [TestCase("Tuple.Create(File.OpenRead(file), File.OpenRead(file))")]
-        [TestCase("new Tuple<FileStream, FileStream>(File.OpenRead(file), File.OpenRead(file))")]
+        [Theory]
+        [InlineData("Tuple.Create(File.OpenRead(file), File.OpenRead(file))")]
+        [InlineData("new Tuple<FileStream, FileStream>(File.OpenRead(file), File.OpenRead(file))")]
         public static void LocalTuple(string expression)
         {
             var code = @"
@@ -236,8 +238,9 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [TestCase("Tuple.Create(File.OpenRead(file), File.OpenRead(file))")]
-        [TestCase("new Tuple<FileStream, FileStream>(File.OpenRead(file), File.OpenRead(file))")]
+        [Theory]
+        [InlineData("Tuple.Create(File.OpenRead(file), File.OpenRead(file))")]
+        [InlineData("new Tuple<FileStream, FileStream>(File.OpenRead(file), File.OpenRead(file))")]
         public static void ListOfTuple(string expression)
         {
             var code = @"
@@ -270,7 +273,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void ListOfValueTuple()
         {
             var code = @"
@@ -303,7 +306,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void LeaveOpenLocals()
         {
             var code = @"
@@ -332,7 +335,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void LeaveOpenFields()
         {
             var code = @"

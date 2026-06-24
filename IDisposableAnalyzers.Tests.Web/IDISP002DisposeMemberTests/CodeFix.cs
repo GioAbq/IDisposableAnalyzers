@@ -1,9 +1,9 @@
-﻿namespace IDisposableAnalyzers.Tests.Web.IDISP002DisposeMemberTests;
+namespace IDisposableAnalyzers.Tests.Web.IDISP002DisposeMemberTests;
 
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
-using NUnit.Framework;
+using Xunit;
 
 public static class CodeFix
 {
@@ -11,7 +11,7 @@ public static class CodeFix
     private static readonly CodeFixProvider Fix = new DisposeMemberFix();
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP002DisposeMember);
 
-    [Test]
+    [Fact]
     public static void FieldIAsyncDisposable()
     {
         var before = @"
@@ -53,7 +53,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldOfTypeObjectIAsyncDisposable()
     {
         var before = @"
@@ -95,7 +95,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldIAsyncDisposableAndIDisposable1()
     {
         var before = @"
@@ -147,7 +147,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldIAsyncDisposableAndIDisposable2()
     {
         var before = @"
@@ -199,7 +199,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void NullableFieldIAsyncDisposable()
     {
         var code = @"
@@ -224,7 +224,7 @@ namespace N
         RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void FieldConvertibleToIDisposable()
     {
         var before = @"
@@ -264,7 +264,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldConvertibleToIDisposableAndIAsyncDisposable1()
     {
         var before = @"
@@ -316,7 +316,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldConvertibleToIDisposableAndIAsyncDisposable2()
     {
         var before = @"
@@ -368,7 +368,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldConvertibleToIDisposableAndIAsyncDisposable3()
     {
         var before = @"

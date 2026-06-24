@@ -1,14 +1,14 @@
-﻿namespace IDisposableAnalyzers.Test.Helpers;
+namespace IDisposableAnalyzers.Test.Helpers;
 
 using System.Threading;
 using Gu.Roslyn.AnalyzerExtensions;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CSharp;
-using NUnit.Framework;
+using Xunit;
 
 public static class DisposableMemberTests
 {
-    [Test]
+    [Fact]
     public static void SimpleField()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -31,10 +31,10 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var declaration = syntaxTree.FindFieldDeclaration("stream");
         var symbol = semanticModel.GetDeclaredSymbolSafe(declaration, CancellationToken.None);
-        Assert.AreEqual(true, DisposableMember.IsDisposed(new FieldOrPropertyAndDeclaration(symbol, declaration), semanticModel, CancellationToken.None));
+        Assert.Equal(true, DisposableMember.IsDisposed(new FieldOrPropertyAndDeclaration(symbol, declaration), semanticModel, CancellationToken.None));
     }
 
-    [Test]
+    [Fact]
     public static void DisposedInOverridden()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -67,10 +67,10 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var declaration = syntaxTree.FindFieldDeclaration("stream");
         var symbol = semanticModel.GetDeclaredSymbolSafe(declaration, CancellationToken.None);
-        Assert.AreEqual(true, DisposableMember.IsDisposed(new FieldOrPropertyAndDeclaration(symbol, declaration), semanticModel, CancellationToken.None));
+        Assert.Equal(true, DisposableMember.IsDisposed(new FieldOrPropertyAndDeclaration(symbol, declaration), semanticModel, CancellationToken.None));
     }
 
-    [Test]
+    [Fact]
     public static void DisposedInExplicitImplementation()
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -94,11 +94,12 @@ namespace N
         var declaration = syntaxTree.FindFieldDeclaration("stream");
         var symbol = semanticModel.GetDeclaredSymbolSafe(declaration, CancellationToken.None);
         var field = new FieldOrPropertyAndDeclaration(symbol, declaration);
-        Assert.AreEqual(true, DisposableMember.IsDisposed(field, semanticModel, CancellationToken.None));
+        Assert.Equal(true, DisposableMember.IsDisposed(field, semanticModel, CancellationToken.None));
     }
 
-    [TestCase("this.components.Add(this.stream)")]
-    [TestCase("components.Add(stream)")]
+    [Theory]
+    [InlineData("this.components.Add(this.stream)")]
+    [InlineData("components.Add(stream)")]
     public static void FieldAddedToFormComponents(string expression)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -123,6 +124,6 @@ namespace N
         var semanticModel = compilation.GetSemanticModel(syntaxTree);
         var declaration = syntaxTree.FindFieldDeclaration("stream");
         var symbol = semanticModel.GetDeclaredSymbolSafe(declaration, CancellationToken.None);
-        Assert.AreEqual(true, DisposableMember.IsDisposed(new FieldOrPropertyAndDeclaration(symbol, declaration), semanticModel, CancellationToken.None));
+        Assert.Equal(true, DisposableMember.IsDisposed(new FieldOrPropertyAndDeclaration(symbol, declaration), semanticModel, CancellationToken.None));
     }
 }

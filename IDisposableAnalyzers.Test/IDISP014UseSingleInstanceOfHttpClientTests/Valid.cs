@@ -1,14 +1,14 @@
-﻿// ReSharper disable InconsistentNaming
+// ReSharper disable InconsistentNaming
 namespace IDisposableAnalyzers.Test.IDISP014UseSingleInstanceOfHttpClientTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
     private static readonly CreationAnalyzer Analyzer = new();
 
-    [Test]
+    [Fact]
     public static void StaticFieldAssignedInInitializer()
     {
         var code = @"
@@ -24,7 +24,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void StaticFieldAssignedInStaticCtor()
     {
         var code = @"
@@ -46,7 +46,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void StaticPropertyAssignedInInitializer()
     {
         var code = @"
@@ -68,7 +68,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void StaticPropertyAssignedInStaticCtor()
     {
         var code = @"
@@ -84,7 +84,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void CustomHttpClient()
     {
         var httpClientCode = @"

@@ -1,13 +1,13 @@
 namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
     public static class WhenInjecting
     {
-        [Test]
+        [Fact]
         public static void FactoryMethodCallingPrivateCtor()
         {
             var code = @"
@@ -28,7 +28,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void FactoryMethodCallingPrivateCtorWithCachedDisposable()
         {
             var code = @"
@@ -52,7 +52,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, Disposable, code);
         }
 
-        [Test]
+        [Fact]
         public static void AssignedWithCreatedAndInjected()
         {
             var code = @"

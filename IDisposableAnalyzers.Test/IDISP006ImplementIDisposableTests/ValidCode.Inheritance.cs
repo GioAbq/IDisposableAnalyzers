@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
     public static class Inheritance
     {
-        [Test]
+        [Fact]
         public static void WhenNotCallingBaseDispose()
         {
             var baseClass = @"
@@ -59,7 +59,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, Disposable, baseClass, code);
         }
 
-        [Test]
+        [Fact]
         public static void WhenCallingBaseDisposeAfterIfDisposedReturn()
         {
             var baseClass = @"
@@ -119,7 +119,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, Disposable, baseClass, code);
         }
 
-        [Test]
+        [Fact]
         public static void WhenCallingBaseDispose()
         {
             var baseClass = @"
@@ -172,7 +172,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, Disposable, baseClass, code);
         }
 
-        [Test]
+        [Fact]
         public static void WhenOverriddenIsNotVirtualDispose()
         {
             var baseClass = @"
@@ -210,8 +210,9 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, baseClass, code);
         }
 
-        [TestCase("this.components.Add(stream)")]
-        [TestCase("components.Add(stream)")]
+        [Theory]
+        [InlineData("this.components.Add(stream)")]
+        [InlineData("components.Add(stream)")]
         public static void LocalAddedToFormComponents(string expression)
         {
             var code = @"
@@ -233,8 +234,9 @@ namespace N
             RoslynAssert.NoAnalyzerDiagnostics(Analyzer, code);
         }
 
-        [TestCase("this.components.Add(this.stream)")]
-        [TestCase("components.Add(stream)")]
+        [Theory]
+        [InlineData("this.components.Add(this.stream)")]
+        [InlineData("components.Add(stream)")]
         public static void FieldAddedToFormComponents(string expression)
         {
             var code = @"

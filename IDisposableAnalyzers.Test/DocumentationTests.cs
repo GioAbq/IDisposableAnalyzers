@@ -1,4 +1,4 @@
-﻿#pragma warning disable CA1056 // Uri properties should not be strings
+#pragma warning disable CA1056 // Uri properties should not be strings
 #pragma warning disable CA1305 // Specify IFormatProvider
 namespace IDisposableAnalyzers.Test;
 
@@ -14,7 +14,7 @@ using Gu.Roslyn.AnalyzerExtensions;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using NUnit.Framework;
+using Xunit;
 
 public static class DocumentationTests
 {
@@ -34,13 +34,18 @@ public static class DocumentationTests
     private static IReadOnlyList<DescriptorInfo> DescriptorsWithDocs => DescriptorInfos.Where(d => d.DocumentationFile.Exists)
                                                                                        .ToArray();
 
+    public static TheoryData<DescriptorInfo> DescriptorInfoCases => ToTheoryData(DescriptorInfos);
+
+    public static TheoryData<DescriptorInfo> DescriptorsWithDocsCases => ToTheoryData(DescriptorsWithDocs);
+
     private static DirectoryInfo SolutionDirectory => SolutionFile.Find("IDisposableAnalyzers.sln")
                                                                   .Directory;
 
     private static DirectoryInfo DocumentsDirectory => SolutionDirectory.EnumerateDirectories("documentation", SearchOption.TopDirectoryOnly)
                                                                         .Single();
 
-    [TestCaseSource(nameof(DescriptorInfos))]
+    [Theory]
+    [MemberData(nameof(DescriptorInfoCases))]
     public static void MissingDocs(DescriptorInfo descriptorInfo)
     {
         if (!descriptorInfo.DocumentationFile.Exists)
@@ -53,21 +58,24 @@ public static class DocumentationTests
         }
     }
 
-    [TestCaseSource(nameof(DescriptorInfos))]
+    [Theory]
+    [MemberData(nameof(DescriptorInfoCases))]
     public static void UniqueIds(DescriptorInfo descriptorInfo)
     {
-        Assert.AreEqual(1, DescriptorInfos.Select(x => x.Descriptor)
+        Assert.Equal(1, DescriptorInfos.Select(x => x.Descriptor)
                                           .Distinct()
                                           .Count(d => d.Id == descriptorInfo.Descriptor.Id));
     }
 
-    [TestCaseSource(nameof(DescriptorsWithDocs))]
+    [Theory]
+    [MemberData(nameof(DescriptorsWithDocsCases))]
     public static void TitleId(DescriptorInfo descriptorInfo)
     {
-        Assert.AreEqual($"# {descriptorInfo.Descriptor.Id}", descriptorInfo.DocumentationFile.AllLines[0]);
+        Assert.Equal($"# {descriptorInfo.Descriptor.Id}", descriptorInfo.DocumentationFile.AllLines[0]);
     }
 
-    [TestCaseSource(nameof(DescriptorsWithDocs))]
+    [Theory]
+    [MemberData(nameof(DescriptorsWithDocsCases))]
     public static void Title(DescriptorInfo descriptorInfo)
     {
         var expected = $"## {descriptorInfo.Descriptor.Title}";
@@ -75,10 +83,11 @@ public static class DocumentationTests
                                    .Skip(1)
                                    .First()
                                    .Replace("`", string.Empty, StringComparison.InvariantCulture);
-        Assert.AreEqual(expected, actual);
+        Assert.Equal(expected, actual);
     }
 
-    [TestCaseSource(nameof(DescriptorsWithDocs))]
+    [Theory]
+    [MemberData(nameof(DescriptorsWithDocsCases))]
     public static void Description(DescriptorInfo descriptorInfo)
     {
         var expected = descriptorInfo.Descriptor
@@ -94,10 +103,11 @@ public static class DocumentationTests
 
         DumpIfDebug(expected);
         DumpIfDebug(actual);
-        Assert.AreEqual(expected, actual);
+        Assert.Equal(expected, actual);
     }
 
-    [TestCaseSource(nameof(DescriptorsWithDocs))]
+    [Theory]
+    [MemberData(nameof(DescriptorsWithDocsCases))]
     public static void Table(DescriptorInfo descriptorInfo)
     {
         const string HeaderRow = "| Topic    | Value";
@@ -107,7 +117,8 @@ public static class DocumentationTests
         CodeAssert.AreEqual(expected, actual);
     }
 
-    [TestCaseSource(nameof(DescriptorsWithDocs))]
+    [Theory]
+    [MemberData(nameof(DescriptorsWithDocsCases))]
     public static void ConfigSeverity(DescriptorInfo descriptorInfo)
     {
         var expected = GetConfigSeverity(descriptorInfo.Stub);
@@ -128,7 +139,7 @@ public static class DocumentationTests
         }
     }
 
-    [Test]
+    [Fact]
     public static void Index()
     {
         var builder = new StringBuilder();
@@ -179,6 +190,17 @@ public static class DocumentationTests
 
             return length;
         }
+    }
+
+    private static TheoryData<DescriptorInfo> ToTheoryData(IReadOnlyList<DescriptorInfo> source)
+    {
+        var data = new TheoryData<DescriptorInfo>();
+        foreach (var info in source)
+        {
+            data.Add(info);
+        }
+
+        return data;
     }
 
     [Conditional("DEBUG")]

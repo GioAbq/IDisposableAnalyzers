@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Diagnostics
 {
@@ -24,8 +24,9 @@ public static partial class Diagnostics
             }
             """;
 
-        [TestCase("↓")]
-        [TestCase("_ = ↓")]
+        [Theory]
+        [InlineData("↓")]
+        [InlineData("_ = ↓")]
         public static void DiscardFileOpenRead(string discard)
         {
             var code = """
@@ -45,7 +46,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void ReturnFileOpenReadLength()
         {
             var code = """
@@ -62,7 +63,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void FileOpenReadPassedIntoCtorOfNotDisposing()
         {
             var c1 = """
@@ -98,7 +99,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, c1, code);
         }
 
-        [Test]
+        [Fact]
         public static void Generic()
         {
             var iDisposableOfT = """
@@ -149,7 +150,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, iDisposableOfT, disposableOfT, factoryCode, code);
         }
 
-        [Test]
+        [Fact]
         public static void MethodCreatingDisposableExpressionBodyToString()
         {
             var code = """
@@ -171,10 +172,11 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("this.Stream().ReadAsync(new byte[64], 0, 0)")]
-        [TestCase("this.Stream()?.ReadAsync(new byte[64], 0, 0)")]
-        [TestCase("Stream().ReadAsync(new byte[64], 0, 0)")]
-        [TestCase("Stream()?.ReadAsync(new byte[64], 0, 0)")]
+        [Theory]
+        [InlineData("this.Stream().ReadAsync(new byte[64], 0, 0)")]
+        [InlineData("this.Stream()?.ReadAsync(new byte[64], 0, 0)")]
+        [InlineData("Stream().ReadAsync(new byte[64], 0, 0)")]
+        [InlineData("Stream()?.ReadAsync(new byte[64], 0, 0)")]
         public static void MethodCreatingDisposableExpressionBodyAsync(string expression)
         {
             var code = """
@@ -196,10 +198,11 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("Stream.Length")]
-        [TestCase("Stream?.Length")]
-        [TestCase("this.Stream.Length")]
-        [TestCase("this.Stream?.Length")]
+        [Theory]
+        [InlineData("Stream.Length")]
+        [InlineData("Stream?.Length")]
+        [InlineData("this.Stream.Length")]
+        [InlineData("this.Stream?.Length")]
         public static void PropertyCreatingDisposableExpressionBody(string expression)
         {
             var code = """
@@ -219,10 +222,11 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("this.Stream.ReadAsync(new byte[64], 0, 0)")]
-        [TestCase("this.Stream?.ReadAsync(new byte[64], 0, 0)")]
-        [TestCase("Stream.ReadAsync(new byte[64], 0, 0)")]
-        [TestCase("Stream?.ReadAsync(new byte[64], 0, 0)")]
+        [Theory]
+        [InlineData("this.Stream.ReadAsync(new byte[64], 0, 0)")]
+        [InlineData("this.Stream?.ReadAsync(new byte[64], 0, 0)")]
+        [InlineData("Stream.ReadAsync(new byte[64], 0, 0)")]
+        [InlineData("Stream?.ReadAsync(new byte[64], 0, 0)")]
         public static void PropertyCreatingDisposableExpressionBodyAsync(string expression)
         {
             var code = """
@@ -244,8 +248,9 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("Stream.Length")]
-        [TestCase("Stream?.Length")]
+        [Theory]
+        [InlineData("Stream.Length")]
+        [InlineData("Stream?.Length")]
         public static void StaticPropertyCreatingDisposableExpressionBody(string expression)
         {
             var code = """
@@ -264,7 +269,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void NoFixForArgument()
         {
             var code = """
@@ -287,7 +292,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void FactoryMethodNewDisposable()
         {
             var code = """
@@ -310,7 +315,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, DisposableCode, code);
         }
 
-        [Test]
+        [Fact]
         public static void FactoryConstrainedGeneric()
         {
             var factoryCode = """
@@ -340,7 +345,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, factoryCode, DisposableCode, code);
         }
 
-        [Test]
+        [Fact]
         public static void WithOptionalParameter()
         {
             var code = """
@@ -377,8 +382,8 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, DisposableCode, code);
         }
 
-        [Test]
-        public static void DiscardFileOpenRead()
+        [Fact]
+        public static void DiscardFileOpenReadSimple()
         {
             var code = """
                 namespace N
@@ -397,7 +402,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void AwaitAwaitHttpClientGetAsync()
         {
             var code = """

@@ -1,17 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using NUnit.Framework;
+using Xunit;
 
-[TestFixture(typeof(LocalDeclarationAnalyzer))]
-[TestFixture(typeof(ArgumentAnalyzer))]
-[TestFixture(typeof(AssignmentAnalyzer))]
-public static partial class Valid<T>
-    where T : DiagnosticAnalyzer, new()
+public abstract partial class Valid
 {
-    private static readonly T Analyzer = new();
+    protected abstract DiagnosticAnalyzer Analyzer { get; }
     private static readonly DiagnosticDescriptor Descriptor = Descriptors.IDISP001DisposeCreated;
 
     private const string Disposable = @"
@@ -36,16 +32,17 @@ namespace N
     }
 }";
 
-    [TestCase("1")]
-    [TestCase("new string(' ', 1)")]
-    [TestCase("typeof(IDisposable)")]
-    [TestCase("(IDisposable?)null")]
-    [TestCase("await Task.FromResult(1)")]
-    [TestCase("await Task.Run(() => 1)")]
-    [TestCase("await Task.Run(() => new object())")]
-    [TestCase("await Task.Run(() => Type.GetType(string.Empty))")]
-    [TestCase("await Task.Run(() => this.GetType())")]
-    public static void LanguageConstructs(string expression)
+    [Theory]
+    [InlineData("1")]
+    [InlineData("new string(' ', 1)")]
+    [InlineData("typeof(IDisposable)")]
+    [InlineData("(IDisposable?)null")]
+    [InlineData("await Task.FromResult(1)")]
+    [InlineData("await Task.Run(() => 1)")]
+    [InlineData("await Task.Run(() => new object())")]
+    [InlineData("await Task.Run(() => Type.GetType(string.Empty))")]
+    [InlineData("await Task.Run(() => this.GetType())")]
+    public void LanguageConstructs(string expression)
     {
         var code = @"
 #pragma warning disable CS0219
@@ -67,8 +64,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, Disposable, code);
     }
 
-    [Test]
-    public static void WhenDisposingVariable()
+    [Fact]
+    public void WhenDisposingVariable()
     {
         var code = @"
 namespace N
@@ -86,8 +83,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, Disposable, code);
     }
 
-    [Test]
-    public static void UsingFileStream()
+    [Fact]
+    public void UsingFileStream()
     {
         var code = @"
 namespace N
@@ -108,8 +105,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void UsingFileStreamCSharp8()
+    [Fact]
+    public void UsingFileStreamCSharp8()
     {
         var code = @"
 namespace N
@@ -128,8 +125,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void UsingNewDisposable()
+    [Fact]
+    public void UsingNewDisposable()
     {
         var disposableCode = @"
 namespace N
@@ -161,8 +158,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, disposableCode);
     }
 
-    [Test]
-    public static void Awaiting()
+    [Fact]
+    public void Awaiting()
     {
         var code = @"
 namespace N
@@ -197,8 +194,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void AwaitingMethodReturningString()
+    [Fact]
+    public void AwaitingMethodReturningString()
     {
         var code = @"
 namespace N
@@ -223,8 +220,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void AwaitDownloadDataTask()
+    [Fact]
+    public void AwaitDownloadDataTask()
     {
         var code = @"
 #pragma warning disable SYSLIB0014
@@ -247,8 +244,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void FactoryMethod()
+    [Fact]
+    public void FactoryMethod()
     {
         var code = @"
 namespace N
@@ -285,8 +282,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void FactoryMethodExpressionBody()
+    [Fact]
+    public void FactoryMethodExpressionBody()
     {
         var code = @"
 namespace N
@@ -319,8 +316,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void InjectedDbConnectionCreateCommand()
+    [Fact]
+    public void InjectedDbConnectionCreateCommand()
     {
         var code = @"
 namespace N
@@ -340,8 +337,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void InjectedMemberDbConnectionCreateCommand()
+    [Fact]
+    public void InjectedMemberDbConnectionCreateCommand()
     {
         var code = @"
 namespace N
@@ -368,8 +365,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DisposedInEventLambda()
+    [Fact]
+    public void DisposedInEventLambda()
     {
         var code = @"
 namespace N
@@ -405,8 +402,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void UsingOutParameter()
+    [Fact]
+    public void UsingOutParameter()
     {
         var code = @"
 namespace N
@@ -438,8 +435,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void UsingOutVar()
+    [Fact]
+    public void UsingOutVar()
     {
         var code = @"
 namespace N
@@ -472,8 +469,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void NewDisposableSplitDeclarationAndAssignment()
+    [Fact]
+    public void NewDisposableSplitDeclarationAndAssignment()
     {
         var code = @"
 namespace N
@@ -494,8 +491,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, Disposable, code);
     }
 
-    [Test]
-    public static void DisposeInFinally()
+    [Fact]
+    public void DisposeInFinally()
     {
         var code = @"
 namespace N
@@ -521,8 +518,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalAssignedToLocalThatIsDisposed()
+    [Fact]
+    public void LocalAssignedToLocalThatIsDisposed()
     {
         var code = @"
 namespace N
@@ -543,8 +540,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void PairOfFileStreams()
+    [Fact]
+    public void PairOfFileStreams()
     {
         var code = @"
 namespace N
@@ -592,8 +589,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void StaticFactory()
+    [Fact]
+    public void StaticFactory()
     {
         var staticFactory = @"
 namespace N
@@ -623,8 +620,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, Disposable, staticFactory, c);
     }
 
-    [Test]
-    public static void Factory()
+    [Fact]
+    public void Factory()
     {
         var factory = @"
 namespace N
@@ -653,12 +650,13 @@ namespace N
         RoslynAssert.Valid(Analyzer, Disposable, factory, c);
     }
 
-    [TestCase("System.Activator.CreateInstance<StringBuilder>()")]
-    [TestCase("(StringBuilder)System.Activator.CreateInstance(typeof(StringBuilder))!")]
-    [TestCase("(StringBuilder?)System.Activator.CreateInstance(typeof(StringBuilder))")]
-    [TestCase("System.Activator.CreateInstance(typeof(StringBuilder))")]
-    [TestCase("(StringBuilder)constructorInfo.Invoke(null)")]
-    public static void Reflection(string expression)
+    [Theory]
+    [InlineData("System.Activator.CreateInstance<StringBuilder>()")]
+    [InlineData("(StringBuilder)System.Activator.CreateInstance(typeof(StringBuilder))!")]
+    [InlineData("(StringBuilder?)System.Activator.CreateInstance(typeof(StringBuilder))")]
+    [InlineData("System.Activator.CreateInstance(typeof(StringBuilder))")]
+    [InlineData("(StringBuilder)constructorInfo.Invoke(null)")]
+    public void Reflection(string expression)
     {
         var code = @"
 namespace N
@@ -678,8 +676,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, Disposable, code);
     }
 
-    [Test]
-    public static void ReturningIfTrueItemReturnNullAfter()
+    [Fact]
+    public void ReturningIfTrueItemReturnNullAfter()
     {
         var code = @"
 namespace N
@@ -704,8 +702,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ReturningIfTrueItemElseNull()
+    [Fact]
+    public void ReturningIfTrueItemElseNull()
     {
         var code = @"
 namespace N
@@ -732,8 +730,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ReturningIfTrueReturnNullReturnItemAfter()
+    [Fact]
+    public void ReturningIfTrueReturnNullReturnItemAfter()
     {
         var code = @"
 namespace N
@@ -758,8 +756,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ReturningIfTrueReturnNullElseReturnItem()
+    [Fact]
+    public void ReturningIfTrueReturnNullElseReturnItem()
     {
         var code = @"
 namespace N
@@ -786,8 +784,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ReturnWrappingCngKey()
+    [Fact]
+    public void ReturnWrappingCngKey()
     {
         var code = @"
 namespace N

@@ -1,12 +1,12 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using Gu.Roslyn.Asserts;
 
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
-    [Test]
+    [Fact]
     public static void Generic()
     {
         var factory = """
@@ -34,7 +34,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, factory, code);
     }
 
-    [Test]
+    [Fact]
     public static void Operator()
     {
         var c1 = """
@@ -64,7 +64,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, c1, code);
     }
 
-    [Test]
+    [Fact]
     public static void OperatorNestedCall()
     {
         var c1 = """
@@ -99,7 +99,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, c1, code);
     }
 
-    [Test]
+    [Fact]
     public static void OperatorEquals()
     {
         var c1 = """
@@ -128,7 +128,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, c1, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningObject()
     {
         var code = """
@@ -148,7 +148,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodWithArgReturningObject()
     {
         var code = """
@@ -168,7 +168,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodWithObjArgReturningObject()
     {
         var code = """
@@ -188,7 +188,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningStatementBody()
     {
         var code = """
@@ -208,7 +208,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningLocalStatementBody()
     {
         var code = """
@@ -229,7 +229,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningExpressionBody()
     {
         var code = """
@@ -246,7 +246,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningNewAssigningAndDisposing()
     {
         var c1 = """
@@ -285,9 +285,10 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, c1, code);
     }
 
-    [TestCase("new C1()")]
-    [TestCase("new C1(new Disposable())")]
-    [TestCase("new C1(new Disposable(), new Disposable())")]
+    [Theory]
+    [InlineData("new C1()")]
+    [InlineData("new C1(new Disposable())")]
+    [InlineData("new C1(new Disposable(), new Disposable())")]
     public static void ReturningNewAssigningAndDisposingParams(string objectCreation)
     {
         var c1 = """
@@ -330,7 +331,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, c1, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningCreateNewAssigningAndDisposing()
     {
         var c1 = """
@@ -373,7 +374,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, c1, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningCreateNewStreamReader()
     {
         var code = """
@@ -395,7 +396,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningAssigningPrivateChained()
     {
         var c1 = """
@@ -440,7 +441,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, c1, code);
     }
 
-    [Test]
+    [Fact]
     public static void StreamInStreamReader()
     {
         var code = """
@@ -460,7 +461,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void StreamInStreamReaderLocal()
     {
         var code = """
@@ -481,11 +482,12 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("new CompositeDisposable(File.OpenRead(fileName))")]
-    [TestCase("new CompositeDisposable(File.OpenRead(fileName), File.OpenRead(fileName))")]
-    [TestCase("new CompositeDisposable { File.OpenRead(fileName) }")]
-    [TestCase("new CompositeDisposable { File.OpenRead(fileName), File.OpenRead(fileName) }")]
-    [TestCase("new CompositeDisposable(File.OpenRead(fileName), File.OpenRead(fileName)) { File.OpenRead(fileName), File.OpenRead(fileName) }")]
+    [Theory]
+    [InlineData("new CompositeDisposable(File.OpenRead(fileName))")]
+    [InlineData("new CompositeDisposable(File.OpenRead(fileName), File.OpenRead(fileName))")]
+    [InlineData("new CompositeDisposable { File.OpenRead(fileName) }")]
+    [InlineData("new CompositeDisposable { File.OpenRead(fileName), File.OpenRead(fileName) }")]
+    [InlineData("new CompositeDisposable(File.OpenRead(fileName), File.OpenRead(fileName)) { File.OpenRead(fileName), File.OpenRead(fileName) }")]
     public static void ReturnedInCompositeDisposable(string expression)
     {
         var code = """
@@ -504,7 +506,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void YieldReturnFileOpenRead()
     {
         var code = """
@@ -526,7 +528,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnChainedReturningThis()
     {
         var disposable = """
@@ -562,7 +564,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, disposable, code);
     }
 
-    [Test]
+    [Fact]
     public static void FactoryChainedReturned()
     {
         var disposable = """
@@ -621,7 +623,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, disposable, code);
     }
 
-    [Test]
+    [Fact]
     public static void FactoryChainedManyReturned()
     {
         var disposable = """
@@ -684,7 +686,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, disposable, code);
     }
 
-    [Test]
+    [Fact]
     public static void FactoryChainedBinaryReturned()
     {
         var disposable = """
@@ -725,7 +727,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, disposable, code);
     }
 
-    [Test]
+    [Fact]
     public static void FactoryChainedManyBinaryReturned()
     {
         var disposable = """
@@ -771,7 +773,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, disposable, code);
     }
 
-    [Test]
+    [Fact]
     public static void ExtensionMethodBindReturn()
     {
         var disposable = """
@@ -807,7 +809,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, disposable, code);
     }
 
-    [Test]
+    [Fact]
     public static void ExtensionMethodReturnBindMany()
     {
         var disposable = """
@@ -845,7 +847,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, disposable, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnedInTargetTyped()
     {
         var disposable = """

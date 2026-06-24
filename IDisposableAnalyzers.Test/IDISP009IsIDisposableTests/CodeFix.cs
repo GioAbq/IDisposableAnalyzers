@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP009IsIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP009IsIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class CodeFix
 {
@@ -9,7 +9,7 @@ public static class CodeFix
     private static readonly ImplementIDisposableFix Fix = new();
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP009IsIDisposable);
 
-    [Test]
+    [Fact]
     public static void AddInterfaceSimple()
     {
         var before = @"
@@ -61,7 +61,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void AddInterface()
     {
         var before = @"

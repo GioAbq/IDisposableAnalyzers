@@ -2,13 +2,12 @@ namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
 
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.Diagnostics;
-using NUnit.Framework;
+using Xunit;
 
-public static partial class Valid<T>
-    where T : DiagnosticAnalyzer, new()
+public abstract partial class Valid
 {
-    [Test]
-    public static void ReassignFieldWithNewAfterUsingCapture()
+    [Fact]
+    public void ReassignFieldWithNewAfterUsingCapture()
     {
         var code = @"
 namespace N
@@ -38,8 +37,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ReassignFieldWithNullAfterUsingCapture()
+    [Fact]
+    public void ReassignFieldWithNullAfterUsingCapture()
     {
         var code = @"
 namespace N

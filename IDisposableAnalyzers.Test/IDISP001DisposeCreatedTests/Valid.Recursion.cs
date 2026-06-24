@@ -1,13 +1,12 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
-// ReSharper disable once UnusedTypeParameter
-public partial class Valid<T>
+public partial class Valid
 {
-    [Test]
-    public static void IgnoresRecursiveCalculatedProperty()
+    [Fact]
+    public void IgnoresRecursiveCalculatedProperty()
     {
         var code = @"
 namespace N
@@ -35,8 +34,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void IgnoresRecursiveGetSetProperty()
+    [Fact]
+    public void IgnoresRecursiveGetSetProperty()
     {
         var code = @"
 namespace N
@@ -67,8 +66,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, Disposable, code);
     }
 
-    [Test]
-    public static void MethodStatementBody()
+    [Fact]
+    public void MethodStatementBody()
     {
         var code = @"
     using System;
@@ -96,8 +95,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void MethodExpressionBody()
+    [Fact]
+    public void MethodExpressionBody()
     {
         var code = @"
 namespace N
@@ -126,8 +125,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void WithOptionalParameter()
+    [Fact]
+    public void WithOptionalParameter()
     {
         var code = @"
 namespace N
@@ -157,8 +156,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void GenericOut()
+    [Fact]
+    public void GenericOut()
     {
         var code = @"
 namespace N

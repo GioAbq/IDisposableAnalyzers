@@ -1,14 +1,14 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP012PropertyShouldNotReturnCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP012PropertyShouldNotReturnCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Diagnostics
 {
     private static readonly ReturnValueAnalyzer Analyzer = new();
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP012PropertyShouldNotReturnCreated);
 
-    [Test]
+    [Fact]
     public static void ReturnFileOpenReadGetBody()
     {
         var code = @"
@@ -30,7 +30,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnFileOpenReadExpressionBody()
     {
         var code = @"
@@ -46,7 +46,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnFileOpenReadGetExpressionBody()
     {
         var code = @"

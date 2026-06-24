@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP025SealDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP025SealDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
     private static readonly ClassDeclarationAnalyzer Analyzer = new();
 
-    [Test]
+    [Fact]
     public static void SealedSimple()
     {
         var code = @"
@@ -25,7 +25,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void SealedPartial()
     {
         var part1 = @"
@@ -51,7 +51,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, part1, part2);
     }
 
-    [Test]
+    [Fact]
     public static void VirtualSimple()
     {
         var code = @"
@@ -69,7 +69,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void VirtualPartial()
     {
         var part1 = @"
@@ -95,7 +95,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, part1, part2);
     }
 
-    [Test]
+    [Fact]
     public static void ProtectedVirtualPartial()
     {
         var part1 = @"
@@ -137,7 +137,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, part1, part2);
     }
 
-    [Test]
+    [Fact]
     public static void Abstract()
     {
         var code = @"
@@ -153,7 +153,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ProtectedAbstract()
     {
         var code = @"

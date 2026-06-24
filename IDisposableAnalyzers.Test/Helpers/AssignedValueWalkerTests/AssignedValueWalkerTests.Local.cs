@@ -1,24 +1,25 @@
-﻿namespace IDisposableAnalyzers.Test.Helpers.AssignedValueWalkerTests;
+namespace IDisposableAnalyzers.Test.Helpers.AssignedValueWalkerTests;
 
 using System.Linq;
 using System.Threading;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.CSharp;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class AssignedValueWalkerTests
 {
     public static class Local
     {
-        [TestCase("1")]
-        [TestCase("1 + 1")]
-        [TestCase("Value")]
-        [TestCase("abc")]
-        [TestCase("default(int)")]
-        [TestCase("typeof(int)")]
-        [TestCase("nameof(int)")]
-        [TestCase("new int[] { 1 , 2 , 3 }")]
-        [TestCase("new int[2]")]
+        [Theory]
+        [InlineData("1")]
+        [InlineData("1 + 1")]
+        [InlineData("Value")]
+        [InlineData("abc")]
+        [InlineData("default(int)")]
+        [InlineData("typeof(int)")]
+        [InlineData("nameof(int)")]
+        [InlineData("new int[] { 1 , 2 , 3 }")]
+        [InlineData("new int[2]")]
         public static void InitializedWithConstant(string expression)
         {
             var code = @"
@@ -40,10 +41,10 @@ namespace N
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var value = syntaxTree.FindEqualsValueClause("var temp = value;").Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
-            Assert.AreEqual(expression, walker.Values.Single().ToString());
+            Assert.Equal(expression, walker.Values.Single().ToString());
         }
 
-        [Test]
+        [Fact]
         public static void InitializedWithDefaultGeneric()
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -63,11 +64,12 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause("var temp = value;").Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual("default(T)", actual);
+            Assert.Equal("default(T)", actual);
         }
 
-        [TestCase("var temp1 = value;", "")]
-        [TestCase("var temp2 = value;", "1")]
+        [Theory]
+        [InlineData("var temp1 = value;", "")]
+        [InlineData("var temp2 = value;", "1")]
         public static void NotInitialized(string statement, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -89,11 +91,12 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(statement).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = value;", "")]
-        [TestCase("var temp2 = value;", "1")]
+        [Theory]
+        [InlineData("var temp1 = value;", "")]
+        [InlineData("var temp2 = value;", "1")]
         public static void NotInitializedInLambda(string statement, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -120,11 +123,12 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(statement).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = value;", "1, 2")]
-        [TestCase("var temp2 = value;", "1, 2")]
+        [Theory]
+        [InlineData("var temp1 = value;", "1, 2")]
+        [InlineData("var temp2 = value;", "1, 2")]
         public static void LambdaClosure(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -151,12 +155,13 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestCase("var temp1 = value;", "1, 2")]
-        [TestCase("var temp2 = value;", "1, 2")]
-        [TestCase("var temp3 = value;", "1, 2")]
+        [Theory]
+        [InlineData("var temp1 = value;", "1, 2")]
+        [InlineData("var temp2 = value;", "1, 2")]
+        [InlineData("var temp3 = value;", "1, 2")]
         public static void Loop(string code, string expected)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -184,10 +189,10 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause(code).Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [Test]
+        [Fact]
         public static void AssignedWithArg()
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -207,10 +212,10 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause("var value = temp").Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual("meh", actual);
+            Assert.Equal("meh", actual);
         }
 
-        [Test]
+        [Fact]
         public static void VerbatimIdentifierAssignedWithArg()
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -229,10 +234,10 @@ namespace N
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var value = syntaxTree.FindEqualsValueClause("var value = @operator").Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
-            Assert.AreEqual("meh", walker.Values.Single().ToString());
+            Assert.Equal("meh", walker.Values.Single().ToString());
         }
 
-        [Test]
+        [Fact]
         public static void AssignedWithArgGenericMethod()
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -252,10 +257,10 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause("var value = temp").Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual("meh", actual);
+            Assert.Equal("meh", actual);
         }
 
-        [Test]
+        [Fact]
         public static void AssignedWithArgGenericClass()
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -275,10 +280,10 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause("var value = temp").Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual("meh", actual);
+            Assert.Equal("meh", actual);
         }
 
-        [Test]
+        [Fact]
         public static void AssignedInLock()
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(@"
@@ -322,7 +327,7 @@ namespace N
             var value = syntaxTree.FindEqualsValueClause("var temp = toDispose;").Value;
             using var walker = AssignedValueWalker.Borrow(value, semanticModel, CancellationToken.None);
             var actual = string.Join(", ", walker.Values);
-            Assert.AreEqual("(IDisposable)null, this.disposable", actual);
+            Assert.Equal("(IDisposable)null, this.disposable", actual);
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Diagnostics
 {
@@ -24,16 +24,17 @@ public static partial class Diagnostics
             }
             """;
 
-        [TestCase("new Disposable()")]
-        [TestCase("new Disposable() as object")]
-        [TestCase("(object) new Disposable()")]
-        [TestCase("System.IO.File.OpenRead(string.Empty)")]
-        [TestCase("new System.IO.BinaryReader(System.IO.File.OpenRead(string.Empty))")]
-        [TestCase("System.IO.File.OpenRead(string.Empty) ?? null")]
-        [TestCase("null ?? System.IO.File.OpenRead(string.Empty)")]
-        [TestCase("true ? null : System.IO.File.OpenRead(string.Empty)")]
-        [TestCase("true ? System.IO.File.OpenRead(string.Empty) : null")]
-        [TestCase("o switch { int _ => File.OpenRead(string.Empty), _ => null }")]
+        [Theory]
+        [InlineData("new Disposable()")]
+        [InlineData("new Disposable() as object")]
+        [InlineData("(object) new Disposable()")]
+        [InlineData("System.IO.File.OpenRead(string.Empty)")]
+        [InlineData("new System.IO.BinaryReader(System.IO.File.OpenRead(string.Empty))")]
+        [InlineData("System.IO.File.OpenRead(string.Empty) ?? null")]
+        [InlineData("null ?? System.IO.File.OpenRead(string.Empty)")]
+        [InlineData("true ? null : System.IO.File.OpenRead(string.Empty)")]
+        [InlineData("true ? System.IO.File.OpenRead(string.Empty) : null")]
+        [InlineData("o switch { int _ => File.OpenRead(string.Empty), _ => null }")]
         public static void LanguageConstructs(string expression)
         {
             var code = """
@@ -54,8 +55,9 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, Disposable, code);
         }
 
-        [TestCase("new BinaryReader(System.IO.File.OpenRead(string.Empty))")]
-        [TestCase("new System.IO.BinaryReader(System.IO.File.OpenRead(string.Empty))")]
+        [Theory]
+        [InlineData("new BinaryReader(System.IO.File.OpenRead(string.Empty))")]
+        [InlineData("new System.IO.BinaryReader(System.IO.File.OpenRead(string.Empty))")]
         public static void KnownArguments(string expression)
         {
             var code = """
@@ -75,7 +77,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, Disposable, code);
         }
 
-        [Test]
+        [Fact]
         public static void PropertyInitializedPasswordBoxSecurePassword()
         {
             var code = """
@@ -99,7 +101,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void StaticPropertyInitializedPasswordBoxSecurePassword()
         {
             var code = """
@@ -123,7 +125,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void FileOpenRead()
         {
             var code = """
@@ -145,7 +147,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void NewDisposable()
         {
             var code = """
@@ -164,7 +166,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, Disposable, code);
         }
 
-        [Test]
+        [Fact]
         public static void MethodCreatingDisposable1()
         {
             var code = """
@@ -190,7 +192,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void MethodCreatingDisposable2()
         {
             var code = """
@@ -217,7 +219,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void MethodCreatingDisposableExpressionBody()
         {
             var code = """
@@ -240,7 +242,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void PropertyCreatingDisposableSimple()
         {
             var code = """
@@ -266,7 +268,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void PropertyCreatingDisposableGetBody()
         {
             var code = """
@@ -296,7 +298,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void PropertyCreatingDisposableExpressionBody()
         {
             var code = """
@@ -319,7 +321,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void InterlockedExchange()
         {
             var code = """
@@ -349,7 +351,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void ReturningIfTrueItemReturnNullAfter()
         {
             var code = """
@@ -375,7 +377,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void ReturningIfTrueItemElseNull()
         {
             var code = """
@@ -403,7 +405,7 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
+        [Fact]
         public static void ReturningIfTrueReturnNullElseReturnItem()
         {
             var code = """
@@ -431,9 +433,10 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("new DefaultFalse(stream, true)")]
-        [TestCase("new DefaultTrue(stream)")]
-        [TestCase("new DefaultTrue(stream, true)")]
+        [Theory]
+        [InlineData("new DefaultFalse(stream, true)")]
+        [InlineData("new DefaultTrue(stream)")]
+        [InlineData("new DefaultTrue(stream, true)")]
         public static void LeaveOpen(string expression)
         {
             var code = """
@@ -496,9 +499,10 @@ public static partial class Diagnostics
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("new DefaultFalse(stream, true)")]
-        [TestCase("new DefaultTrue(stream)")]
-        [TestCase("new DefaultTrue(stream, true)")]
+        [Theory]
+        [InlineData("new DefaultFalse(stream, true)")]
+        [InlineData("new DefaultTrue(stream)")]
+        [InlineData("new DefaultTrue(stream, true)")]
         public static void LeaveOpenWhenDisposeAsync(string expression)
         {
             var code = """

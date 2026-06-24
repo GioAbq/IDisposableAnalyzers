@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP024DoNotCallSuppressFinalizeTests;
+namespace IDisposableAnalyzers.Test.IDISP024DoNotCallSuppressFinalizeTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
     private static readonly SuppressFinalizeAnalyzer Analyzer = new();
 
-    [Test]
+    [Fact]
     public static void SealedSimple()
     {
         var code = @"
@@ -25,7 +25,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void SealedNoFinalizer()
     {
         var code = @"
@@ -54,7 +54,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void SealedWithFinalizer()
     {
         var code = @"

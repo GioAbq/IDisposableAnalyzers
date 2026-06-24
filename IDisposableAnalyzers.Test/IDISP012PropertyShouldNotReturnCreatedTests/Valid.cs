@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP012PropertyShouldNotReturnCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP012PropertyShouldNotReturnCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
@@ -20,7 +20,7 @@ namespace N
     }
 }";
 
-    [Test]
+    [Fact]
     public static void PropertyReturning1()
     {
         var code = @"
@@ -41,7 +41,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyReturningBoxed1()
     {
         var code = @"
@@ -62,7 +62,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyReturning1ExpressionBody()
     {
         var code = @"
@@ -83,7 +83,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyReturningNewTimeSpan()
     {
         var code = @"
@@ -106,7 +106,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyReturningNewTimeSpanExpressionBody()
     {
         var code = @"
@@ -123,7 +123,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyReturningBackingFieldExpressionBody()
     {
         var code = @"
@@ -150,7 +150,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyReturningBackingField()
     {
         var code = @"
@@ -174,7 +174,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyReturningBackingFieldFunc()
     {
         var code = @"

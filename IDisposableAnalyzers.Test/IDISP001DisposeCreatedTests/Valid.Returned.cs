@@ -1,13 +1,12 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
-// ReSharper disable once UnusedTypeParameter
-public static partial class Valid<T>
+public abstract partial class Valid
 {
-    [Test]
-    public static void SimpleStatementBody()
+    [Fact]
+    public void SimpleStatementBody()
     {
         var code = @"
 namespace N
@@ -25,8 +24,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void SimpleExpressionBody()
+    [Fact]
+    public void SimpleExpressionBody()
     {
         var code = @"
 namespace N
@@ -41,8 +40,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ReturnedTernary()
+    [Fact]
+    public void ReturnedTernary()
     {
         var code = @"
 namespace N
@@ -57,8 +56,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ReturnedNullConditional()
+    [Fact]
+    public void ReturnedNullConditional()
     {
         var code = @"
 namespace N
@@ -73,8 +72,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalFileOpenRead()
+    [Fact]
+    public void LocalFileOpenRead()
     {
         var code = @"
 namespace N
@@ -93,8 +92,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalFileOpenReadDisposable()
+    [Fact]
+    public void LocalFileOpenReadDisposable()
     {
         var code = @"
 namespace N
@@ -114,8 +113,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalFileOpenReadAsDisposable()
+    [Fact]
+    public void LocalFileOpenReadAsDisposable()
     {
         var code = @"
 namespace N
@@ -135,8 +134,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalFileOpenReadCastDisposable()
+    [Fact]
+    public void LocalFileOpenReadCastDisposable()
     {
         var code = @"
 namespace N
@@ -156,8 +155,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalFileOpenReadAfterAccessingLength()
+    [Fact]
+    public void LocalFileOpenReadAfterAccessingLength()
     {
         var code = @"
 namespace N
@@ -177,8 +176,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalInIfAndEnd()
+    [Fact]
+    public void LocalInIfAndEnd()
     {
         var code = @"
 namespace N
@@ -202,8 +201,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalInIf()
+    [Fact]
+    public void LocalInIf()
     {
         var code = @"
 namespace N
@@ -228,8 +227,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalInStreamReaderMethodBody()
+    [Fact]
+    public void LocalInStreamReaderMethodBody()
     {
         var code = @"
 namespace N
@@ -248,8 +247,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalInLocalStreamReader()
+    [Fact]
+    public void LocalInLocalStreamReader()
     {
         var code = @"
 namespace N
@@ -269,8 +268,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalInStreamReaderMethodBodyAsDisposable()
+    [Fact]
+    public void LocalInStreamReaderMethodBodyAsDisposable()
     {
         var code = @"
 namespace N
@@ -289,8 +288,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void FileOpenReadIsReturnedInCompositeDisposableMethodBody()
+    [Fact]
+    public void FileOpenReadIsReturnedInCompositeDisposableMethodBody()
     {
         var code = @"
 namespace N
@@ -310,8 +309,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void WhenDisposableIsReturnedPropertySimple()
+    [Fact]
+    public void WhenDisposableIsReturnedPropertySimple()
     {
         var code = @"
 namespace N
@@ -332,8 +331,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void WhenDisposableIsReturnedPropertyBody()
+    [Fact]
+    public void WhenDisposableIsReturnedPropertyBody()
     {
         var code = @"
 namespace N
@@ -355,8 +354,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void WhenDisposableIsReturnedPropertyExpressionBody()
+    [Fact]
+    public void WhenDisposableIsReturnedPropertyExpressionBody()
     {
         var code = @"
 namespace N
@@ -371,8 +370,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalInLazy()
+    [Fact]
+    public void LocalInLazy()
     {
         var code = @"
 namespace N
@@ -404,8 +403,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, Disposable, code);
     }
 
-    [Test]
-    public static void ReturnInValueTask()
+    [Fact]
+    public void ReturnInValueTask()
     {
         var disposable = """
 
@@ -440,8 +439,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, disposable, code);
     }
 
-    [Test]
-    public static void LocalFunctionStatementBody()
+    [Fact]
+    public void LocalFunctionStatementBody()
     {
         var code = @"
 namespace N
@@ -465,8 +464,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalFunctionExpressionBody()
+    [Fact]
+    public void LocalFunctionExpressionBody()
     {
         var code = @"
 namespace N
@@ -487,8 +486,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void LocalInLocalFunction()
+    [Fact]
+    public void LocalInLocalFunction()
     {
         var code = @"
 namespace N
@@ -513,8 +512,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ReturnedInTupleIssue320()
+    [Fact]
+    public void ReturnedInTupleIssue320()
     {
         var code = @"
 namespace N

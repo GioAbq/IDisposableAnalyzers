@@ -1,16 +1,16 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
-// ReSharper disable once UnusedTypeParameter
-public static partial class Valid<T>
+public abstract partial class Valid
 {
-    [TestCase("stream.Dispose()")]
-    [TestCase("stream?.Dispose()")]
-    [TestCase("((IDisposable)stream)?.Dispose()")]
-    [TestCase("(stream as IDisposable)?.Dispose()")]
-    public static void DisposedLocal(string expression)
+    [Theory]
+    [InlineData("stream.Dispose()")]
+    [InlineData("stream?.Dispose()")]
+    [InlineData("((IDisposable)stream)?.Dispose()")]
+    [InlineData("(stream as IDisposable)?.Dispose()")]
+    public void DisposedLocal(string expression)
     {
         var code = @"
 namespace N
@@ -31,9 +31,10 @@ namespace N
         RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 
-    [TestCase("using (var stream = File.OpenRead(string.Empty))")]
-    [TestCase("using (File.OpenRead(string.Empty))")]
-    public static void UsedLocal(string expression)
+    [Theory]
+    [InlineData("using (var stream = File.OpenRead(string.Empty))")]
+    [InlineData("using (File.OpenRead(string.Empty))")]
+    public void UsedLocal(string expression)
     {
         var code = @"
 namespace N
@@ -54,10 +55,11 @@ namespace N
         RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 
-    [TestCase("new DefaultFalse(stream)")]
-    [TestCase("new DefaultFalse(stream, false)")]
-    [TestCase("new DefaultTrue(stream, false)")]
-    public static void LeaveOpenDispose(string expression)
+    [Theory]
+    [InlineData("new DefaultFalse(stream)")]
+    [InlineData("new DefaultFalse(stream, false)")]
+    [InlineData("new DefaultTrue(stream, false)")]
+    public void LeaveOpenDispose(string expression)
     {
         var code = @"
 namespace N
@@ -118,10 +120,11 @@ namespace N
         RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 
-    [TestCase("new DefaultFalse(stream)")]
-    [TestCase("new DefaultFalse(stream, false)")]
-    [TestCase("new DefaultTrue(stream, false)")]
-    public static void LeaveOpenWhenDisposeAsync(string expression)
+    [Theory]
+    [InlineData("new DefaultFalse(stream)")]
+    [InlineData("new DefaultFalse(stream, false)")]
+    [InlineData("new DefaultTrue(stream, false)")]
+    public void LeaveOpenWhenDisposeAsync(string expression)
     {
         var code = @"
 namespace N

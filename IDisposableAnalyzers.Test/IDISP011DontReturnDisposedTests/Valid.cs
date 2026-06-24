@@ -1,8 +1,8 @@
-﻿// ReSharper disable InconsistentNaming
+// ReSharper disable InconsistentNaming
 namespace IDisposableAnalyzers.Test.IDISP011DontReturnDisposedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
@@ -21,7 +21,7 @@ namespace N
     }
 }";
 
-    [Test]
+    [Fact]
     public static void RealisticExtensionMethodClass()
     {
         var code = @"
@@ -144,7 +144,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void VoidMethodReturn()
     {
         var code = @"
@@ -166,7 +166,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningObject()
     {
         var code = @"
@@ -188,7 +188,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningDynamic()
     {
         var code = @"
@@ -210,7 +210,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void GenericClassMethodReturningDynamicSubtract()
     {
         var code = @"
@@ -228,7 +228,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void GenericClassPropertyReturningDynamicSubtract()
     {
         var code = @"
@@ -246,7 +246,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningThis()
     {
         var chunkOfT = @"
@@ -286,7 +286,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, chunkOfT, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningFieldAsObject()
     {
         var code = @"
@@ -307,7 +307,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningFieldIndexerAsObject()
     {
         var code = @"
@@ -328,7 +328,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningFieldDisposableListIndexerAsObject()
     {
         var disposableListOfT = @"
@@ -377,7 +377,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, disposableListOfT, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningFieldDisposableListIndexerAsObjectId()
     {
         var disposableListOfT = @"
@@ -431,7 +431,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, disposableListOfT, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningFuncObject()
     {
         var code = @"
@@ -455,7 +455,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningObjectExpressionBody()
     {
         var code = @"
@@ -474,7 +474,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyReturningObject()
     {
         var code = @"
@@ -499,7 +499,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IndexerReturningObject()
     {
         var code = @"
@@ -524,7 +524,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningTaskFromResultOfDisposable()
     {
         var code = @"
@@ -549,7 +549,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningTaskRunOfDisposable()
     {
         var code = @"
@@ -569,7 +569,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void GenericMethod()
     {
         var code = @"
@@ -591,7 +591,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyReturningObjectExpressionBody()
     {
         var code = @"
@@ -610,7 +610,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningFileOpenReadAsStream()
     {
         var code = @"
@@ -629,7 +629,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningFileOpenReadExtensionMethod()
     {
         var code = @"
@@ -653,7 +653,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningNewDisposableExtensionMethodId()
     {
         var code = @"
@@ -677,7 +677,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnDisposableFieldAsObject()
     {
         var code = @"
@@ -698,7 +698,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnDisposableStaticFieldAsObject()
     {
         var code = @"
@@ -719,7 +719,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IfTry()
     {
         var code = @"
@@ -746,7 +746,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IEnumerableOfInt()
     {
         var code = @"
@@ -774,7 +774,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IEnumerableOfIntSimple()
     {
         var code = @"
@@ -797,7 +797,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IEnumerableOfIntExpressionBodies()
     {
         var code = @"
@@ -819,7 +819,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningAsyncTaskOfStream()
     {
         var code = @"
@@ -848,7 +848,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void Lambda()
     {
         var code = @"
@@ -873,7 +873,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void PassingFuncToMethod()
     {
         var code = @"
@@ -898,7 +898,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void CallingOverload()
     {
         var code = @"
@@ -924,7 +924,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void AssertThrows()
     {
         var code = @"
@@ -949,7 +949,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void YieldReturnFromUsing()
     {
         var code = @"
@@ -976,7 +976,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnGreedyFromUsing()
     {
         var code = @"
@@ -1011,7 +1011,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void AwaitingInUsing()
     {
         var code = @"
@@ -1035,7 +1035,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void WhenDisposedAndReassigned()
     {
         var code = @"
@@ -1058,7 +1058,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void WhenDisposedAndReassignedWithLocal()
     {
         var code = @"
@@ -1082,7 +1082,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void DisposedBeforeInForeach()
     {
         var code = @"
@@ -1108,7 +1108,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void DisposedInCatchThenRethrow()
     {
         var code = @"
@@ -1139,7 +1139,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnProcessIssue246()
     {
         var code = @"
@@ -1176,7 +1176,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IfDisposeAssignNewIssue239()
     {
         var code = @"

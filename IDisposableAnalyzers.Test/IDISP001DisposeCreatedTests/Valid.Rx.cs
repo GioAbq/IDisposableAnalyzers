@@ -1,13 +1,12 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP001DisposeCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
-// ReSharper disable once UnusedTypeParameter
-public static partial class Valid<T>
+public abstract partial class Valid
 {
-    [Test]
-    public static void CompositeDisposableInitializer()
+    [Fact]
+    public void CompositeDisposableInitializer()
     {
         var code = @"
 namespace N
@@ -35,8 +34,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void CompositeDisposableAdd()
+    [Fact]
+    public void CompositeDisposableAdd()
     {
         var code = @"
 namespace N
@@ -64,8 +63,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void SerialDisposable()
+    [Fact]
+    public void SerialDisposable()
     {
         var code = @"
 using System;
@@ -90,8 +89,8 @@ public sealed class C : IDisposable
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void SerialDisposableObjectInitializer()
+    [Fact]
+    public void SerialDisposableObjectInitializer()
     {
         var code = @"
 namespace N
@@ -119,8 +118,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void SingleAssignmentDisposable()
+    [Fact]
+    public void SingleAssignmentDisposable()
     {
         var code = @"
 using System;
@@ -145,8 +144,8 @@ public sealed class C : IDisposable
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DisposableCreateClosure()
+    [Fact]
+    public void DisposableCreateClosure()
     {
         var code = @"
 namespace N
@@ -173,8 +172,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DisposableCreateClosureElvis()
+    [Fact]
+    public void DisposableCreateClosureElvis()
     {
         var code = @"
 namespace N
@@ -201,8 +200,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void DisposableCreateClosureStatementBody()
+    [Fact]
+    public void DisposableCreateClosureStatementBody()
     {
         var code = @"
 namespace N
@@ -232,8 +231,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ReturnsCompositeDisposableInitializer()
+    [Fact]
+    public void ReturnsCompositeDisposableInitializer()
     {
         var code = @"
 namespace N
@@ -254,8 +253,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, Disposable, code);
     }
 
-    [Test]
-    public static void ReturnsCompositeDisposableLazy()
+    [Fact]
+    public void ReturnsCompositeDisposableLazy()
     {
         var code = @"
 namespace N
@@ -290,10 +289,8 @@ namespace N
 }";
         RoslynAssert.Valid(Analyzer, Disposable, code);
     }
-
-    [Ignore("Temp")]
-    [Test]
-    public static void LocalAssignedWithFileOpenReadDisposeWith()
+    [Fact(Skip="Temp")]
+    public void LocalAssignedWithFileOpenReadDisposeWith()
     {
         var code = @"
 namespace N
@@ -321,8 +318,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ObservableCreateReturnsCompositeDisposable()
+    [Fact]
+    public void ObservableCreateReturnsCompositeDisposable()
     {
         var code = @"
 namespace N

@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
+namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -35,7 +35,7 @@ namespace N
     }
 }";
 
-    [Test]
+    [Fact]
     public static void LocalAssignedTwice()
     {
         var before = @"
@@ -74,7 +74,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void LocalOfTypeObjectAssignedTwice()
     {
         var before = @"
@@ -111,7 +111,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void LocalAssignedAndThenAssignedWithNull()
     {
         var before = @"
@@ -148,7 +148,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void LocalAssignedTwiceInsideIf()
     {
         var before = @"
@@ -193,7 +193,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void LocalAssignedInElse()
     {
         var before = @"
@@ -248,7 +248,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void LocalAssignedWithOutThenSimple()
     {
         var before = @"
@@ -305,7 +305,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void LocalInLambdaClosure()
     {
         var before = @"
@@ -348,7 +348,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
     }
 
-    [Test]
+    [Fact]
     public static void LocalInitializedBeforeWhileLoop()
     {
         var before = @"
@@ -396,7 +396,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void LocalInitializedWithNullBeforeWhileLoop()
     {
         var before = @"
@@ -444,7 +444,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void ParameterAssignedTwice()
     {
         var before = @"
@@ -483,7 +483,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldInitializedThenAssignedInCtor()
     {
         var before = @"
@@ -524,7 +524,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldOfTypeObjectInitializedThenAssignedInConstructor()
     {
         var before = @"
@@ -565,7 +565,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyInitializedAndAssignedInConstructor()
     {
         var before = @"
@@ -606,7 +606,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyWithBackingFieldInitializedThenAssignedInConstructor()
     {
         var before = @"
@@ -659,7 +659,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyWithBackingFieldAssignedTwiceInConstructor()
     {
         var before = @"
@@ -712,7 +712,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldAssignedInPublicMethod()
     {
         var before = @"
@@ -753,7 +753,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldAssignedInPublicMethodReturnExpression()
     {
         var before = @"
@@ -794,7 +794,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldAssignedInPublicMethodExpressionBody()
     {
         var before = @"
@@ -832,7 +832,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldAssignedInLambda()
     {
         var before = @"
@@ -882,7 +882,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldAssignedInLambdaBlock()
     {
         var before = @"
@@ -941,7 +941,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldAssignedInGetterReturnExpression()
     {
         var before = @"
@@ -988,7 +988,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldAssignedInPropertyExpressionBody()
     {
         var before = @"
@@ -1029,7 +1029,7 @@ namespace N
         RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldAssignedInLambdaArgument()
     {
         var before = @"
@@ -1085,7 +1085,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
     }
 
-    [Test]
+    [Fact]
     public static void FieldAssignedInLambdaArgumentBlock()
     {
         var before = @"

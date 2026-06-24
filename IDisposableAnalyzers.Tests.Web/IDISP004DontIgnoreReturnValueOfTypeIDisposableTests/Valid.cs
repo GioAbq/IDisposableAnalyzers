@@ -1,9 +1,9 @@
-﻿// ReSharper disable InconsistentNaming
+// ReSharper disable InconsistentNaming
 namespace IDisposableAnalyzers.Tests.Web.IDISP004DontIgnoreReturnValueOfTypeIDisposableTests;
 
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.Diagnostics;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
@@ -28,7 +28,7 @@ namespace N
     }
 }";
 
-    [Test]
+    [Fact]
     public static void AwaitUsing()
     {
         var asyncDisposable = @"
@@ -65,7 +65,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, asyncDisposable, code);
     }
 
-    [Test]
+    [Fact]
     public static void ILoggerFactoryAddApplicationInsights()
     {
         var code = @"
@@ -89,10 +89,11 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, Settings.Default.WithAllowedCompilerDiagnostics(AllowedCompilerDiagnostics.Warnings));
     }
 
-    [TestCase("var disposable = serviceProvider.GetRequiredService<Disposable>();")]
-    [TestCase("_ = serviceProvider.GetRequiredService<Disposable>();")]
-    [TestCase("var loggerFactory = serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILoggerFactory>();")]
-    [TestCase("_ = serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILoggerFactory>();")]
+    [Theory]
+    [InlineData("var disposable = serviceProvider.GetRequiredService<Disposable>();")]
+    [InlineData("_ = serviceProvider.GetRequiredService<Disposable>();")]
+    [InlineData("var loggerFactory = serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILoggerFactory>();")]
+    [InlineData("_ = serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILoggerFactory>();")]
     public static void IServiceProviderGetRequiredService(string statement)
     {
         var code = @"
@@ -119,10 +120,11 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("var disposable = this.serviceProvider.GetRequiredService<Disposable>();")]
-    [TestCase("_ = this.serviceProvider.GetRequiredService<Disposable>();")]
-    [TestCase("var loggerFactory = this.serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILoggerFactory>();")]
-    [TestCase("_ = this.serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILoggerFactory>();")]
+    [Theory]
+    [InlineData("var disposable = this.serviceProvider.GetRequiredService<Disposable>();")]
+    [InlineData("_ = this.serviceProvider.GetRequiredService<Disposable>();")]
+    [InlineData("var loggerFactory = this.serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILoggerFactory>();")]
+    [InlineData("_ = this.serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILoggerFactory>();")]
     public static void IServiceProviderGetRequiredServiceField(string statement)
     {
         var code = @"
@@ -152,7 +154,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void HostBuildRun()
     {
         var code = @"
@@ -171,7 +173,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void HostBuildRunAsync()
     {
         var code = @"
@@ -191,8 +193,9 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("response.RegisterForDispose(new Disposable())")]
-    [TestCase("response.RegisterForDisposeAsync(new Disposable())")]
+    [Theory]
+    [InlineData("response.RegisterForDispose(new Disposable())")]
+    [InlineData("response.RegisterForDisposeAsync(new Disposable())")]
     public static void RegisterForDispose(string expression)
     {
         var code = @"

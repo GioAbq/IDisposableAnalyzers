@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP008DoNotMixInjectedAndCreatedForMemberTests;
+namespace IDisposableAnalyzers.Test.IDISP008DoNotMixInjectedAndCreatedForMemberTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Diagnostics
 {
@@ -21,7 +21,7 @@ namespace N
     }
 }";
 
-    [Test]
+    [Fact]
     public static void PublicMethodRefParameter()
     {
         var code = @"

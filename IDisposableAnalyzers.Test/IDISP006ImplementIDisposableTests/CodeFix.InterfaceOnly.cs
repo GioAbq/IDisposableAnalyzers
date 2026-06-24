@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP006ImplementIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -10,7 +10,7 @@ public static partial class CodeFix
         //// ReSharper disable once InconsistentNaming
         private static readonly ExpectedDiagnostic CS0535 = ExpectedDiagnostic.Create(nameof(CS0535));
 
-        [Test]
+        [Fact]
         public static void Struct()
         {
             var before = @"
@@ -39,7 +39,7 @@ namespace N
             RoslynAssert.FixAll(Fix, CS0535, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void NestedStruct()
         {
             var before = @"

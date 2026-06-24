@@ -1,7 +1,7 @@
 namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -10,7 +10,7 @@ public static partial class CodeFix
         // ReSharper disable once MemberHidesStaticFromOuterClass
         private static readonly ArgumentAnalyzer Analyzer = new();
 
-        [Test]
+        [Fact]
         public static void LocalViaObjectCreationThenOutParameter()
         {
             var before = @"
@@ -59,7 +59,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { Disposable, before }, after);
         }
 
-        [Test]
+        [Fact]
         public static void LocalInvocationThenOutParameter()
         {
             var before = @"
@@ -110,7 +110,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void LocalViaOutTwice()
         {
             var before = @"
@@ -163,7 +163,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void FieldViaOutInPublicMethod()
         {
             var before = @"
@@ -216,7 +216,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void FieldViaOutInPublicMethodNoThis()
         {
             var before = @"
@@ -269,7 +269,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void FieldOfTypeObjectViaOutParameterInPublicMethodNoThis()
         {
             var before = @"
@@ -322,7 +322,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void FieldPrivateMethodRef()
         {
             var before = @"
@@ -385,7 +385,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void FieldPrivateMethodRefTwice()
         {
             var before = @"
@@ -450,7 +450,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void FieldPrivateMethodRefTwiceDifferentMethods()
         {
             var before = @"
@@ -525,7 +525,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void FieldPublicMethodRef()
         {
             var before = @"
@@ -588,7 +588,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void FieldPublicMethodRefExpressionBody()
         {
             var before = @"

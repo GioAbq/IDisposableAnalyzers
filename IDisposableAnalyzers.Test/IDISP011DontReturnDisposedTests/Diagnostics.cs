@@ -1,14 +1,14 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP011DontReturnDisposedTests;
+namespace IDisposableAnalyzers.Test.IDISP011DontReturnDisposedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Diagnostics
 {
     private static readonly ReturnValueAnalyzer Analyzer = new();
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP011DontReturnDisposed);
 
-    [Test]
+    [Fact]
     public static void ReturnFileOpenReadFromUsing()
     {
         var code = @"
@@ -30,7 +30,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnFileOpenReadFromUsingDeclaration()
     {
         var code = @"
@@ -50,7 +50,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnFileOpenReadDisposed()
     {
         var code = @"
@@ -71,7 +71,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnLazyFromUsing()
     {
         var code = @"
@@ -101,7 +101,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnLazyFromUsingNested()
     {
         var code = @"

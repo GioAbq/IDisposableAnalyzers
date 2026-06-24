@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using System.Linq;
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
-    [Test]
+    [Fact]
     public static void Simple()
     {
         var code = @"
@@ -59,7 +59,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, extCode, DisposableCode, wrappingDisposableCode);
     }
 
-    [Test]
+    [Fact]
     public static void SimpleWithArg()
     {
         var code = @"
@@ -111,7 +111,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, extCode, DisposableCode, wrappingDisposableCode);
     }
 
-    [Test]
+    [Fact]
     public static void SimpleWhenArg()
     {
         var code = @"
@@ -163,7 +163,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, extCode, DisposableCode, wrappingDisposableCode);
     }
 
-    [Test]
+    [Fact]
     public static void Chained()
     {
         var code = @"
@@ -217,7 +217,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, extCode, DisposableCode, wrappingDisposableCode);
     }
 
-    [Test]
+    [Fact]
     public static void ExtensionMethodWrappingStreamInStreamReader()
     {
         var code = @"
@@ -235,7 +235,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void Issue174()
     {
         var code = @"
@@ -274,7 +274,7 @@ namespace Gu.Inject.Tests
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void KernelBinaryExtensionMethod()
     {
         var binaryReference = BinaryReference.Compile(@"
@@ -309,7 +309,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code, settings: settings);
     }
 
-    [Test]
+    [Fact]
     public static void KernelExtensionMethodInOtherProject()
     {
         var ext = @"

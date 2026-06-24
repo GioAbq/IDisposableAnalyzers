@@ -1,11 +1,11 @@
 namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
-    [Test]
+    [Fact]
     public static void IgnoringTcpClientGetStream()
     {
         var code = @"

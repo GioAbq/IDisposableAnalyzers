@@ -1,8 +1,8 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP016DoNotUseDisposedInstanceTests;
+namespace IDisposableAnalyzers.Test.IDISP016DoNotUseDisposedInstanceTests;
 
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
@@ -22,7 +22,7 @@ namespace N
     }
 }";
 
-    [Test]
+    [Fact]
     public static void Issue348()
     {
         var code = @"

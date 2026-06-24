@@ -1,15 +1,16 @@
-﻿namespace IDisposableAnalyzers.Tests.Web.IDISP017PreferUsingTests;
+namespace IDisposableAnalyzers.Tests.Web.IDISP017PreferUsingTests;
 
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.Diagnostics;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
     private static readonly DiagnosticAnalyzer Analyzer = new DisposeCallAnalyzer();
 
-    [TestCase("c.DisposeAsync()")]
-    [TestCase("c.DisposeAsync().ConfigureAwait(false)")]
+    [Theory]
+    [InlineData("c.DisposeAsync()")]
+    [InlineData("c.DisposeAsync().ConfigureAwait(false)")]
     public static void DisposeAsync(string expression)
     {
         var code = @"

@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP026SealAsyncDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP026SealAsyncDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
@@ -9,7 +9,7 @@ public static class Valid
 
     public static class DisposeAsync
     {
-        [Test]
+        [Fact]
         public static void SealedSimple()
         {
             var code = @"
@@ -29,7 +29,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, code);
         }
 
-        [Test]
+        [Fact]
         public static void SealedPartial()
         {
             var part1 = @"
@@ -58,7 +58,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, part1, part2);
         }
 
-        [Test]
+        [Fact]
         public static void WithDisposeAsyncCore()
         {
             var code = @"

@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
@@ -20,17 +20,18 @@ namespace N
     }
 }";
 
-    [TestCase("new Disposable()")]
-    [TestCase("File.OpenRead(fileName)")]
-    [TestCase("(File.OpenRead(fileName), 1)")]
-    [TestCase("(File.OpenRead(fileName), File.OpenRead(fileName))")]
-    [TestCase("Tuple.Create(File.OpenRead(fileName), 1)")]
-    [TestCase("Tuple.Create(File.OpenRead(fileName), File.OpenRead(fileName))")]
-    [TestCase("new Tuple<FileStream, int>(File.OpenRead(fileName), 1)")]
-    [TestCase("new List<FileStream> { File.OpenRead(fileName) }")]
-    [TestCase("new List<FileStream> { File.OpenRead(fileName), File.OpenRead(fileName) }")]
-    [TestCase("new List<Disposable> { new Disposable() }")]
-    [TestCase("new List<Disposable> { new Disposable(), new Disposable() }")]
+    [Theory]
+    [InlineData("new Disposable()")]
+    [InlineData("File.OpenRead(fileName)")]
+    [InlineData("(File.OpenRead(fileName), 1)")]
+    [InlineData("(File.OpenRead(fileName), File.OpenRead(fileName))")]
+    [InlineData("Tuple.Create(File.OpenRead(fileName), 1)")]
+    [InlineData("Tuple.Create(File.OpenRead(fileName), File.OpenRead(fileName))")]
+    [InlineData("new Tuple<FileStream, int>(File.OpenRead(fileName), 1)")]
+    [InlineData("new List<FileStream> { File.OpenRead(fileName) }")]
+    [InlineData("new List<FileStream> { File.OpenRead(fileName), File.OpenRead(fileName) }")]
+    [InlineData("new List<Disposable> { new Disposable() }")]
+    [InlineData("new List<Disposable> { new Disposable(), new Disposable() }")]
     public static void AssigningLocal(string expression)
     {
         var code = @"
@@ -52,17 +53,18 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [TestCase("new Disposable()")]
-    [TestCase("File.OpenRead(fileName)")]
-    [TestCase("(File.OpenRead(fileName), 1)")]
-    [TestCase("(File.OpenRead(fileName), File.OpenRead(fileName))")]
-    [TestCase("Tuple.Create(File.OpenRead(fileName), 1)")]
-    [TestCase("Tuple.Create(File.OpenRead(fileName), File.OpenRead(fileName))")]
-    [TestCase("new Tuple<FileStream, int>(File.OpenRead(fileName), 1)")]
-    [TestCase("new List<FileStream> { File.OpenRead(fileName) }")]
-    [TestCase("new List<FileStream> { File.OpenRead(fileName), File.OpenRead(fileName) }")]
-    [TestCase("new List<Disposable> { new Disposable() }")]
-    [TestCase("new List<Disposable> { new Disposable(), new Disposable() }")]
+    [Theory]
+    [InlineData("new Disposable()")]
+    [InlineData("File.OpenRead(fileName)")]
+    [InlineData("(File.OpenRead(fileName), 1)")]
+    [InlineData("(File.OpenRead(fileName), File.OpenRead(fileName))")]
+    [InlineData("Tuple.Create(File.OpenRead(fileName), 1)")]
+    [InlineData("Tuple.Create(File.OpenRead(fileName), File.OpenRead(fileName))")]
+    [InlineData("new Tuple<FileStream, int>(File.OpenRead(fileName), 1)")]
+    [InlineData("new List<FileStream> { File.OpenRead(fileName) }")]
+    [InlineData("new List<FileStream> { File.OpenRead(fileName), File.OpenRead(fileName) }")]
+    [InlineData("new List<Disposable> { new Disposable() }")]
+    [InlineData("new List<Disposable> { new Disposable(), new Disposable() }")]
     public static void AssigningField(string expression)
     {
         var code = @"
@@ -85,7 +87,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void RealisticExtensionMethodClass()
     {
         var code = @"
@@ -208,7 +210,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IfTry()
     {
         var code = @"
@@ -235,7 +237,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReadAsyncCall()
     {
         var code = @"
@@ -276,7 +278,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReadAsyncConfigureAwait()
     {
         var code = @"
@@ -317,7 +319,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void WhenGettingPropertyOfDisposable()
     {
         var code = @"
@@ -376,7 +378,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void WhenGettingPropertyOfProperty()
     {
         var code = @"
@@ -438,7 +440,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void AddingFileOpenReadToList()
     {
         var code = @"
@@ -459,7 +461,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void AddingNewDisposableToList()
     {
         var code = @"
@@ -481,7 +483,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void AddingNewDisposableToListThatIsDisposed()
     {
         var code = @"
@@ -511,7 +513,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void AddingNewDisposableToListOfObjectThatIsTouchedInDisposeMethod()
     {
         var code = @"
@@ -541,8 +543,9 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [TestCase("File.Create(fileName).Dispose()")]
-    [TestCase("File.Create(fileName)?.Dispose()")]
+    [Theory]
+    [InlineData("File.Create(fileName).Dispose()")]
+    [InlineData("File.Create(fileName)?.Dispose()")]
     public static void DisposingInSameStatement(string statement)
     {
         var code = @"
@@ -561,10 +564,11 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [TestCase("Stream().Dispose()")]
-    [TestCase("Stream()?.Dispose()")]
-    [TestCase("this.Stream().Dispose()")]
-    [TestCase("this.Stream()?.Dispose()")]
+    [Theory]
+    [InlineData("Stream().Dispose()")]
+    [InlineData("Stream()?.Dispose()")]
+    [InlineData("this.Stream().Dispose()")]
+    [InlineData("this.Stream()?.Dispose()")]
     public static void DisposingMethodReturnValue(string expression)
     {
         var code = @"
@@ -586,8 +590,9 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("Stream().Dispose()")]
-    [TestCase("Stream()?.Dispose()")]
+    [Theory]
+    [InlineData("Stream().Dispose()")]
+    [InlineData("Stream()?.Dispose()")]
     public static void DisposingStaticMethodReturnValue(string expression)
     {
         var code = @"
@@ -608,10 +613,11 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("Stream.Dispose()")]
-    [TestCase("Stream?.Dispose()")]
-    [TestCase("this.Stream.Dispose()")]
-    [TestCase("this.Stream?.Dispose()")]
+    [Theory]
+    [InlineData("Stream.Dispose()")]
+    [InlineData("Stream?.Dispose()")]
+    [InlineData("this.Stream.Dispose()")]
+    [InlineData("this.Stream?.Dispose()")]
     public static void DisposingPropertyReturnValue(string expression)
     {
         var code = @"
@@ -633,8 +639,9 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("Stream.Dispose()")]
-    [TestCase("Stream?.Dispose()")]
+    [Theory]
+    [InlineData("Stream.Dispose()")]
+    [InlineData("Stream?.Dispose()")]
     public static void DisposingStaticPropertyReturnValue(string expression)
     {
         var code = @"
@@ -655,7 +662,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void AddFileOpenReadToListOfObjectField()
     {
         var code = @"
@@ -686,14 +693,15 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("using (await Task.Run(() => File.OpenRead(fileName)))")]
-    [TestCase("using (await Task.Run(() => File.OpenRead(fileName)).ConfigureAwait(false))")]
-    [TestCase("using (var stream = await Task.Run(() => File.OpenRead(fileName)))")]
-    [TestCase("using (var stream = await Task.Run(() => File.OpenRead(fileName)).ConfigureAwait(false))")]
-    [TestCase("using (await Task.FromResult(File.OpenRead(fileName)))")]
-    [TestCase("using (await Task.FromResult(File.OpenRead(fileName)).ConfigureAwait(false))")]
-    [TestCase("using (var stream = await Task.FromResult(File.OpenRead(fileName)))")]
-    [TestCase("using (var stream = await Task.FromResult(File.OpenRead(fileName)).ConfigureAwait(false))")]
+    [Theory]
+    [InlineData("using (await Task.Run(() => File.OpenRead(fileName)))")]
+    [InlineData("using (await Task.Run(() => File.OpenRead(fileName)).ConfigureAwait(false))")]
+    [InlineData("using (var stream = await Task.Run(() => File.OpenRead(fileName)))")]
+    [InlineData("using (var stream = await Task.Run(() => File.OpenRead(fileName)).ConfigureAwait(false))")]
+    [InlineData("using (await Task.FromResult(File.OpenRead(fileName)))")]
+    [InlineData("using (await Task.FromResult(File.OpenRead(fileName)).ConfigureAwait(false))")]
+    [InlineData("using (var stream = await Task.FromResult(File.OpenRead(fileName)))")]
+    [InlineData("using (var stream = await Task.FromResult(File.OpenRead(fileName)).ConfigureAwait(false))")]
     public static void UsingAwaited(string statement)
     {
         var code = @"
@@ -715,10 +723,11 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("await Task.Run(() => File.OpenRead(fileName))")]
-    [TestCase("await Task.Run(() => File.OpenRead(fileName)).ConfigureAwait(false)")]
-    [TestCase("await Task.FromResult(File.OpenRead(fileName))")]
-    [TestCase("await Task.FromResult(File.OpenRead(fileName)).ConfigureAwait(false)")]
+    [Theory]
+    [InlineData("await Task.Run(() => File.OpenRead(fileName))")]
+    [InlineData("await Task.Run(() => File.OpenRead(fileName)).ConfigureAwait(false)")]
+    [InlineData("await Task.FromResult(File.OpenRead(fileName))")]
+    [InlineData("await Task.FromResult(File.OpenRead(fileName)).ConfigureAwait(false)")]
     public static void AssigningAwaitedToLocal(string statement)
     {
         var code = @"
@@ -739,10 +748,11 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("await Task.Run(() => File.OpenRead(fileName))")]
-    [TestCase("await Task.Run(() => File.OpenRead(fileName)).ConfigureAwait(false)")]
-    [TestCase("await Task.FromResult(File.OpenRead(fileName))")]
-    [TestCase("await Task.FromResult(File.OpenRead(fileName)).ConfigureAwait(false)")]
+    [Theory]
+    [InlineData("await Task.Run(() => File.OpenRead(fileName))")]
+    [InlineData("await Task.Run(() => File.OpenRead(fileName)).ConfigureAwait(false)")]
+    [InlineData("await Task.FromResult(File.OpenRead(fileName))")]
+    [InlineData("await Task.FromResult(File.OpenRead(fileName)).ConfigureAwait(false)")]
     public static void AssigningAwaitedToField(string statement)
     {
         var code = @"
@@ -771,7 +781,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void DispatcherInvoke()
     {
         var code = @"
@@ -790,8 +800,9 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("this.components.Add(stream)")]
-    [TestCase("components.Add(stream)")]
+    [Theory]
+    [InlineData("this.components.Add(stream)")]
+    [InlineData("components.Add(stream)")]
     public static void LocalAddedToFormComponents(string expression)
     {
         var code = @"
@@ -813,8 +824,9 @@ namespace N
         RoslynAssert.NoAnalyzerDiagnostics(Analyzer, code);
     }
 
-    [TestCase("this.components.Add(this.stream)")]
-    [TestCase("components.Add(stream)")]
+    [Theory]
+    [InlineData("this.components.Add(this.stream)")]
+    [InlineData("components.Add(stream)")]
     public static void FieldAddedToFormComponents(string expression)
     {
         var code = @"
@@ -838,7 +850,7 @@ namespace N
         RoslynAssert.NoAnalyzerDiagnostics(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void InterlockedExchange()
     {
         var code = @"
@@ -867,7 +879,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void PositionNotWithinSyntaxTree()
     {
         var target = @"
@@ -926,7 +938,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, cause, target);
     }
 
-    [Test]
+    [Fact]
     public static void UsingOuterTaskIssue299()
     {
         var code = @"
@@ -946,7 +958,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void StructBuilder()
     {
         var structCode = """

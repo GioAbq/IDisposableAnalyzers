@@ -1,14 +1,14 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP005ReturnTypeShouldBeIDisposableTests;
+namespace IDisposableAnalyzers.Test.IDISP005ReturnTypeShouldBeIDisposableTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Diagnostics
 {
     private static readonly ReturnValueAnalyzer Analyzer = new();
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.IDISP005ReturnTypeShouldBeIDisposable);
 
-    [Test]
+    [Fact]
     public static void ReturnFileOpenReadAsObject()
     {
         var code = @"
@@ -27,7 +27,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnFileOpenReadAsDynamic()
     {
         var code = @"
@@ -46,7 +46,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnStaticFieldPasswordBoxSecurePasswordAsObject()
     {
         var code = @"
@@ -67,7 +67,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnFieldPasswordBoxSecurePasswordAsObject()
     {
         var code = @"
@@ -88,7 +88,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void IndexerReturningObject()
     {
         var code = @"
@@ -115,7 +115,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnFileOpenReadAsObjectExpressionBody()
     {
         var code = @"
@@ -131,7 +131,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyReturnFileOpenReadAsObjectExpressionBody()
     {
         var code = @"
@@ -147,7 +147,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void StatementLambda()
     {
         var code = @"
@@ -170,7 +170,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void ParenthesizedLambdaExpression()
     {
         var code = @"
@@ -190,7 +190,7 @@ namespace N
         RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 
-    [Test]
+    [Fact]
     public static void SimpleLambdaExpression()
     {
         var code = @"

@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP002DisposeMemberTests;
+namespace IDisposableAnalyzers.Test.IDISP002DisposeMemberTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
     public static class TestFixture
     {
-        [Test]
+        [Fact]
         public static void DisposingFieldInTearDown()
         {
             var code = @"
@@ -35,7 +35,7 @@ namespace N
             RoslynAssert.Valid(Analyzer, DisposableCode, code);
         }
 
-        [Test]
+        [Fact]
         public static void DisposingFieldInOneTimeTearDown()
         {
             var code = @"

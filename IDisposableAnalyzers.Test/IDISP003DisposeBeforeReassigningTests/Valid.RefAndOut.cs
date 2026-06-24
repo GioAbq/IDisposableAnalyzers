@@ -1,13 +1,12 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
+namespace IDisposableAnalyzers.Test.IDISP003DisposeBeforeReassigningTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
-// ReSharper disable once UnusedTypeParameter
-public static partial class Valid<T>
+public abstract partial class Valid
 {
-    [Test]
-    public static void OutParameter()
+    [Fact]
+    public void OutParameter()
     {
         var code = @"
 namespace N
@@ -27,12 +26,13 @@ namespace N
         RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 
-    [TestCase("out _")]
-    [TestCase("out var temp")]
-    [TestCase("out var _")]
-    [TestCase("out FileStream? temp")]
-    [TestCase("out FileStream _")]
-    public static void DictionaryTryGetValue(string expression)
+    [Theory]
+    [InlineData("out _")]
+    [InlineData("out var temp")]
+    [InlineData("out var _")]
+    [InlineData("out FileStream? temp")]
+    [InlineData("out FileStream _")]
+    public void DictionaryTryGetValue(string expression)
     {
         var code = @"
 namespace N
@@ -50,12 +50,13 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("out _")]
-    [TestCase("out var temp")]
-    [TestCase("out var _")]
-    [TestCase("out FileStream? temp")]
-    [TestCase("out FileStream _")]
-    public static void CallWithOutParameter(string expression)
+    [Theory]
+    [InlineData("out _")]
+    [InlineData("out var temp")]
+    [InlineData("out var _")]
+    [InlineData("out FileStream? temp")]
+    [InlineData("out FileStream _")]
+    public void CallWithOutParameter(string expression)
     {
         var code = @"
 namespace N
@@ -80,12 +81,13 @@ namespace N
         RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 
-    [TestCase("out _")]
-    [TestCase("out var temp")]
-    [TestCase("out var _")]
-    [TestCase("out FileStream temp")]
-    [TestCase("out FileStream _")]
-    public static void CallWithOutParameterExpressionBody(string expression)
+    [Theory]
+    [InlineData("out _")]
+    [InlineData("out var temp")]
+    [InlineData("out var _")]
+    [InlineData("out FileStream temp")]
+    [InlineData("out FileStream _")]
+    public void CallWithOutParameterExpressionBody(string expression)
     {
         var code = @"
 namespace N
@@ -107,12 +109,13 @@ namespace N
         RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 
-    [TestCase("out _")]
-    [TestCase("out var temp")]
-    [TestCase("out var _")]
-    [TestCase("out FileStream? temp")]
-    [TestCase("out FileStream _")]
-    public static void DiscardedCachedOutParameter(string expression)
+    [Theory]
+    [InlineData("out _")]
+    [InlineData("out var temp")]
+    [InlineData("out var _")]
+    [InlineData("out FileStream? temp")]
+    [InlineData("out FileStream _")]
+    public void DiscardedCachedOutParameter(string expression)
     {
         var code = @"
 namespace N
@@ -143,8 +146,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void CachedOutParameter()
+    [Fact]
+    public void CachedOutParameter()
     {
         var code = @"
 namespace N
@@ -180,8 +183,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void AssigningVariableViaOutParameter()
+    [Fact]
+    public void AssigningVariableViaOutParameter()
     {
         var code = @"
 namespace N
@@ -215,8 +218,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void AssigningOutParameterExpressionBody()
+    [Fact]
+    public void AssigningOutParameterExpressionBody()
     {
         var code = @"
 namespace N
@@ -232,8 +235,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void AssigningVariableViaOutParameterTwiceDisposingBetweenCalls()
+    [Fact]
+    public void AssigningVariableViaOutParameterTwiceDisposingBetweenCalls()
     {
         var code = @"
 namespace N
@@ -261,8 +264,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void AssigningFieldViaConcurrentDictionaryTryGetValue()
+    [Fact]
+    public void AssigningFieldViaConcurrentDictionaryTryGetValue()
     {
         var code = @"
 namespace N
@@ -285,8 +288,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void AssigningFieldViaConcurrentDictionaryTryGetValueTwice()
+    [Fact]
+    public void AssigningFieldViaConcurrentDictionaryTryGetValueTwice()
     {
         var code = @"
 namespace N
@@ -310,8 +313,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void AssigningFieldWithCachedViaOutParameter()
+    [Fact]
+    public void AssigningFieldWithCachedViaOutParameter()
     {
         var code = @"
 namespace N
@@ -338,8 +341,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void AssigningVariableViaRefParameter()
+    [Fact]
+    public void AssigningVariableViaRefParameter()
     {
         var code = @"
 namespace N
@@ -365,8 +368,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void AssigningVariableViaRefParameterTwiceDisposingBetweenCalls()
+    [Fact]
+    public void AssigningVariableViaRefParameterTwiceDisposingBetweenCalls()
     {
         var code = @"
 namespace N
@@ -394,8 +397,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void ChainedOut()
+    [Fact]
+    public void ChainedOut()
     {
         var code = @"
 namespace N
@@ -419,8 +422,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
-    public static void SeparateDeclarationAndCreation()
+    [Fact]
+    public void SeparateDeclarationAndCreation()
     {
         var code = @"
 namespace N
@@ -441,8 +444,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
-    public static void TryGetOutVar()
+    [Fact]
+    public void TryGetOutVar()
     {
         var code = @"
 namespace N
@@ -473,8 +476,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
-    public static void AssigningReturnOut()
+    [Fact]
+    public void AssigningReturnOut()
     {
         var code = @"
 namespace N
@@ -500,8 +503,8 @@ namespace N
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
-    public static void AssigningReturnOutTwice()
+    [Fact]
+    public void AssigningReturnOutTwice()
     {
         var code = @"
 namespace N

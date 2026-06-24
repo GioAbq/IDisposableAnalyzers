@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP017PreferUsingTests;
+namespace IDisposableAnalyzers.Test.IDISP017PreferUsingTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
     private static readonly DisposeCallAnalyzer Analyzer = new();
 
-    [Test]
+    [Fact]
     public static void DisposingField()
     {
         var code = @"
@@ -37,7 +37,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void DisposingArrayItem()
     {
         var code = @"
@@ -63,7 +63,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void DisposingDictionaryItem()
     {
         var code = @"
@@ -90,7 +90,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReassignAfterDispose()
     {
         var code = @"
@@ -114,7 +114,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReassignViaOutAfterDispose()
     {
         var code = @"

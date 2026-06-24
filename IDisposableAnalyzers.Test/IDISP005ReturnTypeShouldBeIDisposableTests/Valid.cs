@@ -1,9 +1,9 @@
-﻿// ReSharper disable InconsistentNaming
+// ReSharper disable InconsistentNaming
 namespace IDisposableAnalyzers.Test.IDISP005ReturnTypeShouldBeIDisposableTests;
 
 using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
@@ -23,7 +23,7 @@ public static partial class Valid
         }
         """;
 
-    [Test]
+    [Fact]
     public static void RealisticExtensionMethodClass()
     {
         var code = """
@@ -147,7 +147,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void VoidMethodReturn()
     {
         var code = """
@@ -170,8 +170,9 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [TestCase("new Disposable()")]
-    [TestCase("new()")]
+    [Theory]
+    [InlineData("new Disposable()")]
+    [InlineData("new()")]
     public static void MethodReturningNewDisposable(string expression)
     {
         var code = """
@@ -185,8 +186,9 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code, DisposableCode);
     }
 
-    [TestCase("new object()")]
-    [TestCase("new()")]
+    [Theory]
+    [InlineData("new object()")]
+    [InlineData("new()")]
     public static void MethodReturningNewObject(string expression)
     {
         var code = """
@@ -209,7 +211,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningDynamic()
     {
         var code = """
@@ -232,7 +234,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void GenericClassMethodReturningDynamicSubtract()
     {
         var code = """
@@ -251,7 +253,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void GenericClassPropertyReturningDynamicSubtract()
     {
         var code = """
@@ -270,7 +272,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningThis()
     {
         var chunkOfT = """
@@ -312,7 +314,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, chunkOfT, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningFieldAsObject()
     {
         var code = """
@@ -334,7 +336,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningFieldIndexerAsObject()
     {
         var code = """
@@ -356,7 +358,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningFieldDisposableListIndexerAsObject()
     {
         var disposableListOfT = """
@@ -407,7 +409,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, disposableListOfT, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningFieldDisposableListIndexerAsObjectId()
     {
         var disposableListOfT = """
@@ -463,7 +465,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, disposableListOfT, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningFuncObject()
     {
         var code = """
@@ -488,7 +490,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningObjectExpressionBody()
     {
         var code = """
@@ -508,7 +510,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyReturningObject()
     {
         var code = """
@@ -534,7 +536,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IndexerReturningObject()
     {
         var code = """
@@ -560,7 +562,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningTaskFromResultOfDisposable()
     {
         var code = """
@@ -586,7 +588,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningTaskRunOfDisposable()
     {
         var code = """
@@ -607,7 +609,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningValueTaskFromResultOfDisposable()
     {
         var code = """
@@ -633,7 +635,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void MethodReturningValueTaskOfDisposableAsync()
     {
         var code = """
@@ -661,7 +663,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void GenericMethod()
     {
         var code = """
@@ -684,7 +686,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void PropertyReturningObjectExpressionBody()
     {
         var code = """
@@ -704,7 +706,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningFileOpenReadAsStream()
     {
         var code = """
@@ -724,7 +726,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningFileOpenReadExtensionMethod()
     {
         var code = """
@@ -749,7 +751,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningNewDisposableExtensionMethodId()
     {
         var code = """
@@ -774,7 +776,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnDisposableFieldAsObject()
     {
         var code = """
@@ -796,7 +798,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturnDisposableStaticFieldAsObject()
     {
         var code = """
@@ -818,7 +820,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IfTry()
     {
         var code = """
@@ -846,7 +848,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IEnumerableOfInt()
     {
         var code = """
@@ -875,7 +877,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IEnumerableOfIntSimple()
     {
         var code = """
@@ -899,7 +901,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IEnumerableOfIntExpressionBodies()
     {
         var code = """
@@ -922,7 +924,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningAsyncTaskOfStream()
     {
         var code = """
@@ -952,7 +954,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void Lambda()
     {
         var code = """
@@ -977,7 +979,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void PassingFuncToMethod()
     {
         var code = """
@@ -1003,7 +1005,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void CallingOverload()
     {
         var code = """
@@ -1030,7 +1032,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void AssertThrows()
     {
         var code = """
@@ -1056,7 +1058,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReturningDisposedFromUsing()
     {
         var code = """
@@ -1078,7 +1080,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, Descriptor, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void LocalFactory()
     {
         var code = """
@@ -1108,7 +1110,7 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, Descriptor, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void TestThrows()
     {
         var code = """
@@ -1161,8 +1163,9 @@ public static partial class Valid
         RoslynAssert.Valid(Analyzer, Descriptor, DisposableCode, code);
     }
 
-    [TestCase("serviceCollection.AddScoped(x => new Disposable())")]
-    [TestCase("serviceCollection.AddSingleton(typeof(System.IDisposable), x => new Disposable())")]
+    [Theory]
+    [InlineData("serviceCollection.AddScoped(x => new Disposable())")]
+    [InlineData("serviceCollection.AddSingleton(typeof(System.IDisposable), x => new Disposable())")]
     public static void ServiceCollection(string expression)
     {
         var code = """

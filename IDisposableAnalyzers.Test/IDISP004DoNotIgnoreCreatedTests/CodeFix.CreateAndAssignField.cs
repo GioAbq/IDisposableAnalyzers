@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -9,7 +9,7 @@ public static partial class CodeFix
     {
         private static readonly CreateAndAssignFieldFix Fix = new();
 
-        [Test]
+        [Fact]
         public static void AssignIgnoredReturnValueToFieldInCtorWhenEmpty()
         {
             var before = @"
@@ -47,7 +47,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AssignIgnoredReturnValueToFieldInCtorWhenUsesThis()
         {
             var before = @"
@@ -92,7 +92,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AssignIgnoredReturnValueToFieldInCtorWhenUnderscore()
         {
             var before = @"

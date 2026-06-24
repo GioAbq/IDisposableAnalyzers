@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP010CallBaseDisposeTests;
+namespace IDisposableAnalyzers.Test.IDISP010CallBaseDisposeTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class CodeFix
 {
@@ -22,7 +22,7 @@ namespace N
     }
 }";
 
-    [Test]
+    [Fact]
     public static void WhenNotCallingBaseDisposeWithBaseCode()
     {
         var baseClass = @"
@@ -82,7 +82,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { DisposableCode, baseClass, before }, after);
     }
 
-    [Test]
+    [Fact]
     public static void WhenNotCallingBaseDisposeWithoutBaseCode()
     {
         var before = @"
@@ -125,7 +125,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, new[] { DisposableCode, before }, after);
     }
 
-    [Test]
+    [Fact]
     public static void WhenNotCallingOverriddenDispose()
     {
         var baseClass = @"

@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -9,7 +9,7 @@ public static partial class CodeFix
     {
         private static readonly AddUsingFix Fix = new();
 
-        [Test]
+        [Fact]
         public static void AddUsingForIgnoredFileOpenRead()
         {
             var before = @"
@@ -51,7 +51,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddUsingForIgnoredReturnEmpty()
         {
             var before = @"
@@ -89,7 +89,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddUsingForIgnoredReturnManyStatements()
         {
             var before = @"
@@ -145,7 +145,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void UsingChainedReturningThis()
         {
             var disposable = @"

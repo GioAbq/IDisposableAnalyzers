@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP002DisposeMemberTests;
+namespace IDisposableAnalyzers.Test.IDISP002DisposeMemberTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class FixAll
 {
@@ -9,7 +9,7 @@ public static class FixAll
     private static readonly DisposeMemberFix Fix = new();
     private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("IDISP002");
 
-    [Test]
+    [Fact]
     public static void NotDisposingFieldAssignedInCtor()
     {
         var before = @"
@@ -58,8 +58,7 @@ namespace N
         RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 
-    [Test]
-    [Ignore("Order is random due to async.")]
+    [Fact(Skip="Order is random due to async.")]
     public static void NotDisposingFieldsAssignedInCtor()
     {
         var before = @"

@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP007DoNotDisposeInjectedTests;
+namespace IDisposableAnalyzers.Test.IDISP007DoNotDisposeInjectedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class ValidUsing
 {
@@ -20,7 +20,7 @@ namespace N
     }
 }";
 
-    [Test]
+    [Fact]
     public static void FileOpenRead()
     {
         var code = @"
@@ -41,7 +41,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void FileOpenReadVariable()
     {
         var code = @"
@@ -62,7 +62,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void AwaitedStream()
     {
         var code = @"
@@ -97,7 +97,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void AwaitedStreamVariable()
     {
         var code = @"
@@ -133,7 +133,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void InjectedIEnumerableOfTGetEnumerator()
     {
         var code = @"
@@ -158,7 +158,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void CreatedUsingInjectedConcreteFactory()
     {
         var factoryCode = @"
@@ -203,7 +203,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, factoryCode, disposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void InjectedPasswordBoxSecurePassword()
     {
         var code = @"
@@ -227,7 +227,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void CreatedUsingInjectedInterfaceFactory()
     {
         var iFactoryCode = @"
@@ -282,7 +282,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, iFactoryCode, factoryCode, disposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void CreatedUsingInjectedAbstractFactoryWIthImplementation()
     {
         var factoryBase = @"
@@ -337,7 +337,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, factoryBase, factoryCode, disposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void CreatedUsingInjectedGenericAbstractFactoryWithImplementation()
     {
         var factoryBaseOfT = @"
@@ -380,7 +380,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, factoryBaseOfT, factoryCode, DisposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void CreatedUsingInjectedAbstractFactoryNoImplementation()
     {
         var factoryBase = @"
@@ -423,7 +423,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, factoryBase, disposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void CreatedUsingInjectedGenericAbstractFactoryNoImplementation()
     {
         var factoryBaseOfT = @"
@@ -466,7 +466,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, factoryBaseOfT, disposableCode, code);
     }
 
-    [Test]
+    [Fact]
     public static void CreatedUsingInjectedVirtualFactory()
     {
         var factoryBase = @"
@@ -521,7 +521,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, new[] { factoryBase, factoryCode, disposableCode, code });
     }
 
-    [Test]
+    [Fact]
     public static void IgnoresRecursiveProperty()
     {
         var code = @"
@@ -550,7 +550,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IgnoresRecursiveMethod()
     {
         var code = @"
@@ -579,7 +579,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReassignedParameter()
     {
         var code = @"
@@ -601,7 +601,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReassignedParameterViaOut()
     {
         var code = @"
@@ -632,7 +632,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ReassignedParameterViaOutAnd()
     {
         var code = @"

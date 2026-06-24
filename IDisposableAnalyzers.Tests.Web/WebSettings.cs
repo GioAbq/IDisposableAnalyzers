@@ -15,6 +15,7 @@ internal static class WebSettings
                                    .WithMetadataReferences(
                                        MetadataReferences.Transitive(
                                            typeof(WebSettings),
+                                           typeof(NUnit.Framework.Assert),
                                            typeof(Microsoft.Extensions.Hosting.GenericHostBuilderExtensions),
                                            typeof(Microsoft.Extensions.Logging.ApplicationInsightsLoggerFactoryExtensions),
                                            typeof(Microsoft.Extensions.DependencyInjection.MvcServiceCollectionExtensions),

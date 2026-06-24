@@ -1,7 +1,7 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
+namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class CodeFix
 {
@@ -9,7 +9,7 @@ public static partial class CodeFix
     {
         private static readonly AddToCompositeDisposableFix Fix = new();
 
-        [Test]
+        [Fact]
         public static void CreateNewCompositeDisposable()
         {
             var before = @"
@@ -52,7 +52,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void CreateNewCompositeDisposableWithTrivia()
         {
             var before = @"
@@ -95,7 +95,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void CreateNewCompositeDisposableWhenUsingsAndFields()
         {
             var before = @"
@@ -152,7 +152,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void CreateNewCompositeDisposableWhenUsingsAndFieldsUnderscoreNames()
         {
             var before = @"
@@ -209,7 +209,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddToExistingCompositeDisposableInitializer()
         {
             var before = @"
@@ -253,7 +253,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddToExistingCompositeDisposableInitializerWithCtorArg()
         {
             var before = @"
@@ -297,7 +297,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddToExistingCompositeDisposableInitializerWithTrivia()
         {
             var before = @"
@@ -341,7 +341,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddToExistingCompositeDisposableWithInitializerOneLine()
         {
             var before = @"
@@ -386,7 +386,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddWithTriviaToExistingCompositeDisposableWithInitializerOneLine()
         {
             var before = @"
@@ -431,7 +431,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddIgnoredReturnValueToExistingCompositeDisposableInitializer()
         {
             var before = @"
@@ -479,7 +479,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddIgnoredReturnValueToExistingCompositeDisposableInitializerWithCtorArg()
         {
             var before = @"
@@ -527,7 +527,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddIgnoredReturnValueToExistingCompositeDisposableInitializerWithComment()
         {
             var before = @"
@@ -578,7 +578,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddIgnoredReturnValueToExistingCompositeDisposableCtor()
         {
             var before = @"
@@ -620,7 +620,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddIgnoredReturnValueToExistingCompositeDisposableCtorUnderscore()
         {
             var before = @"
@@ -662,7 +662,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddIgnoredReturnValueToCompositeDisposableInitializer()
         {
             var before = @"
@@ -706,7 +706,7 @@ namespace N
             RoslynAssert.FixAll(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [Test]
+        [Fact]
         public static void AddToExistingCompositeDisposableWithInitializerOneLineWithStatementsBetween()
         {
             var before = @"

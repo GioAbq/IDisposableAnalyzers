@@ -1,11 +1,11 @@
 namespace IDisposableAnalyzers.Test.IDISP004DoNotIgnoreCreatedTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static partial class Valid
 {
-    [Test]
+    [Fact]
     public static void IgnoresWhenDisposingRecursiveProperty()
     {
         var code = @"
@@ -26,7 +26,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IgnoresWhenNotDisposingRecursiveProperty()
     {
         var code = @"
@@ -46,7 +46,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IgnoresWhenDisposingFieldAssignedWithRecursiveProperty()
     {
         var code = @"
@@ -74,7 +74,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IgnoresWhenNotDisposingFieldAssignedWithRecursiveProperty()
     {
         var code = @"
@@ -101,7 +101,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void IgnoresWhenDisposingRecursiveMethod()
     {
         var code = @"
@@ -122,7 +122,7 @@ namespace N
         RoslynAssert.Valid(Analyzer, code);
     }
 
-    [Test]
+    [Fact]
     public static void ValidationErrorToStringConverter()
     {
         var code = @"

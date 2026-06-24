@@ -1,13 +1,13 @@
-﻿namespace IDisposableAnalyzers.Test.IDISP022DisposeFalseTests;
+namespace IDisposableAnalyzers.Test.IDISP022DisposeFalseTests;
 
 using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+using Xunit;
 
 public static class Valid
 {
     private static readonly FinalizerAnalyzer Analyzer = new();
 
-    [Test]
+    [Fact]
     public static void SealedWithFinalizer()
     {
         var code = @"
